@@ -1,17 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>NextGen eQMS</title>
 
-  <link rel="stylesheet" href="style.css?v=3">
+  <link
+    rel="stylesheet"
+    href="style.css?v=8"
+  >
 </head>
+
 
 <body>
 
-  <!-- 01 HERO -->
+
+  <!-- =====================================================
+       01 — HERO
+  ====================================================== -->
+
   <section class="hero">
 
     <img
@@ -22,20 +35,164 @@
 
     <div class="hero-shade"></div>
 
-    <div class="hero-content">
-      <h1>NextGen eQMS</h1>
 
-      <h2>Simplifying Quality Management</h2>
+    <div class="hero-content">
+
+      <h1>
+        NextGen eQMS
+      </h1>
+
+      <h2>
+        Simplifying Quality Management
+      </h2>
+
 
       <div class="scroll-cue">
-        <span>Scroll to explore</span>
-        <span class="arrow">↓</span>
+
+        <span>
+          Scroll to explore
+        </span>
+
+        <span class="arrow">
+          ↓
+        </span>
+
       </div>
+
     </div>
 
   </section>
 
+
+
+  <!-- =====================================================
+       NDP-STYLE SCROLL STORY
+  ====================================================== -->
+
+  <section class="scrolly-story">
+
+
+    <!-- ===============================================
+         STICKY FULL-SCREEN MEDIA
+    ================================================ -->
+
+    <div class="story-media">
+
+
+      <!-- DOCUMENT CONTROL -->
+
+      <div
+        class="media-layer active"
+        id="media-document-control"
+      >
+
+        <video
+          muted
+          loop
+          playsinline
+          preload="metadata"
+        >
+
+          <source
+            src="videos/doc-control.mp4"
+            type="video/mp4"
+          >
+
+        </video>
+
+        <div class="media-darken"></div>
+
+      </div>
+
+
+
+      <!-- CONNECTED PLATFORM -->
+
+      <div
+        class="media-layer"
+        id="media-connected-platform"
+      >
+
+        <img
+          src="images/connected-platform.png"
+          alt="Simploud connected platform"
+        >
+
+        <div class="platform-treatment"></div>
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- ===============================================
+         VERTICALLY MOVING STORY CARDS
+    ================================================ -->
+
+    <div class="story-copy-track">
+
+
+      <!-- 02 — DOCUMENT CONTROL -->
+
+      <section
+        class="story-step"
+        data-media="media-document-control"
+      >
+
+        <div class="story-card">
+
+          <h3>
+            Document Control
+          </h3>
+
+          <p>
+            From draft to effective. Controlled.
+          </p>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- 03 — CONNECTED PLATFORM -->
+
+      <section
+        class="story-step"
+        data-media="media-connected-platform"
+      >
+
+        <div class="story-card">
+
+          <h3>
+            One Connected Platform
+          </h3>
+
+          <p>
+            One Platform. All Modules. Infinite Possibilities.
+          </p>
+
+        </div>
+
+      </section>
+
+
+    </div>
+
+
+  </section>
+
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+
   <script src="script.js"></script>
 
+
 </body>
+
 </html>
