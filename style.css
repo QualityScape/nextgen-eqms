@@ -184,7 +184,7 @@ body {
   object-position: 64% center;
 
   transform: scale(0.90);
-  transform-origin: center top;
+  transform-origin: center bottom;
 }
 
 
