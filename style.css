@@ -17,7 +17,10 @@ body {
   overflow-x: hidden;
 }
 
-/* HERO */
+
+/* =========================
+   01 HERO
+========================= */
 
 .hero {
   position: relative;
@@ -36,9 +39,91 @@ body {
   object-position: center;
 }
 
-/* MOBILE */
+
+/* =========================
+   STORY SECTIONS
+========================= */
+
+.story-section {
+  min-height: 100vh;
+  padding: 8vh 6vw;
+  background: #0b0f14;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+}
+
+.story-copy {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-number {
+  margin-bottom: 12px;
+
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+
+  color: #38c9d6;
+}
+
+.story-copy h2 {
+  margin: 0;
+
+  font-size: clamp(38px, 5vw, 72px);
+  line-height: 1;
+  font-weight: 700;
+}
+
+.story-line {
+  margin: 18px 0 0;
+
+  font-size: clamp(20px, 2vw, 30px);
+  line-height: 1.35;
+
+  color: #b7bdc5;
+}
+
+
+/* =========================
+   VIDEO
+========================= */
+
+.video-wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  overflow: hidden;
+
+  border-radius: 18px;
+
+  background: #111820;
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+.video-wrap video {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  object-fit: cover;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 768px) {
+
   .hero {
     height: 100svh;
     min-height: 0;
@@ -49,7 +134,37 @@ body {
     height: 100%;
     object-fit: cover;
 
-    /* Keep the MacBook visible on narrow screens */
-    object-position: 72% center;
+    /* Locked mobile Hero crop */
+    object-position: 64% center;
+  }
+
+
+  .story-section {
+    min-height: 100svh;
+
+    padding:
+      70px
+      20px
+      60px;
+
+    gap: 30px;
+  }
+
+  .section-number {
+    font-size: 12px;
+  }
+
+  .story-copy h2 {
+    font-size: 40px;
+  }
+
+  .story-line {
+    margin-top: 14px;
+
+    font-size: 21px;
+  }
+
+  .video-wrap {
+    border-radius: 12px;
   }
 }
