@@ -50,6 +50,6 @@ body {
     object-fit: cover;
 
     /* Keep the MacBook visible on narrow screens */
-    object-position: 64% center;
+    object-position: 72% center;
   }
 }
