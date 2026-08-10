@@ -174,8 +174,14 @@ body {
 @media (max-width: 768px) {
 
   .hero-image {
-    object-position: 64% 42%;
-  }
+  width: 100%;
+  height: 108%;
+
+  object-fit: cover;
+  object-position: 64% center;
+
+  transform: translateY(4%);
+}
 
 
   .hero-shade {
