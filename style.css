@@ -173,14 +173,18 @@ body {
 
 @media (max-width: 768px) {
 
-  .hero-image {
+ .hero-image {
+  top: 6vh;
+  bottom: auto;
+
   width: 100%;
-  height: 108%;
+  height: 106%;
 
   object-fit: cover;
   object-position: 64% center;
 
-  transform: translateY(4%);
+  transform: scale(0.90);
+  transform-origin: center top;
 }
 
 
