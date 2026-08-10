@@ -1,170 +1,107 @@
-* {
-  box-sizing: border-box;
+/* HERO TEXT */
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    90deg,
+    rgba(5, 10, 15, 0.72) 0%,
+    rgba(5, 10, 15, 0.42) 32%,
+    rgba(5, 10, 15, 0.08) 58%,
+    rgba(5, 10, 15, 0) 75%
+  );
+
+  z-index: 1;
+  pointer-events: none;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
+.hero-content {
+  position: absolute;
+  z-index: 2;
+
+  left: 6vw;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: min(620px, 45vw);
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: #0b0f14;
-  color: #ffffff;
-  overflow-x: hidden;
-}
-
-
-/* =========================
-   01 HERO
-========================= */
-
-.hero {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  min-height: 600px;
-  overflow: hidden;
-  background: #0b0f14;
-}
-
-.hero img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-
-
-/* =========================
-   STORY SECTIONS
-========================= */
-
-.story-section {
-  min-height: 100vh;
-  padding: 8vh 6vw;
-  background: #0b0f14;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 40px;
-}
-
-.story-copy {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.section-number {
-  margin-bottom: 12px;
-
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-
-  color: #38c9d6;
-}
-
-.story-copy h2 {
+.hero-content h1 {
   margin: 0;
 
-  font-size: clamp(38px, 5vw, 72px);
+  font-size: clamp(46px, 4.4vw, 72px);
   line-height: 1;
   font-weight: 700;
+  letter-spacing: -0.03em;
 }
 
-.story-line {
+.hero-tagline {
   margin: 18px 0 0;
 
-  font-size: clamp(20px, 2vw, 30px);
-  line-height: 1.35;
+  font-size: clamp(25px, 2.2vw, 36px);
+  line-height: 1.2;
+  font-weight: 600;
 
-  color: #b7bdc5;
+  color: #ffffff;
+}
+
+.scroll-cue {
+  margin-top: 52px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.scroll-cue span {
+  font-size: 20px;
 }
 
 
-/* =========================
-   VIDEO
-========================= */
-
-.video-wrap {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-
-  overflow: hidden;
-
-  border-radius: 18px;
-
-  background: #111820;
-
-  box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.45);
-}
-
-.video-wrap video {
-  display: block;
-
-  width: 100%;
-  height: auto;
-
-  object-fit: cover;
-}
-
-
-/* =========================
-   MOBILE
-========================= */
+/* HERO MOBILE TEXT */
 
 @media (max-width: 768px) {
 
-  .hero {
-    height: 100svh;
-    min-height: 0;
+  .hero-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(5, 10, 15, 0.78) 0%,
+      rgba(5, 10, 15, 0.35) 38%,
+      rgba(5, 10, 15, 0.02) 65%
+    );
   }
 
-  .hero img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .hero-content {
+    left: 24px;
+    right: 24px;
+    top: 9vh;
 
-    /* Locked mobile Hero crop */
-    object-position: 64% center;
+    transform: none;
+
+    width: auto;
   }
 
-
-  .story-section {
-    min-height: 100svh;
-
-    padding:
-      70px
-      20px
-      60px;
-
-    gap: 30px;
+  .hero-content h1 {
+    font-size: 42px;
   }
 
-  .section-number {
-    font-size: 12px;
+  .hero-tagline {
+    margin-top: 10px;
+
+    font-size: 26px;
+    line-height: 1.15;
   }
 
-  .story-copy h2 {
-    font-size: 40px;
-  }
+  .scroll-cue {
+    margin-top: 25px;
 
-  .story-line {
-    margin-top: 14px;
-
-    font-size: 21px;
-  }
-
-  .video-wrap {
-    border-radius: 12px;
+    font-size: 14px;
   }
 }
