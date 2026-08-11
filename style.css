@@ -600,6 +600,95 @@ body {
 
     object-fit: cover;
     object-position: center;
+
+    transform: none;
+  }
+
+
+  /* -----------------------------------------------------
+     DOCUMENT CONTROL — MOBILE CAMERA MOVEMENT
+  ----------------------------------------------------- */
+
+  #doc-control-video.doc-mobile-zoom {
+    animation:
+      docMobileZoom
+      6s
+      ease-in-out
+      infinite;
+
+    transform-origin: center center;
+
+    will-change: transform;
+  }
+
+
+  @keyframes docMobileZoom {
+
+    /* FULL VIEW */
+
+    0%,
+    10% {
+      transform:
+        translate3d(0, 0, 0)
+        scale(1);
+    }
+
+
+    /* MOVE INTO AREA 1 */
+
+    24% {
+      transform:
+        translate3d(22%, -5%, 0)
+        scale(1.55);
+    }
+
+
+    /* HOLD AREA 1 */
+
+    24%,
+    43% {
+      transform:
+        translate3d(22%, -5%, 0)
+        scale(1.55);
+    }
+
+
+    /* GLIDE FROM AREA 1 TOWARD AREA 2 */
+
+    58% {
+      transform:
+        translate3d(-11%, -7%, 0)
+        scale(1.55);
+    }
+
+
+    /* ZOOM INTO AREA 2 */
+
+    70% {
+      transform:
+        translate3d(-23%, -7%, 0)
+        scale(1.72);
+    }
+
+
+    /* HOLD AREA 2 */
+
+    70%,
+    90% {
+      transform:
+        translate3d(-23%, -7%, 0)
+        scale(1.72);
+    }
+
+
+    /* RETURN TO FULL VIEW */
+
+    100% {
+      transform:
+        translate3d(0, 0, 0)
+        scale(1);
+    }
+
   }
 
 
@@ -645,13 +734,6 @@ body {
   }
 
 
-  /*
-    connected-platform-mobile.png is already prepared
-    as the portrait mobile composition.
-
-    Do not scale it down or manually reposition it.
-  */
-
   #media-connected-platform .platform-picture {
     width: 100%;
     height: 100%;
@@ -659,20 +741,20 @@ body {
 
 
   #media-connected-platform .platform-picture img {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 
-  object-fit: cover;
-  object-position: center;
+    object-fit: cover;
+    object-position: center;
 
-  transform: scale(0.90);
-  transform-origin: center center;
+    transform: scale(0.90);
+    transform-origin: center center;
 
-  filter:
-    saturate(0.86)
-    brightness(0.88)
-    contrast(1.01);
-}
+    filter:
+      saturate(0.86)
+      brightness(0.88)
+      contrast(1.01);
+  }
 
 
   /* -----------------------------------------------------
@@ -723,12 +805,20 @@ body {
     scroll-behavior: auto;
   }
 
+
   .scroll-cue {
     animation: none;
   }
 
+
   .media-layer {
     transition: none;
+  }
+
+
+  #doc-control-video.doc-mobile-zoom {
+    animation: none;
+    transform: none;
   }
 
 }
