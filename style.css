@@ -175,6 +175,7 @@ body {
   50% {
     transform: translateY(7px);
   }
+
 }
 
 
@@ -256,15 +257,15 @@ body {
 
 
 /* =========================================================
-   DOCUMENT CONTROL — DESKTOP / MOBILE VIDEO SWITCH
+   DOCUMENT CONTROL VIDEO
 ========================================================= */
 
-.doc-video-desktop {
-  display: block;
-}
+#doc-control-video {
+  width: 100%;
+  height: 100%;
 
-.doc-video-mobile {
-  display: none;
+  object-fit: cover;
+  object-position: center;
 }
 
 
@@ -582,11 +583,10 @@ body {
 
 
   /* -----------------------------------------------------
-     MOBILE FULL-SCREEN MEDIA
+     DOCUMENT CONTROL MOBILE VIDEO
   ----------------------------------------------------- */
 
-  .media-layer video,
-  .media-layer img {
+  #doc-control-video {
     width: 100%;
     height: 100%;
 
@@ -596,29 +596,7 @@ body {
 
 
   /* -----------------------------------------------------
-     DOCUMENT CONTROL — USE PORTRAIT VIDEO ON MOBILE
-  ----------------------------------------------------- */
-
-  .doc-video-desktop {
-    display: none;
-  }
-
-  .doc-video-mobile {
-    display: block;
-  }
-
-
-  #media-document-control .doc-video-mobile {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-    object-position: center;
-  }
-
-
-  /* -----------------------------------------------------
-     DOCUMENT CONTROL — LOWER MOBILE TEXT CARD
+     DOCUMENT CONTROL MOBILE TEXT CARD
   ----------------------------------------------------- */
 
   .story-step[data-media="media-document-control"] {
