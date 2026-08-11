@@ -612,81 +612,90 @@ body {
   #doc-control-video.doc-mobile-zoom {
     animation:
       docMobileZoom
-      6s
+      5.6s
       ease-in-out
       infinite;
 
-    transform-origin: center center;
-
-    will-change: transform;
+    will-change:
+      transform,
+      transform-origin;
   }
 
 
   @keyframes docMobileZoom {
 
-    /* FULL VIEW */
+    /* =====================================================
+       START — FULL PORTRAIT VIEW
+    ===================================================== */
 
     0%,
-    10% {
+    8% {
+      transform-origin: 50% 31%;
+
       transform:
-        translate3d(0, 0, 0)
         scale(1);
     }
 
 
-    /* MOVE INTO AREA 1 */
+    /* =====================================================
+       ZOOM INTO AREA 1 — REVIEW / APPROVE TEXT
+    ===================================================== */
 
-    24% {
+    20% {
+      transform-origin: 17% 31%;
+
       transform:
-        translate3d(22%, -5%, 0)
-        scale(1.55);
+        scale(2.20);
     }
 
 
-    /* HOLD AREA 1 */
+    /* =====================================================
+       HOLD AREA 1
+    ===================================================== */
 
-    24%,
+    20%,
     43% {
+      transform-origin: 17% 31%;
+
       transform:
-        translate3d(22%, -5%, 0)
-        scale(1.55);
+        scale(2.20);
     }
 
 
-    /* GLIDE FROM AREA 1 TOWARD AREA 2 */
+    /* =====================================================
+       GLIDE ACROSS TOWARD AREA 2
+    ===================================================== */
 
     58% {
+      transform-origin: 42% 31%;
+
       transform:
-        translate3d(-11%, -7%, 0)
-        scale(1.55);
+        scale(2.05);
     }
 
 
-    /* ZOOM INTO AREA 2 */
+    /* =====================================================
+       ZOOM INTO AREA 2 — LAPTOP / NAVIGATION
+    ===================================================== */
 
-    70% {
+    72% {
+      transform-origin: 65% 31%;
+
       transform:
-        translate3d(-23%, -7%, 0)
-        scale(1.72);
+        scale(2);
     }
 
 
-    /* HOLD AREA 2 */
+    /* =====================================================
+       HOLD AREA 2
+    ===================================================== */
 
-    70%,
-    90% {
-      transform:
-        translate3d(-23%, -7%, 0)
-        scale(1.72);
-    }
-
-
-    /* RETURN TO FULL VIEW */
-
+    72%,
     100% {
+      transform-origin: 65% 31%;
+
       transform:
-        translate3d(0, 0, 0)
-        scale(1);
+        scale(2);
     }
 
   }
@@ -805,20 +814,12 @@ body {
     scroll-behavior: auto;
   }
 
-
   .scroll-cue {
     animation: none;
   }
 
-
   .media-layer {
     transition: none;
-  }
-
-
-  #doc-control-video.doc-mobile-zoom {
-    animation: none;
-    transform: none;
   }
 
 }
