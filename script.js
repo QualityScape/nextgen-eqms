@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     DESKTOP / MOBILE SWITCH
+     DESKTOP / MOBILE VIDEO SWITCH
   ========================================================= */
 
   function handleViewportChange() {
