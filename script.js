@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const mobileQuery = window.matchMedia("(max-width: 768px)");
 
   let activeMediaId = "media-document-control";
-
   let currentDocSource = "";
 
 
@@ -26,24 +25,20 @@ document.addEventListener("DOMContentLoaded", () => {
       ? docVideo.dataset.mobileSrc
       : docVideo.dataset.desktopSrc;
 
-
     if (currentDocSource === desiredSource) {
       return;
     }
-
 
     currentDocSource = desiredSource;
 
     const shouldResume =
       activeMediaId === "media-document-control";
 
-
     docVideo.pause();
 
     docVideo.src = desiredSource;
 
     docVideo.load();
-
 
     if (shouldResume) {
 
@@ -58,6 +53,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
+     MOBILE DOCUMENT CONTROL ZOOM ANIMATION
+  ========================================================= */
+
+  function restartDocumentControlAnimation() {
+
+    if (!docVideo) {
+      return;
+    }
+
+    /*
+      Desktop / laptop stays untouched.
+    */
+
+    if (!mobileQuery.matches) {
+
+      docVideo.classList.remove("doc-mobile-zoom");
+
+      return;
+    }
+
+    /*
+      Remove and re-add the class so the animation
+      starts again from the beginning.
+    */
+
+    docVideo.classList.remove("doc-mobile-zoom");
+
+    void docVideo.offsetWidth;
+
+    docVideo.classList.add("doc-mobile-zoom");
+
+  }
+
+
+
+  /* =========================================================
      ACTIVATE STORY MEDIA
   ========================================================= */
 
@@ -65,16 +96,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activeMediaId = mediaId;
 
-
     mediaLayers.forEach((layer) => {
 
       const videos = layer.querySelectorAll("video");
 
-
       if (layer.id === mediaId) {
 
         layer.classList.add("active");
-
 
         videos.forEach((video) => {
 
@@ -85,19 +113,34 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
 
+        /*
+          Only Document Control gets the mobile
+          zoom / pan animation.
+        */
+
+        if (mediaId === "media-document-control") {
+
+          restartDocumentControlAnimation();
+
+        }
+
+
       } else {
 
         layer.classList.remove("active");
-
 
         videos.forEach((video) => {
 
           video.pause();
 
           try {
+
             video.currentTime = 0;
+
           } catch (error) {
+
             // Ignore if metadata is not ready.
+
           }
 
         });
@@ -124,12 +167,12 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-
         const mediaId = entry.target.dataset.media;
 
-
         if (mediaId) {
+
           activateMedia(mediaId);
+
         }
 
       });
@@ -148,17 +191,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   storySteps.forEach((step) => {
+
     observer.observe(step);
+
   });
 
 
 
   /* =========================================================
-     DESKTOP / MOBILE VIDEO SWITCH
+     DESKTOP / MOBILE SWITCH
   ========================================================= */
 
   function handleViewportChange() {
+
     setDocumentControlSource();
+
+
+    if (mobileQuery.matches) {
+
+      if (activeMediaId === "media-document-control") {
+
+        restartDocumentControlAnimation();
+
+      }
+
+    } else {
+
+      /*
+        Important:
+        remove the mobile animation completely
+        on laptop / desktop.
+      */
+
+      if (docVideo) {
+
+        docVideo.classList.remove("doc-mobile-zoom");
+
+      }
+
+    }
+
   }
 
 
