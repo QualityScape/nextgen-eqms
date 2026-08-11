@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const mobileQuery = window.matchMedia("(max-width: 768px)");
 
   let activeMediaId = "media-document-control";
+
   let currentDocSource = "";
 
 
@@ -21,24 +22,30 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+
     const desiredSource = mobileQuery.matches
       ? docVideo.dataset.mobileSrc
       : docVideo.dataset.desktopSrc;
+
 
     if (currentDocSource === desiredSource) {
       return;
     }
 
+
     currentDocSource = desiredSource;
+
 
     const shouldResume =
       activeMediaId === "media-document-control";
+
 
     docVideo.pause();
 
     docVideo.src = desiredSource;
 
     docVideo.load();
+
 
     if (shouldResume) {
 
@@ -53,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     MOBILE DOCUMENT CONTROL ZOOM ANIMATION
+     MOBILE DOCUMENT CONTROL CAMERA ANIMATION
   ========================================================= */
 
   function restartDocumentControlAnimation() {
@@ -62,8 +69,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+
     /*
-      Desktop / laptop stays untouched.
+      Laptop / desktop remains untouched.
     */
 
     if (!mobileQuery.matches) {
@@ -73,14 +81,25 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+
     /*
-      Remove and re-add the class so the animation
-      starts again from the beginning.
+      Remove the class first so the animation
+      can restart from the beginning.
     */
 
     docVideo.classList.remove("doc-mobile-zoom");
 
+
+    /*
+      Force the browser to register the class removal.
+    */
+
     void docVideo.offsetWidth;
+
+
+    /*
+      Restart the mobile-only camera animation.
+    */
 
     docVideo.classList.add("doc-mobile-zoom");
 
@@ -96,13 +115,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activeMediaId = mediaId;
 
+
     mediaLayers.forEach((layer) => {
 
       const videos = layer.querySelectorAll("video");
 
+
       if (layer.id === mediaId) {
 
         layer.classList.add("active");
+
 
         videos.forEach((video) => {
 
@@ -114,8 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         /*
-          Only Document Control gets the mobile
-          zoom / pan animation.
+          Only Document Control receives
+          the mobile zoom animation.
         */
 
         if (mediaId === "media-document-control") {
@@ -129,9 +151,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         layer.classList.remove("active");
 
+
         videos.forEach((video) => {
 
           video.pause();
+
 
           try {
 
@@ -139,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           } catch (error) {
 
-            // Ignore if metadata is not ready.
+            // Ignore if video metadata is not ready.
 
           }
 
@@ -167,7 +191,9 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
+
         const mediaId = entry.target.dataset.media;
+
 
         if (mediaId) {
 
@@ -209,23 +235,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (mobileQuery.matches) {
 
-      if (activeMediaId === "media-document-control") {
+      /*
+        Mobile:
+        start the camera movement if Document Control
+        is currently active.
+      */
+
+      if (
+        activeMediaId === "media-document-control"
+      ) {
 
         restartDocumentControlAnimation();
 
       }
 
+
     } else {
 
+
       /*
-        Important:
-        remove the mobile animation completely
-        on laptop / desktop.
+        Laptop / desktop:
+        remove the mobile animation completely.
       */
 
       if (docVideo) {
 
-        docVideo.classList.remove("doc-mobile-zoom");
+        docVideo.classList.remove(
+          "doc-mobile-zoom"
+        );
 
       }
 
@@ -240,6 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "change",
       handleViewportChange
     );
+
 
   } else {
 
@@ -272,6 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
         });
+
 
       } else {
 
