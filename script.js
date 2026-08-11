@@ -3,81 +3,101 @@ document.addEventListener("DOMContentLoaded", () => {
   const storySteps = document.querySelectorAll(".story-step");
   const mediaLayers = document.querySelectorAll(".media-layer");
 
+  const docVideo = document.getElementById("doc-control-video");
+
+  const mobileQuery = window.matchMedia("(max-width: 768px)");
+
   let activeMediaId = "media-document-control";
+
+  let currentDocSource = "";
 
 
   /* =========================================================
-     PLAY / PAUSE THE CORRECT MEDIA
+     CHOOSE THE CORRECT DOCUMENT CONTROL VIDEO
+  ========================================================= */
+
+  function setDocumentControlSource() {
+
+    if (!docVideo) {
+      return;
+    }
+
+    const desiredSource = mobileQuery.matches
+      ? docVideo.dataset.mobileSrc
+      : docVideo.dataset.desktopSrc;
+
+
+    if (currentDocSource === desiredSource) {
+      return;
+    }
+
+
+    currentDocSource = desiredSource;
+
+    const shouldResume =
+      activeMediaId === "media-document-control";
+
+
+    docVideo.pause();
+
+    docVideo.src = desiredSource;
+
+    docVideo.load();
+
+
+    if (shouldResume) {
+
+      docVideo.play().catch(() => {
+        // Muted inline playback should normally be allowed.
+      });
+
+    }
+
+  }
+
+
+
+  /* =========================================================
+     ACTIVATE STORY MEDIA
   ========================================================= */
 
   function activateMedia(mediaId) {
 
     activeMediaId = mediaId;
 
+
     mediaLayers.forEach((layer) => {
 
       const videos = layer.querySelectorAll("video");
 
 
-      /* ACTIVE MEDIA LAYER */
-
       if (layer.id === mediaId) {
 
         layer.classList.add("active");
 
+
         videos.forEach((video) => {
 
-          /*
-            Only play the video that is actually visible.
-
-            Desktop:
-            doc-control.mp4 plays.
-
-            Mobile:
-            doc-control-mobile.mp4 plays.
-          */
-
-          const isVisible =
-            window.getComputedStyle(video).display !== "none";
-
-          if (isVisible) {
-
-            video.play().catch(() => {
-              /*
-                Some browsers may delay autoplay briefly.
-                The video is muted and playsinline, so normal
-                mobile browsers should allow playback.
-              */
-            });
-
-          } else {
-
-            video.pause();
-
-          }
+          video.play().catch(() => {
+            // Ignore temporary autoplay restrictions.
+          });
 
         });
 
-
-      /* INACTIVE MEDIA LAYERS */
 
       } else {
 
         layer.classList.remove("active");
 
+
         videos.forEach((video) => {
 
           video.pause();
 
-          /*
-            Reset inactive videos so they start from the
-            beginning when the visitor scrolls back to them.
-          */
-
           try {
             video.currentTime = 0;
           } catch (error) {
-            // Ignore if the video metadata is not ready yet.
+            // Ignore if metadata is not ready.
           }
 
         });
@@ -91,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     WATCH STORY CARDS AS THEY MOVE THROUGH THE VIEWPORT
+     STORY STEP OBSERVER
   ========================================================= */
 
   const observer = new IntersectionObserver(
@@ -100,14 +120,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       entries.forEach((entry) => {
 
-        if (entry.isIntersecting) {
+        if (!entry.isIntersecting) {
+          return;
+        }
 
-          const mediaId = entry.target.dataset.media;
 
-          if (mediaId) {
-            activateMedia(mediaId);
-          }
+        const mediaId = entry.target.dataset.media;
 
+
+        if (mediaId) {
+          activateMedia(mediaId);
         }
 
       });
@@ -117,15 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       root: null,
 
-      /*
-        The active story changes when its card enters
-        the central portion of the screen.
-
-        This creates the CNA / NDP-style transition:
-        card moves upward while the background media
-        remains pinned behind it.
-      */
-
       rootMargin: "-35% 0px -35% 0px",
 
       threshold: 0
@@ -134,11 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-
-  /* =========================================================
-     OBSERVE EACH STORY STEP
-  ========================================================= */
-
   storySteps.forEach((step) => {
     observer.observe(step);
   });
@@ -146,59 +154,71 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     HANDLE DESKTOP ↔ MOBILE WIDTH CHANGES
+     DESKTOP / MOBILE SWITCH
   ========================================================= */
 
-  let resizeTimer;
+  function handleViewportChange() {
 
-  window.addEventListener("resize", () => {
+    setDocumentControlSource();
 
-    clearTimeout(resizeTimer);
+  }
 
-    resizeTimer = setTimeout(() => {
 
-      /*
-        Re-evaluate which version of the current video
-        should play after the viewport changes.
-      */
+  if (mobileQuery.addEventListener) {
 
-      activateMedia(activeMediaId);
+    mobileQuery.addEventListener(
+      "change",
+      handleViewportChange
+    );
 
-    }, 150);
+  } else {
 
-  });
+    mobileQuery.addListener(
+      handleViewportChange
+    );
+
+  }
 
 
 
   /* =========================================================
-     PAGE VISIBILITY
+     TAB VISIBILITY
   ========================================================= */
 
-  document.addEventListener("visibilitychange", () => {
+  document.addEventListener(
+    "visibilitychange",
+    () => {
 
-    if (document.hidden) {
+      if (document.hidden) {
 
-      mediaLayers.forEach((layer) => {
+        mediaLayers.forEach((layer) => {
 
-        layer.querySelectorAll("video").forEach((video) => {
-          video.pause();
+          layer
+            .querySelectorAll("video")
+            .forEach((video) => {
+
+              video.pause();
+
+            });
+
         });
 
-      });
+      } else {
 
-    } else {
+        activateMedia(activeMediaId);
 
-      activateMedia(activeMediaId);
+      }
 
     }
-
-  });
+  );
 
 
 
   /* =========================================================
      INITIAL STATE
   ========================================================= */
+
+  setDocumentControlSource();
 
   activateMedia("media-document-control");
 
