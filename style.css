@@ -2,35 +2,50 @@
   box-sizing: border-box;
 }
 
+
 html,
 body {
   margin: 0;
   padding: 0;
+
   width: 100%;
   min-height: 100%;
 }
+
 
 html {
   scroll-behavior: smooth;
 }
 
+
 body {
   margin: 0;
+
   background: #070b0f;
   color: #ffffff;
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Arial,
+    Helvetica,
+    sans-serif;
+
   overflow-x: hidden;
 }
 
 
-/* ========================================
+
+/* =========================================================
    01 — HERO / STARTING SCREEN
-======================================== */
+========================================================= */
 
 .hero {
   position: relative;
 
   width: 100vw;
+
   height: 100vh;
   height: 100svh;
 
@@ -40,7 +55,8 @@ body {
 }
 
 
-/* FULL-SCREEN HERO IMAGE */
+
+/* HERO IMAGE */
 
 .hero-image {
   position: absolute;
@@ -58,7 +74,8 @@ body {
 }
 
 
-/* DARKEN LEFT SIDE FOR TEXT */
+
+/* HERO DARK GRADIENT */
 
 .hero-shade {
   position: absolute;
@@ -80,6 +97,7 @@ body {
 }
 
 
+
 /* HERO TEXT */
 
 .hero-content {
@@ -97,7 +115,8 @@ body {
 }
 
 
-/* MAIN TITLE */
+
+/* HERO MAIN TITLE */
 
 .hero-content h1 {
   margin: 0;
@@ -106,13 +125,15 @@ body {
   line-height: 0.98;
 
   font-weight: 700;
+
   letter-spacing: -0.035em;
 
   color: #ffffff;
 }
 
 
-/* SECOND LINE */
+
+/* HERO SECOND LINE */
 
 .hero-content h2 {
   margin: 22px 0 0;
@@ -123,10 +144,12 @@ body {
   line-height: 1.15;
 
   font-weight: 600;
+
   letter-spacing: -0.02em;
 
   color: rgba(255, 255, 255, 0.96);
 }
+
 
 
 /* SCROLL CUE */
@@ -137,6 +160,7 @@ body {
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
+
   gap: 7px;
 
   font-size: 15px;
@@ -147,13 +171,13 @@ body {
   animation: cueFloat 2s ease-in-out infinite;
 }
 
+
 .scroll-cue .arrow {
   font-size: 23px;
   line-height: 1;
 }
 
 
-/* GENTLE MOVEMENT */
 
 @keyframes cueFloat {
 
@@ -169,9 +193,10 @@ body {
 }
 
 
-/* ========================================
+
+/* =========================================================
    NDP-STYLE SCROLL STORY
-======================================== */
+========================================================= */
 
 .scrolly-story {
   position: relative;
@@ -182,9 +207,10 @@ body {
 }
 
 
-/* ========================================
+
+/* =========================================================
    STICKY FULL-SCREEN MEDIA
-======================================== */
+========================================================= */
 
 .story-media {
   position: sticky;
@@ -192,6 +218,7 @@ body {
   top: 0;
 
   width: 100%;
+
   height: 100vh;
   height: 100svh;
 
@@ -203,7 +230,8 @@ body {
 }
 
 
-/* INDIVIDUAL MEDIA LAYERS */
+
+/* MEDIA LAYERS */
 
 .media-layer {
   position: absolute;
@@ -223,7 +251,6 @@ body {
 }
 
 
-/* CURRENT ACTIVE MEDIA */
 
 .media-layer.active {
   opacity: 1;
@@ -231,7 +258,8 @@ body {
 }
 
 
-/* VIDEO + IMAGE FULL SCREEN */
+
+/* FULL-SCREEN VIDEO / IMAGE */
 
 .media-layer video,
 .media-layer img {
@@ -248,31 +276,33 @@ body {
 }
 
 
-/* ========================================
+
+/* =========================================================
    DOCUMENT CONTROL VIDEO TREATMENT
-======================================== */
+========================================================= */
 
 .media-darken {
   position: absolute;
   inset: 0;
 
+  z-index: 1;
+
   background:
     linear-gradient(
       180deg,
-      rgba(3, 7, 11, 0.08) 0%,
-      rgba(3, 7, 11, 0.05) 55%,
-      rgba(3, 7, 11, 0.22) 100%
+      rgba(3, 7, 11, 0.06) 0%,
+      rgba(3, 7, 11, 0.04) 55%,
+      rgba(3, 7, 11, 0.20) 100%
     );
 
   pointer-events: none;
-
-  z-index: 1;
 }
 
 
-/* ========================================
-   CONNECTED PLATFORM TREATMENT
-======================================== */
+
+/* =========================================================
+   CONNECTED PLATFORM IMAGE TREATMENT
+========================================================= */
 
 #media-connected-platform img {
   filter:
@@ -280,6 +310,7 @@ body {
     brightness(0.76)
     contrast(1.04);
 }
+
 
 
 .platform-treatment {
@@ -293,24 +324,26 @@ body {
       180deg,
       rgba(5, 10, 15, 0.08) 0%,
       rgba(5, 10, 15, 0.16) 55%,
-      rgba(5, 10, 15, 0.32) 100%
+      rgba(5, 10, 15, 0.30) 100%
     );
 
   pointer-events: none;
 }
 
 
-/* ========================================
-   STORY COPY TRACK
-======================================== */
+
+/* =========================================================
+   STORY TEXT TRACK
+========================================================= */
 
 .story-copy-track {
   position: relative;
 
   /*
-    Pull the text track back over the sticky media
-    so the cards scroll on top of it.
+    Pull the narrative track over the sticky
+    media so the cards scroll across it.
   */
+
   margin-top: -100vh;
   margin-top: -100svh;
 
@@ -320,14 +353,16 @@ body {
 }
 
 
-/* ========================================
+
+/* =========================================================
    INDIVIDUAL STORY STEPS
-======================================== */
+========================================================= */
 
 .story-step {
   position: relative;
 
   width: 100%;
+
   min-height: 135vh;
   min-height: 135svh;
 
@@ -342,82 +377,109 @@ body {
 }
 
 
-/* ========================================
-   NDP-STYLE STORY CARD
-======================================== */
+
+/* =========================================================
+   NDP-STYLE TRANSLUCENT STORY CARD
+========================================================= */
 
 .story-card {
-  width: min(400px, 34vw);
+  width: min(370px, 32vw);
 
   padding:
-    26px
-    28px
-    28px;
+    22px
+    24px
+    23px;
 
   border-radius: 4px;
 
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.86);
 
   color: #111820;
 
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.28);
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.25);
 
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  box-shadow:
+    0 8px 28px
+    rgba(0, 0, 0, 0.18);
+
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
 }
 
 
-/* STORY CARD TITLE */
 
-.story-card h3 {
+/* =========================================================
+   STORY BODY TEXT
+========================================================= */
+
+.story-body {
   margin: 0;
 
-  font-size: clamp(22px, 1.7vw, 28px);
-  line-height: 1.15;
-
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-
-/* STORY CARD DESCRIPTION */
-
-.story-card p {
-  margin: 12px 0 0;
-
-  font-size: clamp(16px, 1.1vw, 18px);
-  line-height: 1.45;
+  font-size: 15.5px;
+  line-height: 1.5;
 
   font-weight: 400;
 
-  color: #3c444d;
+  letter-spacing: -0.003em;
+
+  color: #343b42;
 }
 
 
-/* ========================================
+
+.story-body strong {
+  font-weight: 700;
+
+  color: #151a1f;
+}
+
+
+
+/* =========================================================
+   CONNECTED PLATFORM CARD
+========================================================= */
+
+.platform-card h3 {
+  margin: 0 0 10px;
+
+  font-size: 22px;
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  letter-spacing: -0.015em;
+
+  color: #151a1f;
+}
+
+
+
+/* =========================================================
    DESKTOP CARD POSITION
-======================================== */
+========================================================= */
 
 @media (min-width: 769px) {
 
   .story-card {
-    margin-left: 7vw;
+    margin-left: 18vw;
   }
 
 }
 
 
-/* ========================================
+
+/* =========================================================
    MOBILE
-======================================== */
+========================================================= */
 
 @media (max-width: 768px) {
 
 
-  /* ----------------------------------------
+  /* -----------------------------------------------------
      HERO — LOCKED MOBILE SETTINGS
-  ---------------------------------------- */
+  ----------------------------------------------------- */
 
   .hero-image {
     top: auto;
@@ -434,6 +496,7 @@ body {
   }
 
 
+
   .hero-shade {
     background:
       linear-gradient(
@@ -444,6 +507,7 @@ body {
         rgba(3, 7, 11, 0) 72%
       );
   }
+
 
 
   .hero-content {
@@ -459,10 +523,13 @@ body {
   }
 
 
+
   .hero-content h1 {
     font-size: clamp(40px, 12vw, 56px);
+
     line-height: 1;
   }
+
 
 
   .hero-content h2 {
@@ -471,8 +538,10 @@ body {
     max-width: 330px;
 
     font-size: clamp(23px, 7vw, 30px);
+
     line-height: 1.12;
   }
+
 
 
   .scroll-cue {
@@ -482,9 +551,10 @@ body {
   }
 
 
-  /* ----------------------------------------
-     SCROLL STORY MOBILE
-  ---------------------------------------- */
+
+  /* -----------------------------------------------------
+     STORY MEDIA
+  ----------------------------------------------------- */
 
   .story-media {
     height: 100vh;
@@ -492,11 +562,17 @@ body {
   }
 
 
+
   .story-copy-track {
     margin-top: -100vh;
     margin-top: -100svh;
   }
 
+
+
+  /* -----------------------------------------------------
+     STORY STEP
+  ----------------------------------------------------- */
 
   .story-step {
     min-height: 135vh;
@@ -508,43 +584,50 @@ body {
   }
 
 
-  /* CNA-LIKE MOBILE CARD */
+
+  /* -----------------------------------------------------
+     MOBILE STORY CARD
+  ----------------------------------------------------- */
 
   .story-card {
-    width: 88%;
-    max-width: 360px;
+    width: 87%;
+
+    max-width: 340px;
 
     margin-left: auto;
     margin-right: auto;
 
     padding:
-      21px
-      22px
-      23px;
+      19px
+      20px
+      20px;
 
     border-radius: 4px;
   }
 
 
-  .story-card h3 {
-    font-size: 22px;
-    line-height: 1.18;
+
+  .story-body {
+    font-size: 15.5px;
+
+    line-height: 1.48;
   }
 
 
-  .story-card p {
-    margin-top: 9px;
 
-    font-size: 16px;
-    line-height: 1.42;
+  .platform-card h3 {
+    margin-bottom: 8px;
+
+    font-size: 21px;
+
+    line-height: 1.2;
   }
 
 
-  /*
-    Full-screen media on mobile.
-    We can fine-tune each specific
-    module's crop later if required.
-  */
+
+  /* -----------------------------------------------------
+     MOBILE FULL-SCREEN MEDIA
+  ----------------------------------------------------- */
 
   .media-layer video,
   .media-layer img {
@@ -556,7 +639,11 @@ body {
   }
 
 
-  /* Keep connected-platform graphic slightly brighter on phone */
+
+  /*
+    The blue Connected Platform image is
+    slightly brighter on mobile.
+  */
 
   #media-connected-platform img {
     filter:
@@ -568,9 +655,10 @@ body {
 }
 
 
-/* ========================================
+
+/* =========================================================
    REDUCED MOTION
-======================================== */
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
 
@@ -578,9 +666,13 @@ body {
     scroll-behavior: auto;
   }
 
+
+
   .scroll-cue {
     animation: none;
   }
+
+
 
   .media-layer {
     transition: none;
