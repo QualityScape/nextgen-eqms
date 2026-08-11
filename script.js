@@ -158,9 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================================= */
 
   function handleViewportChange() {
-
     setDocumentControlSource();
-
   }
 
 
