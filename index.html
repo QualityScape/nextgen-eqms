@@ -76,14 +76,20 @@
     <div class="story-media">
 
 
-      <!-- 02 — DOCUMENT CONTROL VIDEO -->
+      <!-- =================================================
+           02 — DOCUMENT CONTROL
+      ================================================== -->
 
       <div
         class="media-layer active"
         id="media-document-control"
       >
 
+
+        <!-- DESKTOP / LAPTOP VIDEO -->
+
         <video
+          class="doc-video doc-video-desktop"
           muted
           loop
           playsinline
@@ -97,13 +103,34 @@
 
         </video>
 
+
+        <!-- MOBILE PORTRAIT VIDEO -->
+
+        <video
+          class="doc-video doc-video-mobile"
+          muted
+          loop
+          playsinline
+          preload="metadata"
+        >
+
+          <source
+            src="videos/doc-control-mobile.mp4"
+            type="video/mp4"
+          >
+
+        </video>
+
+
         <div class="media-darken"></div>
 
       </div>
 
 
 
-      <!-- 03 — CONNECTED PLATFORM IMAGE -->
+      <!-- =================================================
+           03 — CONNECTED PLATFORM
+      ================================================== -->
 
       <div
         class="media-layer"
@@ -131,7 +158,9 @@
     <div class="story-copy-track">
 
 
-      <!-- 02 — DOCUMENT CONTROL -->
+      <!-- =================================================
+           02 — DOCUMENT CONTROL COPY
+      ================================================== -->
 
       <section
         class="story-step"
@@ -154,7 +183,9 @@
 
 
 
-      <!-- 03 — CONNECTED PLATFORM -->
+      <!-- =================================================
+           03 — CONNECTED PLATFORM COPY
+      ================================================== -->
 
       <section
         class="story-step"
