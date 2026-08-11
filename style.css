@@ -256,6 +256,19 @@ body {
 
 
 /* =========================================================
+   DOCUMENT CONTROL — DESKTOP / MOBILE VIDEO SWITCH
+========================================================= */
+
+.doc-video-desktop {
+  display: block;
+}
+
+.doc-video-mobile {
+  display: none;
+}
+
+
+/* =========================================================
    DOCUMENT CONTROL VIDEO TREATMENT
 ========================================================= */
 
@@ -435,7 +448,9 @@ body {
 @media (max-width: 768px) {
 
 
-  /* HERO — LOCKED MOBILE SETTINGS */
+  /* -----------------------------------------------------
+     HERO — LOCKED MOBILE SETTINGS
+  ----------------------------------------------------- */
 
   .hero-image {
     top: auto;
@@ -502,7 +517,9 @@ body {
   }
 
 
-  /* STORY MEDIA */
+  /* -----------------------------------------------------
+     STORY MEDIA
+  ----------------------------------------------------- */
 
   .story-media {
     height: 100vh;
@@ -516,7 +533,9 @@ body {
   }
 
 
-  /* STORY STEP */
+  /* -----------------------------------------------------
+     GENERAL MOBILE STORY STEP
+  ----------------------------------------------------- */
 
   .story-step {
     min-height: 135vh;
@@ -528,7 +547,9 @@ body {
   }
 
 
-  /* MOBILE STORY CARD */
+  /* -----------------------------------------------------
+     GENERAL MOBILE STORY CARD
+  ----------------------------------------------------- */
 
   .story-card {
     width: 88%;
@@ -560,7 +581,9 @@ body {
   }
 
 
-  /* MOBILE FULL-SCREEN MEDIA */
+  /* -----------------------------------------------------
+     MOBILE FULL-SCREEN MEDIA
+  ----------------------------------------------------- */
 
   .media-layer video,
   .media-layer img {
@@ -571,6 +594,66 @@ body {
     object-position: center;
   }
 
+
+  /* -----------------------------------------------------
+     DOCUMENT CONTROL — USE PORTRAIT VIDEO ON MOBILE
+  ----------------------------------------------------- */
+
+  .doc-video-desktop {
+    display: none;
+  }
+
+  .doc-video-mobile {
+    display: block;
+  }
+
+
+  #media-document-control .doc-video-mobile {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+  }
+
+
+  /* -----------------------------------------------------
+     DOCUMENT CONTROL — LOWER MOBILE TEXT CARD
+  ----------------------------------------------------- */
+
+  .story-step[data-media="media-document-control"] {
+    align-items: flex-end;
+
+    padding:
+      8vh
+      20px
+      13vh;
+  }
+
+
+  .story-step[data-media="media-document-control"] .story-card {
+    width: 86%;
+    max-width: 350px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding:
+      20px
+      21px
+      22px;
+  }
+
+
+  .story-step[data-media="media-document-control"] .story-body {
+    font-size: 15.5px;
+    line-height: 1.5;
+  }
+
+
+  /* -----------------------------------------------------
+     CONNECTED PLATFORM MOBILE TREATMENT
+  ----------------------------------------------------- */
 
   #media-connected-platform img {
     filter:
