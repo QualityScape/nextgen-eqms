@@ -539,8 +539,8 @@ body {
   ----------------------------------------------------- */
 
   .story-step {
-    min-height: 135vh;
-    min-height: 135svh;
+    min-height: 145vh;
+    min-height: 145svh;
 
     padding:
       8vh
@@ -553,32 +553,34 @@ body {
   ----------------------------------------------------- */
 
   .story-card {
-    width: 88%;
-    max-width: 360px;
+    width: 82%;
+    max-width: 320px;
 
     margin-left: auto;
     margin-right: auto;
 
     padding:
-      22px
-      23px
-      24px;
+      28px
+      27px
+      30px;
 
-    border-radius: 4px;
+    border-radius: 5px;
   }
 
 
   .story-body {
-    font-size: 16.5px;
-    line-height: 1.55;
+    font-size: 20px;
+    line-height: 1.62;
+
+    letter-spacing: 0;
   }
 
 
   .platform-card h3 {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 
-    font-size: 22px;
-    line-height: 1.2;
+    font-size: 24px;
+    line-height: 1.25;
   }
 
 
@@ -605,27 +607,40 @@ body {
     padding:
       8vh
       20px
-      13vh;
+      11vh;
   }
 
 
   .story-step[data-media="media-document-control"] .story-card {
-    width: 86%;
-    max-width: 350px;
+    width: 80%;
+    max-width: 315px;
 
     margin-left: auto;
     margin-right: auto;
 
     padding:
-      20px
-      21px
-      22px;
+      29px
+      27px
+      31px;
+
+    background: rgba(255, 255, 255, 0.86);
   }
 
 
   .story-step[data-media="media-document-control"] .story-body {
-    font-size: 15.5px;
-    line-height: 1.5;
+    font-size: 20px;
+    line-height: 1.62;
+
+    font-weight: 400;
+
+    color: #30373e;
+  }
+
+
+  .story-step[data-media="media-document-control"] .story-body strong {
+    font-weight: 700;
+
+    color: #14191e;
   }
 
 
