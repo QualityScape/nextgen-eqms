@@ -2,25 +2,20 @@
   box-sizing: border-box;
 }
 
-
 html,
 body {
   margin: 0;
   padding: 0;
-
   width: 100%;
   min-height: 100%;
 }
-
 
 html {
   scroll-behavior: smooth;
 }
 
-
 body {
   margin: 0;
-
   background: #070b0f;
   color: #ffffff;
 
@@ -34,7 +29,6 @@ body {
 
   overflow-x: hidden;
 }
-
 
 
 /* =========================================================
@@ -55,7 +49,6 @@ body {
 }
 
 
-
 /* HERO IMAGE */
 
 .hero-image {
@@ -72,7 +65,6 @@ body {
 
   z-index: 0;
 }
-
 
 
 /* HERO DARK GRADIENT */
@@ -97,7 +89,6 @@ body {
 }
 
 
-
 /* HERO TEXT */
 
 .hero-content {
@@ -113,7 +104,6 @@ body {
 
   z-index: 2;
 }
-
 
 
 /* HERO MAIN TITLE */
@@ -132,7 +122,6 @@ body {
 }
 
 
-
 /* HERO SECOND LINE */
 
 .hero-content h2 {
@@ -149,7 +138,6 @@ body {
 
   color: rgba(255, 255, 255, 0.96);
 }
-
 
 
 /* SCROLL CUE */
@@ -171,12 +159,10 @@ body {
   animation: cueFloat 2s ease-in-out infinite;
 }
 
-
 .scroll-cue .arrow {
   font-size: 23px;
   line-height: 1;
 }
-
 
 
 @keyframes cueFloat {
@@ -189,9 +175,7 @@ body {
   50% {
     transform: translateY(7px);
   }
-
 }
-
 
 
 /* =========================================================
@@ -205,7 +189,6 @@ body {
 
   background: #070b0f;
 }
-
 
 
 /* =========================================================
@@ -230,7 +213,6 @@ body {
 }
 
 
-
 /* MEDIA LAYERS */
 
 .media-layer {
@@ -250,13 +232,10 @@ body {
   will-change: opacity;
 }
 
-
-
 .media-layer.active {
   opacity: 1;
   visibility: visible;
 }
-
 
 
 /* FULL-SCREEN VIDEO / IMAGE */
@@ -274,7 +253,6 @@ body {
   object-fit: cover;
   object-position: center;
 }
-
 
 
 /* =========================================================
@@ -299,7 +277,6 @@ body {
 }
 
 
-
 /* =========================================================
    CONNECTED PLATFORM IMAGE TREATMENT
 ========================================================= */
@@ -310,8 +287,6 @@ body {
     brightness(0.76)
     contrast(1.04);
 }
-
-
 
 .platform-treatment {
   position: absolute;
@@ -331,18 +306,12 @@ body {
 }
 
 
-
 /* =========================================================
    STORY TEXT TRACK
 ========================================================= */
 
 .story-copy-track {
   position: relative;
-
-  /*
-    Pull the narrative track over the sticky
-    media so the cards scroll across it.
-  */
 
   margin-top: -100vh;
   margin-top: -100svh;
@@ -351,7 +320,6 @@ body {
 
   pointer-events: none;
 }
-
 
 
 /* =========================================================
@@ -377,18 +345,17 @@ body {
 }
 
 
-
 /* =========================================================
    NDP-STYLE TRANSLUCENT STORY CARD
 ========================================================= */
 
 .story-card {
-  width: min(370px, 32vw);
+  width: min(470px, 38vw);
 
   padding:
-    22px
-    24px
-    23px;
+    27px
+    30px
+    29px;
 
   border-radius: 4px;
 
@@ -396,18 +363,14 @@ body {
 
   color: #111820;
 
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.25);
 
   box-shadow:
-    0 8px 28px
-    rgba(0, 0, 0, 0.18);
+    0 8px 28px rgba(0, 0, 0, 0.18);
 
   backdrop-filter: blur(7px);
   -webkit-backdrop-filter: blur(7px);
 }
-
 
 
 /* =========================================================
@@ -417,17 +380,15 @@ body {
 .story-body {
   margin: 0;
 
-  font-size: 15.5px;
-  line-height: 1.5;
+  font-size: 18px;
+  line-height: 1.55;
 
   font-weight: 400;
 
-  letter-spacing: -0.003em;
+  letter-spacing: 0;
 
   color: #343b42;
 }
-
-
 
 .story-body strong {
   font-weight: 700;
@@ -436,15 +397,14 @@ body {
 }
 
 
-
 /* =========================================================
    CONNECTED PLATFORM CARD
 ========================================================= */
 
 .platform-card h3 {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 
-  font-size: 22px;
+  font-size: 24px;
   line-height: 1.2;
 
   font-weight: 700;
@@ -453,7 +413,6 @@ body {
 
   color: #151a1f;
 }
-
 
 
 /* =========================================================
@@ -469,7 +428,6 @@ body {
 }
 
 
-
 /* =========================================================
    MOBILE
 ========================================================= */
@@ -477,9 +435,7 @@ body {
 @media (max-width: 768px) {
 
 
-  /* -----------------------------------------------------
-     HERO — LOCKED MOBILE SETTINGS
-  ----------------------------------------------------- */
+  /* HERO — LOCKED MOBILE SETTINGS */
 
   .hero-image {
     top: auto;
@@ -496,7 +452,6 @@ body {
   }
 
 
-
   .hero-shade {
     background:
       linear-gradient(
@@ -507,7 +462,6 @@ body {
         rgba(3, 7, 11, 0) 72%
       );
   }
-
 
 
   .hero-content {
@@ -523,13 +477,11 @@ body {
   }
 
 
-
   .hero-content h1 {
     font-size: clamp(40px, 12vw, 56px);
 
     line-height: 1;
   }
-
 
 
   .hero-content h2 {
@@ -543,7 +495,6 @@ body {
   }
 
 
-
   .scroll-cue {
     margin-top: 28px;
 
@@ -551,16 +502,12 @@ body {
   }
 
 
-
-  /* -----------------------------------------------------
-     STORY MEDIA
-  ----------------------------------------------------- */
+  /* STORY MEDIA */
 
   .story-media {
     height: 100vh;
     height: 100svh;
   }
-
 
 
   .story-copy-track {
@@ -569,10 +516,7 @@ body {
   }
 
 
-
-  /* -----------------------------------------------------
-     STORY STEP
-  ----------------------------------------------------- */
+  /* STORY STEP */
 
   .story-step {
     min-height: 135vh;
@@ -584,50 +528,39 @@ body {
   }
 
 
-
-  /* -----------------------------------------------------
-     MOBILE STORY CARD
-  ----------------------------------------------------- */
+  /* MOBILE STORY CARD */
 
   .story-card {
-    width: 87%;
-
-    max-width: 340px;
+    width: 88%;
+    max-width: 360px;
 
     margin-left: auto;
     margin-right: auto;
 
     padding:
-      19px
-      20px
-      20px;
+      22px
+      23px
+      24px;
 
     border-radius: 4px;
   }
 
 
-
   .story-body {
-    font-size: 15.5px;
-
-    line-height: 1.48;
+    font-size: 16.5px;
+    line-height: 1.55;
   }
 
 
-
   .platform-card h3 {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 
-    font-size: 21px;
-
+    font-size: 22px;
     line-height: 1.2;
   }
 
 
-
-  /* -----------------------------------------------------
-     MOBILE FULL-SCREEN MEDIA
-  ----------------------------------------------------- */
+  /* MOBILE FULL-SCREEN MEDIA */
 
   .media-layer video,
   .media-layer img {
@@ -639,12 +572,6 @@ body {
   }
 
 
-
-  /*
-    The blue Connected Platform image is
-    slightly brighter on mobile.
-  */
-
   #media-connected-platform img {
     filter:
       saturate(0.86)
@@ -653,7 +580,6 @@ body {
   }
 
 }
-
 
 
 /* =========================================================
@@ -666,13 +592,9 @@ body {
     scroll-behavior: auto;
   }
 
-
-
   .scroll-cue {
     animation: none;
   }
-
-
 
   .media-layer {
     transition: none;
