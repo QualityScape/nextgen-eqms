@@ -111,10 +111,21 @@
         id="media-connected-platform"
       >
 
-        <img
-          src="images/connected-platform.png"
-          alt="Simploud connected quality platform"
-        >
+        <picture class="platform-picture">
+
+          <!-- MOBILE PORTRAIT IMAGE -->
+          <source
+            media="(max-width: 768px)"
+            srcset="images/connected-platform-mobile.png"
+          >
+
+          <!-- LAPTOP / DESKTOP IMAGE -->
+          <img
+            src="images/connected-platform.png"
+            alt="Simploud connected quality platform"
+          >
+
+        </picture>
 
         <div class="platform-treatment"></div>
 
