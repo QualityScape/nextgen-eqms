@@ -1,25 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const storySteps = Array.from(
-    document.querySelectorAll(".story-step")
+  const storySteps = document.querySelectorAll(".story-step");
+  const mediaLayers = document.querySelectorAll(".media-layer");
+
+  const docVideo = document.getElementById("doc-control-video");
+  const docStep = document.querySelector(
+    '.story-step[data-media="media-document-control"]'
   );
+  const docCard = docStep
+    ? docStep.querySelector(".story-card")
+    : null;
 
-  const mediaLayers = Array.from(
-    document.querySelectorAll(".media-layer")
-  );
+  const mobileQuery = window.matchMedia("(max-width: 768px)");
 
-  const docVideo =
-    document.getElementById("doc-control-video");
-
-  const mobileQuery =
-    window.matchMedia("(max-width: 768px)");
-
-  let activeMediaId = null;
-
+  let activeMediaId = "media-document-control";
   let currentDocSource = "";
-
-  let mobileScrollTicking = false;
-
+  let scrollTicking = false;
 
 
   /* =========================================================
@@ -27,520 +23,199 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================================= */
 
   function setDocumentControlSource() {
-
     if (!docVideo) {
       return;
     }
-
 
     const desiredSource = mobileQuery.matches
       ? docVideo.dataset.mobileSrc
       : docVideo.dataset.desktopSrc;
 
-
     if (currentDocSource === desiredSource) {
       return;
     }
 
-
     currentDocSource = desiredSource;
-
 
     const shouldResume =
       activeMediaId === "media-document-control";
 
-
     docVideo.pause();
-
     docVideo.src = desiredSource;
-
     docVideo.load();
 
-
     if (shouldResume) {
-
       docVideo.play().catch(() => {
         // Muted inline playback should normally be allowed.
       });
-
     }
-
   }
-
 
 
   /* =========================================================
-     MOBILE DOCUMENT CONTROL CAMERA ANIMATION
+     MOBILE ONLY — FREEZE DOC CONTROL ZOOM WHEN
+     THE TEXT CARD REACHES THE SCREEN MIDDLE
   ========================================================= */
 
-  function restartDocumentControlAnimation() {
-
-    if (!docVideo) {
+  function updateDocMobileFreeze() {
+    if (!docStep || !docCard) {
+      document.body.classList.remove("doc-mobile-freeze");
       return;
     }
-
-
-    /*
-      Laptop / desktop remains completely untouched.
-    */
 
     if (!mobileQuery.matches) {
-
-      docVideo.classList.remove(
-        "doc-mobile-zoom"
-      );
-
+      document.body.classList.remove("doc-mobile-freeze");
       return;
     }
 
+    if (activeMediaId !== "media-document-control") {
+      document.body.classList.remove("doc-mobile-freeze");
+      return;
+    }
+
+    const stepRect = docStep.getBoundingClientRect();
+
+    const stepVisible =
+      stepRect.bottom > 0 &&
+      stepRect.top < window.innerHeight;
+
+    if (!stepVisible) {
+      document.body.classList.remove("doc-mobile-freeze");
+      return;
+    }
+
+    const cardRect = docCard.getBoundingClientRect();
+    const viewportMiddle = window.innerHeight * 0.5;
+    const cardCenter = cardRect.top + (cardRect.height / 2);
 
     /*
-      Remove the class first.
+      Freeze once the card's center reaches the middle
+      of the screen, so the user can read without the
+      background zoom continuing.
     */
+    const shouldFreeze = cardCenter <= (viewportMiddle + 20);
 
-    docVideo.classList.remove(
-      "doc-mobile-zoom"
+    document.body.classList.toggle(
+      "doc-mobile-freeze",
+      shouldFreeze
     );
-
-
-    /*
-      Force browser reflow.
-    */
-
-    void docVideo.offsetWidth;
-
-
-    /*
-      Restart the animation.
-    */
-
-    docVideo.classList.add(
-      "doc-mobile-zoom"
-    );
-
   }
 
+  function requestDocMobileFreezeUpdate() {
+    if (scrollTicking) {
+      return;
+    }
+
+    scrollTicking = true;
+
+    window.requestAnimationFrame(() => {
+      updateDocMobileFreeze();
+      scrollTicking = false;
+    });
+  }
 
 
   /* =========================================================
      ACTIVATE STORY MEDIA
   ========================================================= */
 
-  function activateMedia(mediaId, force = false) {
-
-    if (
-      !force &&
-      activeMediaId === mediaId
-    ) {
-      return;
-    }
-
-
+  function activateMedia(mediaId) {
     activeMediaId = mediaId;
 
-
     mediaLayers.forEach((layer) => {
-
-      const videos =
-        layer.querySelectorAll("video");
-
+      const videos = layer.querySelectorAll("video");
 
       if (layer.id === mediaId) {
-
         layer.classList.add("active");
 
-
         videos.forEach((video) => {
-
           video.play().catch(() => {
             // Ignore temporary autoplay restrictions.
           });
-
         });
-
-
-        /*
-          Only Document Control receives
-          the mobile camera movement.
-        */
-
-        if (
-          mediaId === "media-document-control"
-        ) {
-
-          restartDocumentControlAnimation();
-
-        }
-
 
       } else {
-
         layer.classList.remove("active");
 
-
         videos.forEach((video) => {
-
           video.pause();
 
-
           try {
-
             video.currentTime = 0;
-
           } catch (error) {
-
             // Ignore if metadata is not ready.
-
           }
-
         });
-
       }
-
     });
 
+    requestDocMobileFreezeUpdate();
   }
 
 
-
   /* =========================================================
-     DESKTOP STORY OBSERVER
-
-     This preserves the laptop behaviour that already
-     works correctly.
+     STORY STEP OBSERVER
   ========================================================= */
 
-  const desktopObserver =
-    new IntersectionObserver(
-
-      (entries) => {
-
-        /*
-          Do not use this switching logic on mobile.
-        */
-
-        if (mobileQuery.matches) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
           return;
         }
 
-
-        entries.forEach((entry) => {
-
-          if (!entry.isIntersecting) {
-            return;
-          }
-
-
-          const mediaId =
-            entry.target.dataset.media;
-
-
-          if (mediaId) {
-
-            activateMedia(mediaId);
-
-          }
-
-        });
-
-      },
-
-      {
-        root: null,
-
-        rootMargin:
-          "-35% 0px -35% 0px",
-
-        threshold: 0
-      }
-
-    );
-
-
-  storySteps.forEach((step) => {
-
-    desktopObserver.observe(step);
-
-  });
-
-
-
-  /* =========================================================
-     MOBILE MEDIA SWITCHING
-
-     IMPORTANT:
-
-     The next background does NOT activate merely because
-     the next story section has entered the viewport.
-
-     Instead, it waits until the PREVIOUS story card
-     has completely travelled beyond the TOP edge.
-
-     Think of y = 0 as the finish line.
-  ========================================================= */
-
-  function updateMobileMedia() {
-
-    if (!mobileQuery.matches) {
-      return;
-    }
-
-
-    if (storySteps.length === 0) {
-      return;
-    }
-
-
-    /*
-      Start with the first media section.
-    */
-
-    let activeIndex = 0;
-
-
-    /*
-      For each following section:
-
-      Only advance once the previous card's BOTTOM
-      has crossed the top of the viewport.
-    */
-
-    for (
-      let i = 1;
-      i < storySteps.length;
-      i++
-    ) {
-
-      const previousStep =
-        storySteps[i - 1];
-
-      const previousCard =
-        previousStep.querySelector(
-          ".story-card"
-        );
-
-
-      if (!previousCard) {
-        break;
-      }
-
-
-      const previousCardRect =
-        previousCard.getBoundingClientRect();
-
-
-      /*
-        FINISH LINE = top of screen.
-
-        bottom <= 0 means the ENTIRE card
-        has disappeared above the viewport.
-      */
-
-      if (
-        previousCardRect.bottom <= 0
-      ) {
-
-        activeIndex = i;
-
-      } else {
-
-        break;
-
-      }
-
-    }
-
-
-    const activeStep =
-      storySteps[activeIndex];
-
-
-    const mediaId =
-      activeStep.dataset.media;
-
-
-    if (mediaId) {
-
-      activateMedia(mediaId);
-
-    }
-
-  }
-
-
-
-  /* =========================================================
-     MOBILE SCROLL LISTENER
-  ========================================================= */
-
-  function handleMobileScroll() {
-
-    if (!mobileQuery.matches) {
-      return;
-    }
-
-
-    if (mobileScrollTicking) {
-      return;
-    }
-
-
-    mobileScrollTicking = true;
-
-
-    window.requestAnimationFrame(() => {
-
-      updateMobileMedia();
-
-      mobileScrollTicking = false;
-
-    });
-
-  }
-
-
-  window.addEventListener(
-    "scroll",
-    handleMobileScroll,
+        const mediaId = entry.target.dataset.media;
+
+        if (mediaId) {
+          activateMedia(mediaId);
+        }
+      });
+    },
     {
-      passive: true
+      root: null,
+      rootMargin: "-35% 0px -35% 0px",
+      threshold: 0
     }
   );
 
+  storySteps.forEach((step) => {
+    observer.observe(step);
+  });
 
 
   /* =========================================================
-     DESKTOP / MOBILE VIEWPORT CHANGE
+     DESKTOP / MOBILE SWITCH
   ========================================================= */
 
   function handleViewportChange() {
-
     setDocumentControlSource();
-
-
-    if (mobileQuery.matches) {
-
-      /*
-        Entering mobile:
-        immediately calculate which background
-        should currently be active.
-      */
-
-      updateMobileMedia();
-
-
-    } else {
-
-
-      /*
-        Entering desktop:
-        completely remove the mobile-only
-        camera animation.
-      */
-
-      if (docVideo) {
-
-        docVideo.classList.remove(
-          "doc-mobile-zoom"
-        );
-
-      }
-
-
-      /*
-        Determine which desktop story section
-        is closest to the centre of the viewport.
-      */
-
-      let closestStep = null;
-
-      let closestDistance = Infinity;
-
-      const viewportCenter =
-        window.innerHeight / 2;
-
-
-      storySteps.forEach((step) => {
-
-        const rect =
-          step.getBoundingClientRect();
-
-
-        if (
-          rect.bottom <= 0 ||
-          rect.top >= window.innerHeight
-        ) {
-          return;
-        }
-
-
-        const stepCenter =
-          rect.top +
-          rect.height / 2;
-
-
-        const distance =
-          Math.abs(
-            stepCenter -
-            viewportCenter
-          );
-
-
-        if (
-          distance <
-          closestDistance
-        ) {
-
-          closestDistance =
-            distance;
-
-          closestStep =
-            step;
-
-        }
-
-      });
-
-
-      if (closestStep) {
-
-        const mediaId =
-          closestStep.dataset.media;
-
-
-        if (mediaId) {
-
-          activateMedia(
-            mediaId,
-            true
-          );
-
-        }
-
-      }
-
-    }
-
+    requestDocMobileFreezeUpdate();
   }
 
-
-
   if (mobileQuery.addEventListener) {
-
     mobileQuery.addEventListener(
       "change",
       handleViewportChange
     );
-
-
   } else {
-
-    mobileQuery.addListener(
-      handleViewportChange
-    );
-
+    mobileQuery.addListener(handleViewportChange);
   }
 
+
+  /* =========================================================
+     SCROLL / RESIZE
+  ========================================================= */
+
+  window.addEventListener(
+    "scroll",
+    requestDocMobileFreezeUpdate,
+    { passive: true }
+  );
+
+  window.addEventListener(
+    "resize",
+    requestDocMobileFreezeUpdate
+  );
 
 
   /* =========================================================
@@ -550,46 +225,22 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener(
     "visibilitychange",
     () => {
-
       if (document.hidden) {
-
-        mediaLayers.forEach(
-          (layer) => {
-
-            layer
-              .querySelectorAll("video")
-              .forEach((video) => {
-
-                video.pause();
-
-              });
-
-          }
-        );
-
+        mediaLayers.forEach((layer) => {
+          layer
+            .querySelectorAll("video")
+            .forEach((video) => {
+              video.pause();
+            });
+        });
 
       } else {
-
-
-        /*
-          Resume whichever media section
-          was active before leaving the tab.
-        */
-
-        if (activeMediaId) {
-
-          activateMedia(
-            activeMediaId,
-            true
-          );
-
-        }
-
+        activateMedia(activeMediaId);
       }
 
+      requestDocMobileFreezeUpdate();
     }
   );
-
 
 
   /* =========================================================
@@ -597,18 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================================= */
 
   setDocumentControlSource();
-
-
-  if (mobileQuery.matches) {
-
-    updateMobileMedia();
-
-  } else {
-
-    activateMedia(
-      "media-document-control"
-    );
-
-  }
+  activateMedia("media-document-control");
+  requestDocMobileFreezeUpdate();
 
 });
