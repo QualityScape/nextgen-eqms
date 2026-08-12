@@ -408,15 +408,15 @@ body {
 
   border-radius: 10px;
 
-  background: rgba(220, 228, 235, 0.90);
+  background: rgba(205, 214, 222, 0.92);
 
   color: #111820;
 
   border:
-    1px solid rgba(255, 255, 255, 0.24);
+    1px solid rgba(255, 255, 255, 0.18);
 
   box-shadow:
-    0 8px 28px rgba(0, 0, 0, 0.16);
+    0 10px 30px rgba(0, 0, 0, 0.18);
 
   backdrop-filter: blur(9px);
   -webkit-backdrop-filter: blur(9px);
