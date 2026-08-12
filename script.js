@@ -684,7 +684,7 @@ document.addEventListener("DOMContentLoaded", () => {
      DELAYED SUPPLIER MANAGEMENT ZOOM
 
      Only the first arrival at the ceiling uses
-     the 2.5-second delay.
+     the 1.5-second delay.
   ========================================================= */
 
   function scheduleSupplierManagementZoom() {
@@ -753,7 +753,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         },
 
-        2500
+        1500
       );
 
   }
@@ -784,7 +784,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-      If the 2.5-second zoom has not started yet,
+      If the 1.5-second zoom has not started yet,
       simply lock the already-full-page view.
     */
 
@@ -1736,7 +1736,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
       The first arrival at the ceiling starts
-      the 2.5-second zoom delay.
+      the 1.5-second zoom delay.
     */
 
     if (
