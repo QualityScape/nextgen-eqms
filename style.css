@@ -18,6 +18,7 @@ body {
   margin: 0;
   background: #070b0f;
   color: #ffffff;
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -25,6 +26,7 @@ body {
     Arial,
     Helvetica,
     sans-serif;
+
   overflow-x: hidden;
 }
 
@@ -35,10 +37,14 @@ body {
 
 .hero {
   position: relative;
+
   width: 100vw;
+
   height: 100vh;
   height: 100svh;
+
   overflow: hidden;
+
   background: #070b0f;
 }
 
@@ -48,11 +54,15 @@ body {
 .hero-image {
   position: absolute;
   inset: 0;
+
   width: 100%;
   height: 100%;
+
   display: block;
+
   object-fit: cover;
   object-position: center;
+
   z-index: 0;
 }
 
@@ -62,6 +72,7 @@ body {
 .hero-shade {
   position: absolute;
   inset: 0;
+
   z-index: 1;
 
   background:
@@ -82,11 +93,15 @@ body {
 
 .hero-content {
   position: absolute;
+
   left: 6vw;
   top: 50%;
+
   transform: translateY(-50%);
+
   width: 42vw;
   max-width: 660px;
+
   z-index: 2;
 }
 
@@ -95,10 +110,14 @@ body {
 
 .hero-content h1 {
   margin: 0;
+
   font-size: clamp(48px, 5vw, 82px);
   line-height: 0.98;
+
   font-weight: 700;
+
   letter-spacing: -0.035em;
+
   color: #ffffff;
 }
 
@@ -107,11 +126,16 @@ body {
 
 .hero-content h2 {
   margin: 22px 0 0;
+
   max-width: 620px;
+
   font-size: clamp(25px, 2.4vw, 40px);
   line-height: 1.15;
+
   font-weight: 600;
+
   letter-spacing: -0.02em;
+
   color: rgba(255, 255, 255, 0.96);
 }
 
@@ -120,13 +144,18 @@ body {
 
 .scroll-cue {
   margin-top: 64px;
+
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
+
   gap: 7px;
+
   font-size: 15px;
   font-weight: 500;
+
   color: rgba(255, 255, 255, 0.76);
+
   animation: cueFloat 2s ease-in-out infinite;
 }
 
@@ -156,7 +185,9 @@ body {
 
 .scrolly-story {
   position: relative;
+
   width: 100%;
+
   background: #070b0f;
 }
 
@@ -167,12 +198,18 @@ body {
 
 .story-media {
   position: sticky;
+
   top: 0;
+
   width: 100%;
+
   height: 100vh;
   height: 100svh;
+
   overflow: hidden;
+
   background: #070b0f;
+
   z-index: 0;
 }
 
@@ -182,8 +219,10 @@ body {
 .media-layer {
   position: absolute;
   inset: 0;
+
   width: 100%;
   height: 100%;
+
   opacity: 0;
   visibility: hidden;
 
@@ -207,9 +246,12 @@ body {
 #doc-control-video {
   position: absolute;
   inset: 0;
+
   width: 100%;
   height: 100%;
+
   display: block;
+
   object-fit: cover;
   object-position: center;
 }
@@ -222,6 +264,7 @@ body {
 .media-darken {
   position: absolute;
   inset: 0;
+
   z-index: 1;
 
   background:
@@ -250,7 +293,9 @@ body {
 .platform-picture {
   position: absolute;
   inset: 0;
+
   display: block;
+
   width: 100%;
   height: 100%;
 }
@@ -259,7 +304,9 @@ body {
 .platform-picture img {
   width: 100%;
   height: 100%;
+
   display: block;
+
   object-fit: cover;
   object-position: center;
 
@@ -275,6 +322,7 @@ body {
 .platform-treatment {
   position: absolute;
   inset: 0;
+
   z-index: 1;
 
   background:
@@ -295,9 +343,12 @@ body {
 
 .story-copy-track {
   position: relative;
+
   margin-top: -100vh;
   margin-top: -100svh;
+
   z-index: 2;
+
   pointer-events: none;
 }
 
@@ -308,12 +359,19 @@ body {
 
 .story-step {
   position: relative;
+
   width: 100%;
+
   min-height: 135vh;
   min-height: 135svh;
+
   display: flex;
   align-items: center;
-  padding: 10vh 7vw;
+
+  padding:
+    10vh
+    7vw;
+
   pointer-events: none;
 }
 
@@ -331,11 +389,14 @@ body {
     29px;
 
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.86);
+
+  /* BRIGHTER CARD */
+  background: rgba(255, 255, 255, 0.93);
+
   color: #111820;
 
   border:
-    1px solid rgba(255, 255, 255, 0.25);
+    1px solid rgba(255, 255, 255, 0.48);
 
   box-shadow:
     0 8px 28px rgba(0, 0, 0, 0.18);
@@ -351,15 +412,21 @@ body {
 
 .story-body {
   margin: 0;
-  font-size: 18px;
+
+  /* ENLARGED FROM 18PX */
+  font-size: 20px;
   line-height: 1.55;
+
   font-weight: 400;
+
   letter-spacing: 0;
+
   color: #343b42;
 }
 
 .story-body strong {
   font-weight: 700;
+
   color: #151a1f;
 }
 
@@ -371,7 +438,7 @@ body {
 @media (min-width: 769px) {
 
   /*
-    LAPTOP / DESKTOP REMAINS UNTOUCHED
+    LAPTOP / DESKTOP POSITIONING REMAINS UNTOUCHED
   */
 
   .story-card {
@@ -407,10 +474,13 @@ body {
   .hero-image {
     top: auto;
     bottom: -10vh;
+
     width: 100%;
     height: 106%;
+
     object-fit: cover;
     object-position: 64% center;
+
     transform: scale(0.90);
     transform-origin: center bottom;
   }
@@ -431,8 +501,11 @@ body {
   .hero-content {
     left: 24px;
     right: 24px;
+
     top: 10vh;
+
     transform: none;
+
     width: auto;
     max-width: none;
   }
@@ -440,20 +513,25 @@ body {
 
   .hero-content h1 {
     font-size: clamp(40px, 12vw, 56px);
+
     line-height: 1;
   }
 
 
   .hero-content h2 {
     margin-top: 12px;
+
     max-width: 330px;
+
     font-size: clamp(23px, 7vw, 30px);
+
     line-height: 1.12;
   }
 
 
   .scroll-cue {
     margin-top: 28px;
+
     font-size: 14px;
   }
 
@@ -495,6 +573,7 @@ body {
   .story-card {
     width: 82%;
     max-width: 320px;
+
     margin-left: auto;
     margin-right: auto;
 
@@ -508,8 +587,11 @@ body {
 
 
   .story-body {
-    font-size: 20px;
+    /* ENLARGED FROM 20PX */
+    font-size: 21px;
+
     line-height: 1.62;
+
     letter-spacing: 0;
   }
 
@@ -521,8 +603,10 @@ body {
   #doc-control-video {
     width: 100%;
     height: 100%;
+
     object-fit: cover;
     object-position: center;
+
     transform: none;
   }
 
@@ -546,14 +630,17 @@ body {
 
   #doc-control-video.doc-mobile-returning {
     animation: none !important;
+
     will-change: transform;
   }
 
 
   #doc-control-video.doc-mobile-settled {
     animation: none !important;
+
     transform: none !important;
     transform-origin: center center !important;
+
     transition: none !important;
   }
 
@@ -566,7 +653,9 @@ body {
     0%,
     8% {
       transform-origin: 50% 31%;
-      transform: scale(1);
+
+      transform:
+        scale(1);
     }
 
 
@@ -574,7 +663,9 @@ body {
 
     20% {
       transform-origin: 6% 31%;
-      transform: scale(2.20);
+
+      transform:
+        scale(2.20);
     }
 
 
@@ -583,7 +674,9 @@ body {
     20%,
     43% {
       transform-origin: 6% 31%;
-      transform: scale(2.20);
+
+      transform:
+        scale(2.20);
     }
 
 
@@ -591,7 +684,9 @@ body {
 
     58% {
       transform-origin: 48% 31%;
-      transform: scale(2.05);
+
+      transform:
+        scale(2.05);
     }
 
 
@@ -599,7 +694,9 @@ body {
 
     72% {
       transform-origin: 90% 31%;
-      transform: scale(1.85);
+
+      transform:
+        scale(1.85);
     }
 
 
@@ -608,7 +705,9 @@ body {
     72%,
     100% {
       transform-origin: 90% 31%;
-      transform: scale(1.85);
+
+      transform:
+        scale(1.85);
     }
 
   }
@@ -640,21 +739,15 @@ body {
 
 
   .story-step[data-media="media-document-control"] .story-body {
-    font-size: 20px;
+    font-size: 21px;
     line-height: 1.62;
+
     color: #30373e;
   }
 
 
   /* =====================================================
      CONNECTED PLATFORM MOBILE HANDOFF
-
-     MOBILE ONLY:
-
-     1. Connected Platform starts below the viewport.
-     2. It rises 1:1 with scrolling.
-     3. It stops when it reaches the top.
-     4. The text card follows only after that.
   ===================================================== */
 
   #media-document-control {
@@ -664,14 +757,6 @@ body {
 
   #media-connected-platform {
     background: #173b6a;
-
-    /*
-      Keep Connected Platform available before it becomes
-      the active media layer.
-
-      JavaScript moves it vertically instead of suddenly
-      switching it on.
-    */
 
     opacity: 1;
     visibility: visible;
@@ -719,14 +804,6 @@ body {
 
   /* =====================================================
      CONNECTED PLATFORM MOBILE CARD
-
-     Longer mobile scroll track gives enough room for:
-
-     SCREEN RISES
-     →
-     SCREEN STOPS
-     →
-     CARD FOLLOWS
   ===================================================== */
 
   .story-step[data-media="media-connected-platform"] {
@@ -754,11 +831,6 @@ body {
       27px
       31px;
 
-    /*
-      Hidden while Connected Platform itself
-      is still scrolling upward.
-    */
-
     opacity: 0;
     visibility: hidden;
 
@@ -778,8 +850,9 @@ body {
 
 
   .story-step[data-media="media-connected-platform"] .story-body {
-    font-size: 20px;
+    font-size: 21px;
     line-height: 1.62;
+
     color: #30373e;
   }
 
