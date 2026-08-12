@@ -435,7 +435,7 @@ body {
 @media (min-width: 769px) {
 
   /*
-    Desktop / laptop remains untouched.
+    LAPTOP / DESKTOP REMAINS UNTOUCHED
   */
 
   .story-card {
@@ -607,7 +607,7 @@ body {
 
 
   /* =====================================================
-     DOCUMENT CONTROL MOBILE ZOOM ANIMATION
+     DOCUMENT CONTROL MOBILE ZOOM / PAN
   ===================================================== */
 
   #doc-control-video.doc-mobile-zoom {
@@ -617,8 +617,6 @@ body {
       ease-in-out
       infinite;
 
-    animation-play-state: running;
-
     will-change:
       transform,
       transform-origin;
@@ -626,16 +624,35 @@ body {
 
 
   /*
-    Once the text card reaches the middle,
-    JS adds this class to the body.
+    During the short return-to-full-page movement,
+    the CSS animation itself is completely disabled.
 
-    The animation pauses at its CURRENT FRAME.
-    It does not jump back to the beginning.
+    JavaScript preserves the CURRENT zoom position first,
+    then smoothly animates the transform back to scale(1).
   */
 
-  body.doc-mobile-freeze
-  #doc-control-video.doc-mobile-zoom {
-    animation-play-state: paused;
+  #doc-control-video.doc-mobile-returning {
+    animation: none !important;
+
+    will-change: transform;
+  }
+
+
+  /*
+    Final reading state.
+
+    No animation.
+    No zoom.
+    Original full-page composition.
+  */
+
+  #doc-control-video.doc-mobile-settled {
+    animation: none !important;
+
+    transform: none !important;
+    transform-origin: center center !important;
+
+    transition: none !important;
   }
 
 
@@ -643,7 +660,7 @@ body {
 
 
     /* ===================================================
-       START — FULL VIEW
+       INITIAL FULL PAGE
     =================================================== */
 
     0%,
@@ -667,7 +684,7 @@ body {
     }
 
 
-    /* HOLD ① */
+    /* HOLD LEFT */
 
     20%,
     43% {
@@ -702,7 +719,7 @@ body {
     }
 
 
-    /* HOLD ② */
+    /* HOLD RIGHT */
 
     72%,
     100% {
@@ -764,8 +781,7 @@ body {
 
 
   /*
-    Latest setting:
-    keep all three tabs visible across each row.
+    KEEP ALL THREE TABS VISIBLE
   */
 
   #media-connected-platform .platform-picture img {
