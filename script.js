@@ -30,12 +30,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let mobileScrollTicking = false;
 
-  let docAnimationFrozen = false;
+  let docAnimationSettled = false;
+
+  let docSettleTimer = null;
 
 
 
   /* =========================================================
-     CHOOSE DOCUMENT CONTROL VIDEO
+     DOCUMENT CONTROL VIDEO SOURCE
   ========================================================= */
 
   function setDocumentControlSource() {
@@ -74,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
 
       docVideo.play().catch(() => {
-        // Muted autoplay should normally work.
+        // Muted inline autoplay should normally work.
       });
 
     }
@@ -84,7 +86,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     RESET / START MOBILE DOCUMENT CONTROL ANIMATION
+     CLEAR DOCUMENT CONTROL MOBILE VISUAL STATE
+  ========================================================= */
+
+  function clearDocumentControlVisualState() {
+
+    if (!docVideo) {
+      return;
+    }
+
+
+    if (docSettleTimer) {
+
+      window.clearTimeout(
+        docSettleTimer
+      );
+
+      docSettleTimer = null;
+
+    }
+
+
+    docVideo.classList.remove(
+      "doc-mobile-zoom",
+      "doc-mobile-returning",
+      "doc-mobile-settled"
+    );
+
+
+    /*
+      Remove temporary inline styles created
+      during the return-to-full-page transition.
+    */
+
+    docVideo.style.animation = "";
+    docVideo.style.transition = "";
+    docVideo.style.transform = "";
+    docVideo.style.transformOrigin = "";
+
+
+    docAnimationSettled = false;
+
+  }
+
+
+
+  /* =========================================================
+     START MOBILE DOCUMENT CONTROL ZOOM
   ========================================================= */
 
   function startDocumentControlAnimation() {
@@ -95,44 +143,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-      Absolutely no zoom animation on desktop.
+      Desktop / laptop must never receive
+      the mobile zoom effect.
     */
 
     if (!mobileQuery.matches) {
 
-      docVideo.classList.remove(
-        "doc-mobile-zoom"
-      );
-
-      document.body.classList.remove(
-        "doc-mobile-freeze"
-      );
-
-      docAnimationFrozen = false;
+      clearDocumentControlVisualState();
 
       return;
+
     }
 
 
-    /*
-      Clear the previous frozen state.
-    */
-
-    document.body.classList.remove(
-      "doc-mobile-freeze"
-    );
-
-    docAnimationFrozen = false;
+    clearDocumentControlVisualState();
 
 
     /*
-      Restart animation from the beginning.
+      Force browser reflow so the animation
+      genuinely restarts at 0%.
     */
-
-    docVideo.classList.remove(
-      "doc-mobile-zoom"
-    );
-
 
     void docVideo.offsetWidth;
 
@@ -146,32 +176,163 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     FREEZE DOCUMENT CONTROL ANIMATION
-     WHEN CARD REACHES SCREEN MIDDLE
+     RETURN DOCUMENT CONTROL TO ORIGINAL FULL PAGE
+
+     THIS REPLACES THE OLD "PAUSE THE ANIMATION" LOGIC.
   ========================================================= */
 
-  function updateDocumentControlFreeze() {
+  function settleDocumentControlToFullPage() {
+
+    if (
+      !docVideo ||
+      !mobileQuery.matches ||
+      docAnimationSettled
+    ) {
+      return;
+    }
+
+
+    docAnimationSettled = true;
+
+
+    /*
+      Read the EXACT transform currently produced
+      by the running CSS animation.
+
+      This is important:
+      otherwise removing the animation would cause
+      the image to jump immediately.
+    */
+
+    const currentStyle =
+      window.getComputedStyle(
+        docVideo
+      );
+
+
+    const currentTransform =
+      currentStyle.transform;
+
+
+    const currentOrigin =
+      currentStyle.transformOrigin;
+
+
+    /*
+      Preserve the current visible zoom position
+      as inline CSS.
+    */
+
+    docVideo.style.transform =
+      currentTransform;
+
+
+    docVideo.style.transformOrigin =
+      currentOrigin;
+
+
+    /*
+      Disable the animation while retaining
+      that exact visible position.
+    */
+
+    docVideo.classList.remove(
+      "doc-mobile-zoom"
+    );
+
+
+    docVideo.classList.add(
+      "doc-mobile-returning"
+    );
+
+
+    docVideo.style.animation =
+      "none";
+
+
+    /*
+      Force Safari/browser to acknowledge
+      the current frozen transform.
+    */
+
+    void docVideo.offsetWidth;
+
+
+    /*
+      Now smoothly return from the current
+      zoom/pan position to the ORIGINAL FULL PAGE.
+    */
+
+    docVideo.style.transition =
+      "transform 500ms ease-in-out";
+
+
+    window.requestAnimationFrame(
+      () => {
+
+        docVideo.style.transform =
+          "none";
+
+      }
+    );
+
+
+    /*
+      After the zoom-out finishes,
+      lock the background permanently
+      at the original full-page composition.
+    */
+
+    docSettleTimer =
+      window.setTimeout(
+        () => {
+
+          if (!docVideo) {
+            return;
+          }
+
+
+          docVideo.classList.remove(
+            "doc-mobile-returning"
+          );
+
+
+          docVideo.classList.add(
+            "doc-mobile-settled"
+          );
+
+
+          docVideo.style.animation = "";
+          docVideo.style.transition = "";
+          docVideo.style.transform = "";
+          docVideo.style.transformOrigin = "";
+
+
+          docSettleTimer = null;
+
+        },
+
+        560
+      );
+
+  }
+
+
+
+  /* =========================================================
+     CHECK WHETHER DOCUMENT CONTROL CARD HAS
+     REACHED THE MIDDLE OF THE MOBILE SCREEN
+  ========================================================= */
+
+  function updateDocumentControlReadingState() {
 
     if (
       !mobileQuery.matches ||
       !docCard ||
       activeMediaId !==
-        "media-document-control"
+        "media-document-control" ||
+      docAnimationSettled
     ) {
-
-      return;
-
-    }
-
-
-    /*
-      Once frozen, leave it frozen.
-
-      This prevents the background from starting
-      to move again while the user is reading.
-    */
-
-    if (docAnimationFrozen) {
       return;
     }
 
@@ -180,30 +341,43 @@ document.addEventListener("DOMContentLoaded", () => {
       docCard.getBoundingClientRect();
 
 
-    const cardCenter =
+    /*
+      Use the visual viewport on mobile where possible.
+
+      This is more dependable on Safari when the
+      browser toolbar expands / collapses.
+    */
+
+    const viewportHeight =
+      window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
+
+
+    const viewportMiddle =
+      viewportHeight / 2;
+
+
+    const cardMiddle =
       cardRect.top +
       cardRect.height / 2;
 
 
-    const screenMiddle =
-      window.innerHeight / 2;
-
-
     /*
-      As soon as the centre of the card reaches
-      the centre of the mobile screen:
-      STOP the zoom animation.
+      When the CARD'S CENTRE reaches
+      the SCREEN'S CENTRE:
+
+      1. Kill the zoom animation.
+      2. Smoothly zoom back out.
+      3. Lock at the original full page.
     */
 
     if (
-      cardCenter <= screenMiddle
+      cardMiddle <=
+      viewportMiddle
     ) {
 
-      document.body.classList.add(
-        "doc-mobile-freeze"
-      );
-
-      docAnimationFrozen = true;
+      settleDocumentControlToFullPage();
 
     }
 
@@ -212,7 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     ACTIVATE MEDIA
+     ACTIVATE STORY MEDIA
   ========================================================= */
 
   function activateMedia(
@@ -232,66 +406,77 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    activeMediaId = mediaId;
+    activeMediaId =
+      mediaId;
 
 
-    mediaLayers.forEach((layer) => {
+    mediaLayers.forEach(
+      (layer) => {
 
-      const videos =
-        layer.querySelectorAll("video");
-
-
-      if (
-        layer.id === mediaId
-      ) {
-
-        layer.classList.add(
-          "active"
-        );
+        const videos =
+          layer.querySelectorAll(
+            "video"
+          );
 
 
-        videos.forEach((video) => {
+        if (
+          layer.id === mediaId
+        ) {
 
-          video.play().catch(() => {
-            // Ignore temporary autoplay restriction.
-          });
-
-        });
-
-
-      } else {
-
-        layer.classList.remove(
-          "active"
-        );
+          layer.classList.add(
+            "active"
+          );
 
 
-        videos.forEach((video) => {
+          videos.forEach(
+            (video) => {
 
-          video.pause();
+              video
+                .play()
+                .catch(() => {});
+
+            }
+          );
 
 
-          try {
+        } else {
 
-            video.currentTime = 0;
+          layer.classList.remove(
+            "active"
+          );
 
-          } catch (error) {
 
-            // Metadata may not yet be loaded.
+          videos.forEach(
+            (video) => {
 
-          }
+              video.pause();
 
-        });
+
+              try {
+
+                video.currentTime = 0;
+
+              } catch (error) {
+
+                /*
+                  Video metadata may not yet
+                  have loaded.
+                */
+
+              }
+
+            }
+          );
+
+        }
 
       }
+    );
 
-    });
 
-
-    /*
-      Entering Document Control on mobile:
-      start its zoom animation.
-    */
+    /* =====================================================
+       ENTERING DOCUMENT CONTROL
+    ===================================================== */
 
     if (
       mediaId ===
@@ -304,30 +489,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /*
-      Leaving Document Control:
-      clean up its mobile animation state.
-    */
+    /* =====================================================
+       LEAVING DOCUMENT CONTROL
+    ===================================================== */
 
     if (
       mediaId !==
       "media-document-control"
     ) {
 
-      document.body.classList.remove(
-        "doc-mobile-freeze"
-      );
-
-      docAnimationFrozen = false;
-
-
-      if (docVideo) {
-
-        docVideo.classList.remove(
-          "doc-mobile-zoom"
-        );
-
-      }
+      clearDocumentControlVisualState();
 
     }
 
@@ -338,7 +509,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =========================================================
      DESKTOP STORY OBSERVER
 
-     DESKTOP BEHAVIOUR REMAINS AS BEFORE.
+     PRESERVES EXISTING LAPTOP BEHAVIOUR.
   ========================================================= */
 
   const desktopObserver =
@@ -346,31 +517,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
       (entries) => {
 
-        if (mobileQuery.matches) {
+        if (
+          mobileQuery.matches
+        ) {
           return;
         }
 
 
-        entries.forEach((entry) => {
+        entries.forEach(
+          (entry) => {
 
-          if (
-            !entry.isIntersecting
-          ) {
-            return;
+            if (
+              !entry.isIntersecting
+            ) {
+              return;
+            }
+
+
+            const mediaId =
+              entry.target.dataset.media;
+
+
+            if (mediaId) {
+
+              activateMedia(
+                mediaId
+              );
+
+            }
+
           }
-
-
-          const mediaId =
-            entry.target.dataset.media;
-
-
-          if (mediaId) {
-
-            activateMedia(mediaId);
-
-          }
-
-        });
+        );
 
       },
 
@@ -386,25 +563,31 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-  storySteps.forEach((step) => {
+  storySteps.forEach(
+    (step) => {
 
-    desktopObserver.observe(step);
+      desktopObserver.observe(
+        step
+      );
 
-  });
+    }
+  );
 
 
 
   /* =========================================================
      MOBILE MEDIA SWITCHING
 
-     CONNECTED PLATFORM APPEARS ONLY AFTER
-     DOCUMENT CONTROL CARD HAS COMPLETELY
-     PASSED THE TOP OF THE SCREEN.
+     THE CONNECTED PLATFORM DOES NOT APPEAR UNTIL
+     THE DOCUMENT CONTROL CARD HAS COMPLETELY
+     CROSSED ABOVE THE TOP OF THE SCREEN.
   ========================================================= */
 
   function updateMobileMedia() {
 
-    if (!mobileQuery.matches) {
+    if (
+      !mobileQuery.matches
+    ) {
       return;
     }
 
@@ -445,11 +628,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       /*
-        FINISH LINE:
+        FINISH LINE = TOP OF SCREEN
 
-        The next media does not appear until
-        the previous card's BOTTOM has passed
-        the TOP of the viewport.
+        Only advance after the WHOLE previous
+        card has left the viewport.
       */
 
       if (
@@ -468,7 +650,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const activeStep =
-      storySteps[activeIndex];
+      storySteps[
+        activeIndex
+      ];
 
 
     const mediaId =
@@ -477,17 +661,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (mediaId) {
 
-      activateMedia(mediaId);
+      activateMedia(
+        mediaId
+      );
 
     }
 
 
     /*
-      Independently check whether the
-      Document Control animation should freeze.
+      Separate from the media-switch logic,
+      check whether the Document Control
+      card has reached reading position.
     */
 
-    updateDocumentControlFreeze();
+    updateDocumentControlReadingState();
 
   }
 
@@ -499,17 +686,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function handleMobileScroll() {
 
-    if (!mobileQuery.matches) {
+    if (
+      !mobileQuery.matches
+    ) {
       return;
     }
 
 
-    if (mobileScrollTicking) {
+    if (
+      mobileScrollTicking
+    ) {
       return;
     }
 
 
-    mobileScrollTicking = true;
+    mobileScrollTicking =
+      true;
 
 
     window.requestAnimationFrame(
@@ -517,7 +709,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         updateMobileMedia();
 
-        mobileScrollTicking = false;
+        mobileScrollTicking =
+          false;
 
       }
     );
@@ -536,6 +729,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
+     MOBILE SAFARI VIEWPORT CHANGES
+  ========================================================= */
+
+  if (
+    window.visualViewport
+  ) {
+
+    window.visualViewport.addEventListener(
+      "resize",
+      () => {
+
+        if (
+          mobileQuery.matches
+        ) {
+
+          updateDocumentControlReadingState();
+
+        }
+
+      }
+    );
+
+  }
+
+
+
+  /* =========================================================
      DESKTOP / MOBILE CHANGE
   ========================================================= */
 
@@ -544,7 +764,9 @@ document.addEventListener("DOMContentLoaded", () => {
     setDocumentControlSource();
 
 
-    if (mobileQuery.matches) {
+    if (
+      mobileQuery.matches
+    ) {
 
       activeMediaId = null;
 
@@ -555,29 +777,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       /*
-        Remove every mobile-only animation state.
+        Strip ALL mobile-only Document
+        Control transforms from desktop.
       */
 
-      document.body.classList.remove(
-        "doc-mobile-freeze"
-      );
+      clearDocumentControlVisualState();
 
-      docAnimationFrozen = false;
-
-
-      if (docVideo) {
-
-        docVideo.classList.remove(
-          "doc-mobile-zoom"
-        );
-
-      }
-
-
-      /*
-        Determine which desktop step currently
-        occupies the centre of the viewport.
-      */
 
       let closestStep = null;
 
@@ -586,50 +791,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       const viewportCenter =
-        window.innerHeight / 2;
+        window.innerHeight /
+        2;
 
 
-      storySteps.forEach((step) => {
+      storySteps.forEach(
+        (step) => {
 
-        const rect =
-          step.getBoundingClientRect();
+          const rect =
+            step.getBoundingClientRect();
 
 
-        if (
-          rect.bottom <= 0 ||
-          rect.top >=
-            window.innerHeight
-        ) {
-          return;
+          if (
+            rect.bottom <= 0 ||
+            rect.top >=
+              window.innerHeight
+          ) {
+            return;
+          }
+
+
+          const stepCenter =
+            rect.top +
+            rect.height / 2;
+
+
+          const distance =
+            Math.abs(
+              stepCenter -
+              viewportCenter
+            );
+
+
+          if (
+            distance <
+            closestDistance
+          ) {
+
+            closestDistance =
+              distance;
+
+            closestStep =
+              step;
+
+          }
+
         }
-
-
-        const stepCenter =
-          rect.top +
-          rect.height / 2;
-
-
-        const distance =
-          Math.abs(
-            stepCenter -
-            viewportCenter
-          );
-
-
-        if (
-          distance <
-          closestDistance
-        ) {
-
-          closestDistance =
-            distance;
-
-          closestStep =
-            step;
-
-        }
-
-      });
+      );
 
 
       if (closestStep) {
@@ -642,7 +850,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           activeMediaId = null;
 
-          activateMedia(mediaId);
+          activateMedia(
+            mediaId
+          );
 
         }
 
@@ -682,18 +892,24 @@ document.addEventListener("DOMContentLoaded", () => {
     "visibilitychange",
     () => {
 
-      if (document.hidden) {
+      if (
+        document.hidden
+      ) {
 
         mediaLayers.forEach(
           (layer) => {
 
             layer
-              .querySelectorAll("video")
-              .forEach((video) => {
+              .querySelectorAll(
+                "video"
+              )
+              .forEach(
+                (video) => {
 
-                video.pause();
+                  video.pause();
 
-              });
+                }
+              );
 
           }
         );
@@ -711,14 +927,20 @@ document.addEventListener("DOMContentLoaded", () => {
             ) {
 
               layer
-                .querySelectorAll("video")
-                .forEach((video) => {
+                .querySelectorAll(
+                  "video"
+                )
+                .forEach(
+                  (video) => {
 
-                  video
-                    .play()
-                    .catch(() => {});
+                    video
+                      .play()
+                      .catch(
+                        () => {}
+                      );
 
-                });
+                  }
+                );
 
             }
 
@@ -739,7 +961,9 @@ document.addEventListener("DOMContentLoaded", () => {
   setDocumentControlSource();
 
 
-  if (mobileQuery.matches) {
+  if (
+    mobileQuery.matches
+  ) {
 
     updateMobileMedia();
 
