@@ -908,13 +908,13 @@ body {
      laptop screen needs slightly different framing.
   ----------------------------------------------------- */
 
-  #supplier-management-video.supplier-mobile-zoom {
-    transform:
-      scale(2.05);
+ #supplier-management-video.supplier-mobile-zoom {
+  transform:
+    scale(1.42);
 
-    transform-origin:
-      50% 34%;
-  }
+  transform-origin:
+    30% 34%;
+}
 
 
   /* -----------------------------------------------------
