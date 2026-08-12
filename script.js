@@ -8,21 +8,52 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".media-layer")
   );
 
+
   const docVideo =
-    document.getElementById("doc-control-video");
+    document.getElementById(
+      "doc-control-video"
+    );
+
 
   const docStep =
     document.querySelector(
       '.story-step[data-media="media-document-control"]'
     );
 
+
   const docCard =
     docStep
-      ? docStep.querySelector(".story-card")
+      ? docStep.querySelector(
+          ".story-card"
+        )
       : null;
 
+
+  const connectedPlatformLayer =
+    document.getElementById(
+      "media-connected-platform"
+    );
+
+
+  const connectedPlatformStep =
+    document.querySelector(
+      '.story-step[data-media="media-connected-platform"]'
+    );
+
+
+  const connectedPlatformCard =
+    connectedPlatformStep
+      ? connectedPlatformStep.querySelector(
+          ".story-card"
+        )
+      : null;
+
+
   const mobileQuery =
-    window.matchMedia("(max-width: 768px)");
+    window.matchMedia(
+      "(max-width: 768px)"
+    );
+
 
   let activeMediaId = null;
 
@@ -54,18 +85,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     if (
-      currentDocSource === desiredSource
+      currentDocSource ===
+      desiredSource
     ) {
       return;
     }
 
 
-    currentDocSource = desiredSource;
+    currentDocSource =
+      desiredSource;
 
 
     docVideo.pause();
 
-    docVideo.src = desiredSource;
+    docVideo.src =
+      desiredSource;
 
     docVideo.load();
 
@@ -75,9 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
       "media-document-control"
     ) {
 
-      docVideo.play().catch(() => {
-        // Muted inline autoplay should normally work.
-      });
+      docVideo
+        .play()
+        .catch(() => {});
 
     }
 
@@ -114,18 +148,21 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /*
-      Remove temporary inline styles created
-      during the return-to-full-page transition.
-    */
+    docVideo.style.animation =
+      "";
 
-    docVideo.style.animation = "";
-    docVideo.style.transition = "";
-    docVideo.style.transform = "";
-    docVideo.style.transformOrigin = "";
+    docVideo.style.transition =
+      "";
+
+    docVideo.style.transform =
+      "";
+
+    docVideo.style.transformOrigin =
+      "";
 
 
-    docAnimationSettled = false;
+    docAnimationSettled =
+      false;
 
   }
 
@@ -147,7 +184,9 @@ document.addEventListener("DOMContentLoaded", () => {
       the mobile zoom effect.
     */
 
-    if (!mobileQuery.matches) {
+    if (
+      !mobileQuery.matches
+    ) {
 
       clearDocumentControlVisualState();
 
@@ -160,8 +199,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-      Force browser reflow so the animation
-      genuinely restarts at 0%.
+      Force browser reflow so animation
+      genuinely starts again from 0%.
     */
 
     void docVideo.offsetWidth;
@@ -177,8 +216,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
      RETURN DOCUMENT CONTROL TO ORIGINAL FULL PAGE
-
-     THIS REPLACES THE OLD "PAUSE THE ANIMATION" LOGIC.
   ========================================================= */
 
   function settleDocumentControlToFullPage() {
@@ -192,16 +229,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    docAnimationSettled = true;
+    docAnimationSettled =
+      true;
 
 
     /*
-      Read the EXACT transform currently produced
-      by the running CSS animation.
-
-      This is important:
-      otherwise removing the animation would cause
-      the image to jump immediately.
+      Capture the exact current position
+      of the running animation.
     */
 
     const currentStyle =
@@ -218,11 +252,6 @@ document.addEventListener("DOMContentLoaded", () => {
       currentStyle.transformOrigin;
 
 
-    /*
-      Preserve the current visible zoom position
-      as inline CSS.
-    */
-
     docVideo.style.transform =
       currentTransform;
 
@@ -232,8 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-      Disable the animation while retaining
-      that exact visible position.
+      Stop animation at its current position.
     */
 
     docVideo.classList.remove(
@@ -250,17 +278,12 @@ document.addEventListener("DOMContentLoaded", () => {
       "none";
 
 
-    /*
-      Force Safari/browser to acknowledge
-      the current frozen transform.
-    */
-
     void docVideo.offsetWidth;
 
 
     /*
-      Now smoothly return from the current
-      zoom/pan position to the ORIGINAL FULL PAGE.
+      Smoothly return to the original
+      full-page composition.
     */
 
     docVideo.style.transition =
@@ -278,9 +301,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-      After the zoom-out finishes,
-      lock the background permanently
-      at the original full-page composition.
+      Lock the video at the original
+      full-page composition.
     */
 
     docSettleTimer =
@@ -302,13 +324,21 @@ document.addEventListener("DOMContentLoaded", () => {
           );
 
 
-          docVideo.style.animation = "";
-          docVideo.style.transition = "";
-          docVideo.style.transform = "";
-          docVideo.style.transformOrigin = "";
+          docVideo.style.animation =
+            "";
+
+          docVideo.style.transition =
+            "";
+
+          docVideo.style.transform =
+            "";
+
+          docVideo.style.transformOrigin =
+            "";
 
 
-          docSettleTimer = null;
+          docSettleTimer =
+            null;
 
         },
 
@@ -320,8 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     CHECK WHETHER DOCUMENT CONTROL CARD HAS
-     REACHED THE MIDDLE OF THE MOBILE SCREEN
+     CHECK DOCUMENT CONTROL READING POSITION
   ========================================================= */
 
   function updateDocumentControlReadingState() {
@@ -341,13 +370,6 @@ document.addEventListener("DOMContentLoaded", () => {
       docCard.getBoundingClientRect();
 
 
-    /*
-      Use the visual viewport on mobile where possible.
-
-      This is more dependable on Safari when the
-      browser toolbar expands / collapses.
-    */
-
     const viewportHeight =
       window.visualViewport
         ? window.visualViewport.height
@@ -364,12 +386,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-      When the CARD'S CENTRE reaches
-      the SCREEN'S CENTRE:
-
-      1. Kill the zoom animation.
-      2. Smoothly zoom back out.
-      3. Lock at the original full page.
+      When the centre of the card reaches
+      the centre of the screen, return
+      Document Control to its original
+      full-page view.
     */
 
     if (
@@ -391,11 +411,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function activateMedia(
     mediaId,
-    force = false
+    force = false,
+    restartDocumentAnimation = true
   ) {
 
     const mediaChanged =
-      activeMediaId !== mediaId;
+      activeMediaId !==
+      mediaId;
 
 
     if (
@@ -410,45 +432,6 @@ document.addEventListener("DOMContentLoaded", () => {
       mediaId;
 
 
-    /*
-      MOBILE COPY VISIBILITY
-
-      Connected Platform card must stay hidden until
-      Connected Platform is the active mobile media.
-
-      Desktop / laptop is intentionally untouched.
-    */
-
-    const connectedPlatformStep =
-      document.querySelector(
-        '.story-step[data-media="media-connected-platform"]'
-      );
-
-
-    if (connectedPlatformStep) {
-
-      if (
-        mobileQuery.matches &&
-        mediaId ===
-          "media-connected-platform"
-      ) {
-
-        connectedPlatformStep.classList.add(
-          "copy-media-active"
-        );
-
-
-      } else {
-
-        connectedPlatformStep.classList.remove(
-          "copy-media-active"
-        );
-
-      }
-
-    }
-
-
     mediaLayers.forEach(
       (layer) => {
 
@@ -459,7 +442,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         if (
-          layer.id === mediaId
+          layer.id ===
+          mediaId
         ) {
 
           layer.classList.add(
@@ -493,13 +477,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
               try {
 
-                video.currentTime = 0;
+                video.currentTime =
+                  0;
 
               } catch (error) {
 
                 /*
-                  Video metadata may not yet
-                  have loaded.
+                  Video metadata may not
+                  have loaded yet.
                 */
 
               }
@@ -520,7 +505,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (
       mediaId ===
         "media-document-control" &&
-      mediaChanged
+      mediaChanged &&
+      restartDocumentAnimation
     ) {
 
       startDocumentControlAnimation();
@@ -548,7 +534,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =========================================================
      DESKTOP STORY OBSERVER
 
-     PRESERVES EXISTING LAPTOP BEHAVIOUR.
+     LAPTOP / DESKTOP BEHAVIOUR REMAINS UNCHANGED.
   ========================================================= */
 
   const desktopObserver =
@@ -577,7 +563,9 @@ document.addEventListener("DOMContentLoaded", () => {
               entry.target.dataset.media;
 
 
-            if (mediaId) {
+            if (
+              mediaId
+            ) {
 
               activateMedia(
                 mediaId
@@ -615,11 +603,78 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     MOBILE MEDIA SWITCHING
+     MOBILE CONNECTED PLATFORM HANDOFF
 
-     THE CONNECTED PLATFORM DOES NOT APPEAR UNTIL
-     THE DOCUMENT CONTROL CARD HAS COMPLETELY
-     CROSSED ABOVE THE TOP OF THE SCREEN.
+     MOBILE ONLY.
+
+     REQUIRED SEQUENCE:
+
+     1. Document Control card completely leaves the top.
+     2. Connected Platform starts below the viewport.
+     3. Connected Platform rises 1:1 with scrolling.
+     4. It stops when it reaches the ceiling.
+     5. Only after that does the Quality Management
+        card come upward from below.
+  ========================================================= */
+
+  function getMobileViewportHeight() {
+
+    return window.visualViewport
+      ? window.visualViewport.height
+      : window.innerHeight;
+
+  }
+
+
+
+  /* =========================================================
+     RESET CONNECTED PLATFORM MOBILE STATE
+  ========================================================= */
+
+  function resetConnectedPlatformMobileState() {
+
+    if (
+      connectedPlatformLayer
+    ) {
+
+      connectedPlatformLayer
+        .style
+        .transform =
+          "";
+
+    }
+
+
+    if (
+      connectedPlatformStep
+    ) {
+
+      connectedPlatformStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+    }
+
+
+    if (
+      connectedPlatformCard
+    ) {
+
+      connectedPlatformCard
+        .style
+        .transform =
+          "";
+
+    }
+
+  }
+
+
+
+  /* =========================================================
+     UPDATE MOBILE MEDIA
   ========================================================= */
 
   function updateMobileMedia() {
@@ -632,86 +687,203 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     if (
-      storySteps.length === 0
+      !docCard ||
+      !connectedPlatformLayer ||
+      !connectedPlatformStep ||
+      !connectedPlatformCard
     ) {
+
+      updateDocumentControlReadingState();
+
       return;
+
     }
 
 
-    let activeIndex = 0;
+    const viewportHeight =
+      getMobileViewportHeight();
 
 
-    for (
-      let i = 1;
-      i < storySteps.length;
-      i++
+    const docCardRect =
+      docCard.getBoundingClientRect();
+
+
+
+    /* =====================================================
+       CONNECTED PLATFORM SCREEN MOVEMENT
+
+       Before the Document Control card leaves the top,
+       Connected Platform remains exactly one screen below.
+
+       At:
+
+       docCardRect.bottom === 0
+
+       Connected Platform begins at the bottom edge.
+
+       Every additional pixel of scroll moves
+       Connected Platform upward by one pixel.
+    ===================================================== */
+
+    const connectedPlatformOffset =
+      Math.max(
+        0,
+        Math.min(
+          viewportHeight,
+          viewportHeight +
+            docCardRect.bottom
+        )
+      );
+
+
+    connectedPlatformLayer
+      .style
+      .transform =
+        `translate3d(
+          0,
+          ${connectedPlatformOffset}px,
+          0
+        )`;
+
+
+
+    /* =====================================================
+       CONNECTED PLATFORM IS STILL MOVING UP
+    ===================================================== */
+
+    if (
+      connectedPlatformOffset >
+      0
     ) {
 
-      const previousStep =
-        storySteps[i - 1];
-
-
-      const previousCard =
-        previousStep.querySelector(
-          ".story-card"
+      connectedPlatformStep
+        .classList
+        .remove(
+          "copy-scroll-active"
         );
 
 
-      if (!previousCard) {
-        break;
-      }
-
-
-      const previousCardRect =
-        previousCard.getBoundingClientRect();
+      connectedPlatformCard
+        .style
+        .transform =
+          "";
 
 
       /*
-        FINISH LINE = TOP OF SCREEN
-
-        Only advance after the WHOLE previous
-        card has left the viewport.
+        Document Control stays underneath
+        while Connected Platform slides upward.
       */
 
       if (
-        previousCardRect.bottom <= 0
+        activeMediaId !==
+        "media-document-control"
       ) {
 
-        activeIndex = i;
+        const reversingFromConnectedPlatform =
+          activeMediaId ===
+          "media-connected-platform";
 
-      } else {
 
-        break;
+        activateMedia(
+          "media-document-control",
+          false,
+          !reversingFromConnectedPlatform
+        );
 
       }
+
+
+      updateDocumentControlReadingState();
+
+      return;
 
     }
 
 
-    const activeStep =
-      storySteps[
-        activeIndex
-      ];
 
+    /* =====================================================
+       CONNECTED PLATFORM HAS HIT THE CEILING
 
-    const mediaId =
-      activeStep.dataset.media;
+       It is now fully covering the viewport.
 
+       Switching the active media layer at this point
+       produces no visual jump.
+    ===================================================== */
 
-    if (mediaId) {
+    if (
+      activeMediaId !==
+      "media-connected-platform"
+    ) {
 
       activateMedia(
-        mediaId
+        "media-connected-platform"
       );
 
     }
 
 
-    /*
-      Separate from the media-switch logic,
-      check whether the Document Control
-      card has reached reading position.
-    */
+
+    /* =====================================================
+       DISTANCE SCROLLED AFTER THE SCREEN HIT THE TOP
+    ===================================================== */
+
+    const postHandoffScroll =
+      Math.max(
+        0,
+        -docCardRect.bottom -
+          viewportHeight
+      );
+
+
+
+    /* =====================================================
+       QUALITY MANAGEMENT CARD
+
+       At the exact moment Connected Platform reaches
+       the ceiling, place the card just below the screen.
+
+       Continued scrolling then moves the card upward
+       one pixel for every pixel scrolled.
+    ===================================================== */
+
+    connectedPlatformCard
+      .style
+      .transform =
+        "none";
+
+
+    const naturalCardRect =
+      connectedPlatformCard
+        .getBoundingClientRect();
+
+
+    const desiredCardTop =
+      viewportHeight +
+      24 -
+      postHandoffScroll;
+
+
+    const cardOffset =
+      desiredCardTop -
+      naturalCardRect.top;
+
+
+    connectedPlatformCard
+      .style
+      .transform =
+        `translate3d(
+          0,
+          ${cardOffset}px,
+          0
+        )`;
+
+
+    connectedPlatformStep
+      .classList
+      .add(
+        "copy-scroll-active"
+      );
+
 
     updateDocumentControlReadingState();
 
@@ -726,13 +898,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleMobileScroll() {
 
     if (
-      !mobileQuery.matches
-    ) {
-      return;
-    }
-
-
-    if (
+      !mobileQuery.matches ||
       mobileScrollTicking
     ) {
       return;
@@ -775,20 +941,21 @@ document.addEventListener("DOMContentLoaded", () => {
     window.visualViewport
   ) {
 
-    window.visualViewport.addEventListener(
-      "resize",
-      () => {
+    window.visualViewport
+      .addEventListener(
+        "resize",
+        () => {
 
-        if (
-          mobileQuery.matches
-        ) {
+          if (
+            mobileQuery.matches
+          ) {
 
-          updateDocumentControlReadingState();
+            updateMobileMedia();
+
+          }
 
         }
-
-      }
-    );
+      );
 
   }
 
@@ -803,97 +970,128 @@ document.addEventListener("DOMContentLoaded", () => {
     setDocumentControlSource();
 
 
+    /* =========================
+       MOBILE
+    ========================= */
+
     if (
       mobileQuery.matches
     ) {
 
-      activeMediaId = null;
+      activeMediaId =
+        null;
+
+
+      resetConnectedPlatformMobileState();
+
 
       updateMobileMedia();
 
 
-    } else {
+      return;
+
+    }
 
 
-      /*
-        Strip ALL mobile-only Document
-        Control transforms from desktop.
-      */
 
-      clearDocumentControlVisualState();
+    /* =========================
+       DESKTOP / LAPTOP
+    ========================= */
 
+    /*
+      Remove all mobile-only
+      Connected Platform styles.
+    */
 
-      let closestStep = null;
-
-      let closestDistance =
-        Infinity;
-
-
-      const viewportCenter =
-        window.innerHeight /
-        2;
+    resetConnectedPlatformMobileState();
 
 
-      storySteps.forEach(
-        (step) => {
+    /*
+      Remove all mobile-only
+      Document Control transforms.
+    */
 
-          const rect =
-            step.getBoundingClientRect();
-
-
-          if (
-            rect.bottom <= 0 ||
-            rect.top >=
-              window.innerHeight
-          ) {
-            return;
-          }
+    clearDocumentControlVisualState();
 
 
-          const stepCenter =
-            rect.top +
-            rect.height / 2;
+    let closestStep =
+      null;
 
 
-          const distance =
-            Math.abs(
-              stepCenter -
-              viewportCenter
-            );
+    let closestDistance =
+      Infinity;
 
 
-          if (
-            distance <
-            closestDistance
-          ) {
+    const viewportCenter =
+      window.innerHeight /
+      2;
 
-            closestDistance =
-              distance;
 
-            closestStep =
-              step;
+    storySteps.forEach(
+      (step) => {
 
-          }
+        const rect =
+          step.getBoundingClientRect();
 
+
+        if (
+          rect.bottom <= 0 ||
+          rect.top >=
+            window.innerHeight
+        ) {
+          return;
         }
-      );
 
 
-      if (closestStep) {
+        const stepCenter =
+          rect.top +
+          rect.height / 2;
 
-        const mediaId =
-          closestStep.dataset.media;
 
-
-        if (mediaId) {
-
-          activeMediaId = null;
-
-          activateMedia(
-            mediaId
+        const distance =
+          Math.abs(
+            stepCenter -
+            viewportCenter
           );
 
+
+        if (
+          distance <
+          closestDistance
+        ) {
+
+          closestDistance =
+            distance;
+
+
+          closestStep =
+            step;
+
         }
+
+      }
+    );
+
+
+    if (
+      closestStep
+    ) {
+
+      const mediaId =
+        closestStep.dataset.media;
+
+
+      if (
+        mediaId
+      ) {
+
+        activeMediaId =
+          null;
+
+
+        activateMedia(
+          mediaId
+        );
 
       }
 
@@ -911,7 +1109,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "change",
       handleViewportChange
     );
-
 
   } else {
 
@@ -954,39 +1151,40 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-      } else {
-
-
-        mediaLayers.forEach(
-          (layer) => {
-
-            if (
-              layer.id ===
-              activeMediaId
-            ) {
-
-              layer
-                .querySelectorAll(
-                  "video"
-                )
-                .forEach(
-                  (video) => {
-
-                    video
-                      .play()
-                      .catch(
-                        () => {}
-                      );
-
-                  }
-                );
-
-            }
-
-          }
-        );
+        return;
 
       }
+
+
+      mediaLayers.forEach(
+        (layer) => {
+
+          if (
+            layer.id !==
+            activeMediaId
+          ) {
+            return;
+          }
+
+
+          layer
+            .querySelectorAll(
+              "video"
+            )
+            .forEach(
+              (video) => {
+
+                video
+                  .play()
+                  .catch(
+                    () => {}
+                  );
+
+              }
+            );
+
+        }
+      );
 
     }
   );
