@@ -166,6 +166,7 @@ body {
 
 
 @keyframes cueFloat {
+
   0%,
   100% {
     transform: translateY(0);
@@ -174,6 +175,7 @@ body {
   50% {
     transform: translateY(7px);
   }
+
 }
 
 
@@ -237,10 +239,11 @@ body {
 }
 
 
-/* FULL-SCREEN VIDEO / IMAGE */
+/* =========================================================
+   DOCUMENT CONTROL VIDEO
+========================================================= */
 
-.media-layer video,
-.media-layer img {
+#doc-control-video {
   position: absolute;
   inset: 0;
 
@@ -251,21 +254,6 @@ body {
 
   object-fit: cover;
   object-position: center;
-}
-
-
-/* =========================================================
-   DOCUMENT CONTROL VIDEO
-========================================================= */
-
-#doc-control-video {
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-  object-position: center;
-
-  will-change: transform;
 }
 
 
@@ -299,7 +287,29 @@ body {
   background: #16365f;
 }
 
-#media-connected-platform img {
+
+/* PICTURE WRAPPER */
+
+.platform-picture {
+  position: absolute;
+  inset: 0;
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+}
+
+
+.platform-picture img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+
   filter:
     saturate(0.78)
     brightness(0.78)
@@ -419,22 +429,31 @@ body {
 
 
 /* =========================================================
-   DESKTOP CARD POSITION
+   DESKTOP
 ========================================================= */
 
 @media (min-width: 769px) {
+
+  /*
+    Desktop / laptop remains untouched.
+  */
+
   .story-card {
     margin-left: 18vw;
   }
 
-  /* CONNECTED PLATFORM — CENTER CARD */
+
+  /* CONNECTED PLATFORM — CENTRED */
+
   .story-step[data-media="media-connected-platform"] {
     justify-content: center;
   }
 
+
   .story-step[data-media="media-connected-platform"] .story-card {
     margin-left: 0;
   }
+
 }
 
 
@@ -443,6 +462,7 @@ body {
 ========================================================= */
 
 @media (max-width: 768px) {
+
 
   /* -----------------------------------------------------
      HERO — LOCKED MOBILE SETTINGS
@@ -490,6 +510,7 @@ body {
 
   .hero-content h1 {
     font-size: clamp(40px, 12vw, 56px);
+
     line-height: 1;
   }
 
@@ -500,12 +521,14 @@ body {
     max-width: 330px;
 
     font-size: clamp(23px, 7vw, 30px);
+
     line-height: 1.12;
   }
 
 
   .scroll-cue {
     margin-top: 28px;
+
     font-size: 14px;
   }
 
@@ -568,9 +591,9 @@ body {
   }
 
 
-  /* -----------------------------------------------------
+  /* =====================================================
      DOCUMENT CONTROL MOBILE VIDEO
-  ----------------------------------------------------- */
+  ===================================================== */
 
   #doc-control-video {
     width: 100%;
@@ -579,17 +602,116 @@ body {
     object-fit: cover;
     object-position: center;
 
-    animation-play-state: running;
+    transform: none;
   }
 
+
+  /* =====================================================
+     DOCUMENT CONTROL MOBILE ZOOM ANIMATION
+  ===================================================== */
+
+  #doc-control-video.doc-mobile-zoom {
+    animation:
+      docMobileZoom
+      5.6s
+      ease-in-out
+      infinite;
+
+    animation-play-state: running;
+
+    will-change:
+      transform,
+      transform-origin;
+  }
+
+
   /*
-    When the Document Control text card reaches the middle
-    of the mobile screen, JS adds this class to <body>.
-    That pauses the existing zoom animation so reading
-    becomes easier.
+    Once the text card reaches the middle,
+    JS adds this class to the body.
+
+    The animation pauses at its CURRENT FRAME.
+    It does not jump back to the beginning.
   */
-  body.doc-mobile-freeze #doc-control-video {
-    animation-play-state: paused !important;
+
+  body.doc-mobile-freeze
+  #doc-control-video.doc-mobile-zoom {
+    animation-play-state: paused;
+  }
+
+
+  @keyframes docMobileZoom {
+
+
+    /* ===================================================
+       START — FULL VIEW
+    =================================================== */
+
+    0%,
+    8% {
+      transform-origin: 50% 31%;
+
+      transform:
+        scale(1);
+    }
+
+
+    /* ===================================================
+       ① LEFT — TEXT AREA
+    =================================================== */
+
+    20% {
+      transform-origin: 6% 31%;
+
+      transform:
+        scale(2.20);
+    }
+
+
+    /* HOLD ① */
+
+    20%,
+    43% {
+      transform-origin: 6% 31%;
+
+      transform:
+        scale(2.20);
+    }
+
+
+    /* ===================================================
+       TRAVEL ACROSS
+    =================================================== */
+
+    58% {
+      transform-origin: 48% 31%;
+
+      transform:
+        scale(2.05);
+    }
+
+
+    /* ===================================================
+       ② RIGHT — LAPTOP
+    =================================================== */
+
+    72% {
+      transform-origin: 90% 31%;
+
+      transform:
+        scale(1.85);
+    }
+
+
+    /* HOLD ② */
+
+    72%,
+    100% {
+      transform-origin: 90% 31%;
+
+      transform:
+        scale(1.85);
+    }
+
   }
 
 
@@ -626,28 +748,43 @@ body {
   }
 
 
-  /* -----------------------------------------------------
+  /* =====================================================
      CONNECTED PLATFORM MOBILE IMAGE
-  ----------------------------------------------------- */
+  ===================================================== */
 
   #media-connected-platform {
     background: #173b6a;
   }
 
 
-  #media-connected-platform img {
+  #media-connected-platform .platform-picture {
+    width: 100%;
+    height: 100%;
+  }
+
+
+  /*
+    Latest setting:
+    keep all three tabs visible across each row.
+  */
+
+  #media-connected-platform .platform-picture img {
     width: 100%;
     height: 100%;
 
     object-fit: contain;
-    object-position: center center;
+    object-position: center;
 
-    transform: scale(0.92);
+    transform:
+      scale(0.96);
+
+    transform-origin:
+      center center;
 
     filter:
-      saturate(0.82)
-      brightness(0.82)
-      contrast(1.02);
+      saturate(0.86)
+      brightness(0.88)
+      contrast(1.01);
   }
 
 
@@ -657,6 +794,7 @@ body {
 
   .story-step[data-media="media-connected-platform"] {
     align-items: center;
+    justify-content: center;
 
     padding:
       8vh
@@ -667,6 +805,9 @@ body {
   .story-step[data-media="media-connected-platform"] .story-card {
     width: 80%;
     max-width: 315px;
+
+    margin-left: auto;
+    margin-right: auto;
 
     padding:
       29px
@@ -681,6 +822,7 @@ body {
 
     color: #30373e;
   }
+
 }
 
 
@@ -689,15 +831,19 @@ body {
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+
   html {
     scroll-behavior: auto;
   }
+
 
   .scroll-cue {
     animation: none;
   }
 
+
   .media-layer {
     transition: none;
   }
+
 }
