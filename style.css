@@ -623,28 +623,12 @@ body {
   }
 
 
-  /*
-    During the short return-to-full-page movement,
-    the CSS animation itself is completely disabled.
-
-    JavaScript preserves the CURRENT zoom position first,
-    then smoothly animates the transform back to scale(1).
-  */
-
   #doc-control-video.doc-mobile-returning {
     animation: none !important;
 
     will-change: transform;
   }
 
-
-  /*
-    Final reading state.
-
-    No animation.
-    No zoom.
-    Original full-page composition.
-  */
 
   #doc-control-video.doc-mobile-settled {
     animation: none !important;
@@ -659,9 +643,7 @@ body {
   @keyframes docMobileZoom {
 
 
-    /* ===================================================
-       INITIAL FULL PAGE
-    =================================================== */
+    /* INITIAL FULL PAGE */
 
     0%,
     8% {
@@ -672,9 +654,7 @@ body {
     }
 
 
-    /* ===================================================
-       ① LEFT — TEXT AREA
-    =================================================== */
+    /* ① LEFT — TEXT AREA */
 
     20% {
       transform-origin: 6% 31%;
@@ -695,9 +675,7 @@ body {
     }
 
 
-    /* ===================================================
-       TRAVEL ACROSS
-    =================================================== */
+    /* TRAVEL ACROSS */
 
     58% {
       transform-origin: 48% 31%;
@@ -707,9 +685,7 @@ body {
     }
 
 
-    /* ===================================================
-       ② RIGHT — LAPTOP
-    =================================================== */
+    /* ② RIGHT — LAPTOP */
 
     72% {
       transform-origin: 90% 31%;
@@ -780,9 +756,7 @@ body {
   }
 
 
-  /*
-    KEEP ALL THREE TABS VISIBLE
-  */
+  /* KEEP ALL THREE TABS VISIBLE */
 
   #media-connected-platform .platform-picture img {
     width: 100%;
@@ -804,9 +778,12 @@ body {
   }
 
 
-  /* -----------------------------------------------------
+  /* =====================================================
      CONNECTED PLATFORM MOBILE CARD
-  ----------------------------------------------------- */
+
+     IMPORTANT:
+     HIDDEN UNTIL CONNECTED PLATFORM MEDIA IS ACTIVE.
+  ===================================================== */
 
   .story-step[data-media="media-connected-platform"] {
     align-items: center;
@@ -829,6 +806,45 @@ body {
       29px
       27px
       31px;
+
+    /*
+      Do not allow the Quality Management card
+      to creep onto the Document Control screen.
+    */
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform:
+      translateY(32px);
+
+    transition:
+      opacity 0.38s ease,
+      transform 0.38s ease;
+
+    transition-delay: 0s;
+  }
+
+
+  /*
+    JavaScript adds .copy-media-active only after
+    Connected Platform becomes the active background.
+
+    The 0.55-second delay lets the new background
+    establish itself before its card appears.
+  */
+
+  .story-step[data-media="media-connected-platform"].copy-media-active
+  .story-card {
+
+    opacity: 1;
+    visibility: visible;
+
+    transform:
+      translateY(0);
+
+    transition-delay:
+      0.55s;
   }
 
 
