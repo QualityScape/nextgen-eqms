@@ -886,6 +886,63 @@ body {
     object-position: center;
 
     transform: none;
+    transform-origin: center center;
+
+    transition:
+      transform 700ms ease-in-out,
+      transform-origin 700ms ease-in-out;
+
+    will-change:
+      transform,
+      transform-origin;
+  }
+
+
+  /* -----------------------------------------------------
+     SUPPLIER MANAGEMENT — LAPTOP ZOOM
+
+     JavaScript activates this 2.5 seconds after
+     Supplier Management reaches the ceiling.
+
+     These two values are our tuning controls if the
+     laptop screen needs slightly different framing.
+  ----------------------------------------------------- */
+
+  #supplier-management-video.supplier-mobile-zoom {
+    transform:
+      scale(2.05);
+
+    transform-origin:
+      50% 34%;
+  }
+
+
+  /* -----------------------------------------------------
+     SUPPLIER MANAGEMENT — RETURN TO FULL PAGE
+  ----------------------------------------------------- */
+
+  #supplier-management-video.supplier-mobile-returning {
+    transform:
+      none;
+
+    transform-origin:
+      center center;
+  }
+
+
+  /* -----------------------------------------------------
+     SUPPLIER MANAGEMENT — READING / SETTLED STATE
+  ----------------------------------------------------- */
+
+  #supplier-management-video.supplier-mobile-settled {
+    transform:
+      none !important;
+
+    transform-origin:
+      center center !important;
+
+    transition:
+      none !important;
   }
 
 
