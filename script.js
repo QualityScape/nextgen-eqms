@@ -89,9 +89,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let mobileScrollTicking = false;
 
+
+  /* =========================================================
+     DOCUMENT CONTROL MOBILE ANIMATION STATE
+  ========================================================= */
+
   let docAnimationSettled = false;
 
   let docSettleTimer = null;
+
+  let docCardWasAtOrAboveMiddle = null;
+
+
+  /* =========================================================
+     SUPPLIER MANAGEMENT MOBILE ANIMATION STATE
+  ========================================================= */
+
+  let supplierZoomTimer = null;
+
+  let supplierReturnTimer = null;
+
+  let supplierAtCeiling = false;
+
+  let supplierAnimationSettled = false;
+
+  let supplierCardWasAtOrAboveMiddle = null;
 
 
 
@@ -249,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     START MOBILE DOCUMENT CONTROL ZOOM
+     START / RESUME MOBILE DOCUMENT CONTROL ZOOM
   ========================================================= */
 
   function startDocumentControlAnimation() {
@@ -279,8 +301,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-      Force browser reflow so animation
+      Force browser reflow so the animation
       genuinely starts again from 0%.
+
+      This is also what lets the animation
+      restart when reverse-scrolling across
+      the card-middle trigger.
     */
 
     void docVideo.offsetWidth;
@@ -431,6 +457,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================================
      CHECK DOCUMENT CONTROL READING POSITION
+
+     BIDIRECTIONAL RULE:
+
+     DOWN:
+     Card crosses the screen middle upward
+     → return to full-page view.
+
+     UP:
+     Card crosses the screen middle downward
+     → restart the zoom / pan animation.
   ========================================================= */
 
   function updateDocumentControlReadingState() {
@@ -439,8 +475,7 @@ document.addEventListener("DOMContentLoaded", () => {
       !mobileQuery.matches ||
       !docCard ||
       activeMediaId !==
-        "media-document-control" ||
-      docAnimationSettled
+        "media-document-control"
     ) {
       return;
     }
@@ -465,21 +500,454 @@ document.addEventListener("DOMContentLoaded", () => {
       cardRect.height / 2;
 
 
+    const cardAtOrAboveMiddle =
+      cardMiddle <=
+      viewportMiddle;
+
+
     /*
-      When the centre of the card reaches
-      the centre of the screen, return
-      Document Control to its original
-      full-page view.
+      First reading establishes which side
+      of the trigger the card is currently on.
     */
 
     if (
-      cardMiddle <=
-      viewportMiddle
+      docCardWasAtOrAboveMiddle ===
+      null
+    ) {
+
+      docCardWasAtOrAboveMiddle =
+        cardAtOrAboveMiddle;
+
+
+      if (
+        cardAtOrAboveMiddle &&
+        !docAnimationSettled
+      ) {
+
+        settleDocumentControlToFullPage();
+
+      }
+
+
+      return;
+
+    }
+
+
+    /*
+      DOWN-SCROLL:
+      card crosses upward through the middle.
+    */
+
+    if (
+      cardAtOrAboveMiddle &&
+      !docCardWasAtOrAboveMiddle
     ) {
 
       settleDocumentControlToFullPage();
 
     }
+
+
+    /*
+      UP-SCROLL:
+      card crosses downward through the middle.
+    */
+
+    if (
+      !cardAtOrAboveMiddle &&
+      docCardWasAtOrAboveMiddle
+    ) {
+
+      startDocumentControlAnimation();
+
+    }
+
+
+    docCardWasAtOrAboveMiddle =
+      cardAtOrAboveMiddle;
+
+  }
+
+
+
+  /* =========================================================
+     SUPPLIER MANAGEMENT ZOOM HELPERS
+  ========================================================= */
+
+  function clearSupplierZoomTimer() {
+
+    if (!supplierZoomTimer) {
+      return;
+    }
+
+
+    window.clearTimeout(
+      supplierZoomTimer
+    );
+
+    supplierZoomTimer = null;
+
+  }
+
+
+  function clearSupplierReturnTimer() {
+
+    if (!supplierReturnTimer) {
+      return;
+    }
+
+
+    window.clearTimeout(
+      supplierReturnTimer
+    );
+
+    supplierReturnTimer = null;
+
+  }
+
+
+  function clearSupplierManagementVisualState() {
+
+    clearSupplierZoomTimer();
+
+    clearSupplierReturnTimer();
+
+
+    supplierAnimationSettled =
+      false;
+
+
+    if (!supplierVideo) {
+      return;
+    }
+
+
+    supplierVideo.classList.remove(
+      "supplier-mobile-zoom",
+      "supplier-mobile-returning",
+      "supplier-mobile-settled"
+    );
+
+  }
+
+
+
+  /* =========================================================
+     START SUPPLIER MANAGEMENT ZOOM
+  ========================================================= */
+
+  function startSupplierManagementZoom() {
+
+    if (
+      !supplierVideo ||
+      !mobileQuery.matches ||
+      !supplierAtCeiling
+    ) {
+      return;
+    }
+
+
+    clearSupplierZoomTimer();
+
+    clearSupplierReturnTimer();
+
+
+    supplierAnimationSettled =
+      false;
+
+
+    supplierVideo.classList.remove(
+      "supplier-mobile-returning",
+      "supplier-mobile-settled"
+    );
+
+
+    /*
+      Force the browser to register the
+      non-zoom state first so reverse-scroll
+      can animate smoothly back into zoom.
+    */
+
+    void supplierVideo.offsetWidth;
+
+
+    supplierVideo.classList.add(
+      "supplier-mobile-zoom"
+    );
+
+  }
+
+
+
+  /* =========================================================
+     DELAYED SUPPLIER MANAGEMENT ZOOM
+
+     Only the first arrival at the ceiling uses
+     the 2.5-second delay.
+  ========================================================= */
+
+  function scheduleSupplierManagementZoom() {
+
+    if (
+      !supplierVideo ||
+      !supplierCard ||
+      !mobileQuery.matches ||
+      !supplierAtCeiling ||
+      supplierZoomTimer ||
+      supplierVideo.classList.contains(
+        "supplier-mobile-zoom"
+      ) ||
+      supplierAnimationSettled
+    ) {
+      return;
+    }
+
+
+    supplierZoomTimer =
+      window.setTimeout(
+        () => {
+
+          supplierZoomTimer =
+            null;
+
+
+          if (
+            !mobileQuery.matches ||
+            !supplierAtCeiling ||
+            activeMediaId !==
+              "media-supplier-management" ||
+            !supplierCard
+          ) {
+            return;
+          }
+
+
+          const viewportHeight =
+            getMobileViewportHeight();
+
+
+          const cardRect =
+            supplierCard.getBoundingClientRect();
+
+
+          const cardMiddle =
+            cardRect.top +
+            cardRect.height / 2;
+
+
+          /*
+            If the reader has already brought
+            the card to the middle, do not zoom.
+          */
+
+          if (
+            cardMiddle <=
+            viewportHeight / 2
+          ) {
+            return;
+          }
+
+
+          startSupplierManagementZoom();
+
+        },
+
+        2500
+      );
+
+  }
+
+
+
+  /* =========================================================
+     RETURN SUPPLIER MANAGEMENT TO FULL PAGE
+  ========================================================= */
+
+  function settleSupplierManagementToFullPage() {
+
+    if (
+      !supplierVideo ||
+      !mobileQuery.matches
+    ) {
+      return;
+    }
+
+
+    clearSupplierZoomTimer();
+
+    clearSupplierReturnTimer();
+
+
+    supplierAnimationSettled =
+      true;
+
+
+    /*
+      If the 2.5-second zoom has not started yet,
+      simply lock the already-full-page view.
+    */
+
+    if (
+      !supplierVideo.classList.contains(
+        "supplier-mobile-zoom"
+      )
+    ) {
+
+      supplierVideo.classList.remove(
+        "supplier-mobile-returning"
+      );
+
+      supplierVideo.classList.add(
+        "supplier-mobile-settled"
+      );
+
+      return;
+
+    }
+
+
+    /*
+      Smooth return from zoom to full page.
+    */
+
+    supplierVideo.classList.remove(
+      "supplier-mobile-zoom",
+      "supplier-mobile-settled"
+    );
+
+
+    supplierVideo.classList.add(
+      "supplier-mobile-returning"
+    );
+
+
+    supplierReturnTimer =
+      window.setTimeout(
+        () => {
+
+          if (!supplierVideo) {
+            return;
+          }
+
+
+          supplierVideo.classList.remove(
+            "supplier-mobile-returning"
+          );
+
+
+          supplierVideo.classList.add(
+            "supplier-mobile-settled"
+          );
+
+
+          supplierReturnTimer =
+            null;
+
+        },
+
+        760
+      );
+
+  }
+
+
+
+  /* =========================================================
+     CHECK SUPPLIER MANAGEMENT READING POSITION
+
+     DOWN:
+     Card reaches / passes middle
+     → return to full page.
+
+     UP:
+     Card crosses back below middle
+     → restore zoom immediately.
+  ========================================================= */
+
+  function updateSupplierManagementReadingState(
+    viewportHeight
+  ) {
+
+    if (
+      !mobileQuery.matches ||
+      !supplierCard ||
+      !supplierVideo ||
+      !supplierAtCeiling ||
+      activeMediaId !==
+        "media-supplier-management"
+    ) {
+      return;
+    }
+
+
+    const cardRect =
+      supplierCard.getBoundingClientRect();
+
+
+    const viewportMiddle =
+      viewportHeight / 2;
+
+
+    const cardMiddle =
+      cardRect.top +
+      cardRect.height / 2;
+
+
+    const cardAtOrAboveMiddle =
+      cardMiddle <=
+      viewportMiddle;
+
+
+    if (
+      supplierCardWasAtOrAboveMiddle ===
+      null
+    ) {
+
+      supplierCardWasAtOrAboveMiddle =
+        cardAtOrAboveMiddle;
+
+
+      if (
+        cardAtOrAboveMiddle
+      ) {
+
+        settleSupplierManagementToFullPage();
+
+      }
+
+
+      return;
+
+    }
+
+
+    /* DOWN-SCROLL */
+
+    if (
+      cardAtOrAboveMiddle &&
+      !supplierCardWasAtOrAboveMiddle
+    ) {
+
+      settleSupplierManagementToFullPage();
+
+    }
+
+
+    /* UP-SCROLL */
+
+    if (
+      !cardAtOrAboveMiddle &&
+      supplierCardWasAtOrAboveMiddle
+    ) {
+
+      startSupplierManagementZoom();
+
+    }
+
+
+    supplierCardWasAtOrAboveMiddle =
+      cardAtOrAboveMiddle;
 
   }
 
@@ -762,6 +1230,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function resetSupplierManagementMobileState() {
 
+    clearSupplierManagementVisualState();
+
+
+    supplierAtCeiling =
+      false;
+
+    supplierCardWasAtOrAboveMiddle =
+      null;
+
+
     if (
       supplierLayer
     ) {
@@ -916,6 +1394,43 @@ document.addEventListener("DOMContentLoaded", () => {
         .style
         .transform =
           "";
+
+
+      /*
+        Supplier is not at its ceiling here.
+        Cancel/reset any Supplier zoom state.
+      */
+
+      if (
+        supplierAtCeiling ||
+        supplierZoomTimer ||
+        supplierReturnTimer ||
+        (
+          supplierVideo &&
+          (
+            supplierVideo.classList.contains(
+              "supplier-mobile-zoom"
+            ) ||
+            supplierVideo.classList.contains(
+              "supplier-mobile-returning"
+            ) ||
+            supplierVideo.classList.contains(
+              "supplier-mobile-settled"
+            )
+          )
+        )
+      ) {
+
+        clearSupplierManagementVisualState();
+
+      }
+
+
+      supplierAtCeiling =
+        false;
+
+      supplierCardWasAtOrAboveMiddle =
+        null;
 
 
       if (
@@ -1079,6 +1594,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       /*
+        The Supplier screen has left its ceiling position.
+        Reset the zoom so reverse-scroll shows the original
+        full-page Supplier composition while it slides down.
+      */
+
+      if (
+        supplierAtCeiling ||
+        supplierZoomTimer ||
+        supplierReturnTimer ||
+        (
+          supplierVideo &&
+          (
+            supplierVideo.classList.contains(
+              "supplier-mobile-zoom"
+            ) ||
+            supplierVideo.classList.contains(
+              "supplier-mobile-returning"
+            ) ||
+            supplierVideo.classList.contains(
+              "supplier-mobile-settled"
+            )
+          )
+        )
+      ) {
+
+        clearSupplierManagementVisualState();
+
+      }
+
+
+      supplierAtCeiling =
+        false;
+
+      supplierCardWasAtOrAboveMiddle =
+        null;
+
+
+      /*
         If the user scrolls backwards from Supplier
         Management, restore Connected Platform as
         the active section.
@@ -1161,6 +1714,14 @@ document.addEventListener("DOMContentLoaded", () => {
        so changing the active media creates no visual jump.
     ===================================================== */
 
+    const supplierJustReachedCeiling =
+      !supplierAtCeiling;
+
+
+    supplierAtCeiling =
+      true;
+
+
     if (
       activeMediaId !==
       "media-supplier-management"
@@ -1169,6 +1730,23 @@ document.addEventListener("DOMContentLoaded", () => {
       activateMedia(
         "media-supplier-management"
       );
+
+    }
+
+
+    /*
+      The first arrival at the ceiling starts
+      the 2.5-second zoom delay.
+    */
+
+    if (
+      supplierJustReachedCeiling
+    ) {
+
+      supplierCardWasAtOrAboveMiddle =
+        null;
+
+      scheduleSupplierManagementZoom();
 
     }
 
@@ -1226,6 +1804,11 @@ document.addEventListener("DOMContentLoaded", () => {
       .add(
         "copy-scroll-active"
       );
+
+
+    updateSupplierManagementReadingState(
+      viewportHeight
+    );
 
   }
 
@@ -1312,6 +1895,15 @@ document.addEventListener("DOMContentLoaded", () => {
     setSupplierManagementSource();
 
 
+    /*
+      Re-establish card-crossing state for the
+      newly selected viewport mode.
+    */
+
+    docCardWasAtOrAboveMiddle =
+      null;
+
+
     /* =========================
        MOBILE
     ========================= */
@@ -1342,20 +1934,10 @@ document.addEventListener("DOMContentLoaded", () => {
        DESKTOP / LAPTOP
     ========================= */
 
-    /*
-      Remove all mobile-only
-      Connected Platform styles.
-    */
-
     resetConnectedPlatformMobileState();
 
     resetSupplierManagementMobileState();
 
-
-    /*
-      Remove all mobile-only
-      Document Control transforms.
-    */
 
     clearDocumentControlVisualState();
 
