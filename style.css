@@ -413,9 +413,9 @@ body {
 .story-body {
   margin: 0;
 
-  /* ENLARGED FROM 18PX */
-  font-size: 20px;
-  line-height: 1.55;
+  /* ENLARGED FROM 20PX */
+  font-size: 22px;
+  line-height: 1.65;
 
   font-weight: 400;
 
@@ -587,10 +587,10 @@ body {
 
 
   .story-body {
-    /* ENLARGED FROM 20PX */
-    font-size: 21px;
+    /* ENLARGED FROM 21PX */
+    font-size: 23px;
 
-    line-height: 1.62;
+    line-height: 1.65;
 
     letter-spacing: 0;
   }
@@ -739,8 +739,8 @@ body {
 
 
   .story-step[data-media="media-document-control"] .story-body {
-    font-size: 21px;
-    line-height: 1.62;
+    font-size: 23px;
+    line-height: 1.65;
 
     color: #30373e;
   }
@@ -850,8 +850,8 @@ body {
 
 
   .story-step[data-media="media-connected-platform"] .story-body {
-    font-size: 21px;
-    line-height: 1.62;
+    font-size: 23px;
+    line-height: 1.65;
 
     color: #30373e;
   }
