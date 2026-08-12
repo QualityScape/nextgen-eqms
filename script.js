@@ -1,221 +1,677 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const storySteps = document.querySelectorAll(".story-step");
-  const mediaLayers = document.querySelectorAll(".media-layer");
-
-  const docVideo = document.getElementById("doc-control-video");
-  const docStep = document.querySelector(
-    '.story-step[data-media="media-document-control"]'
+  const storySteps = Array.from(
+    document.querySelectorAll(".story-step")
   );
-  const docCard = docStep
-    ? docStep.querySelector(".story-card")
-    : null;
 
-  const mobileQuery = window.matchMedia("(max-width: 768px)");
+  const mediaLayers = Array.from(
+    document.querySelectorAll(".media-layer")
+  );
 
-  let activeMediaId = "media-document-control";
+  const docVideo =
+    document.getElementById("doc-control-video");
+
+  const docStep =
+    document.querySelector(
+      '.story-step[data-media="media-document-control"]'
+    );
+
+  const docCard =
+    docStep
+      ? docStep.querySelector(".story-card")
+      : null;
+
+  const mobileQuery =
+    window.matchMedia("(max-width: 768px)");
+
+  let activeMediaId = null;
+
   let currentDocSource = "";
-  let scrollTicking = false;
+
+  let mobileScrollTicking = false;
+
+  let docAnimationFrozen = false;
+
 
 
   /* =========================================================
-     CHOOSE THE CORRECT DOCUMENT CONTROL VIDEO
+     CHOOSE DOCUMENT CONTROL VIDEO
   ========================================================= */
 
   function setDocumentControlSource() {
+
     if (!docVideo) {
       return;
     }
 
-    const desiredSource = mobileQuery.matches
-      ? docVideo.dataset.mobileSrc
-      : docVideo.dataset.desktopSrc;
 
-    if (currentDocSource === desiredSource) {
+    const desiredSource =
+      mobileQuery.matches
+        ? docVideo.dataset.mobileSrc
+        : docVideo.dataset.desktopSrc;
+
+
+    if (
+      currentDocSource === desiredSource
+    ) {
       return;
     }
+
 
     currentDocSource = desiredSource;
 
-    const shouldResume =
-      activeMediaId === "media-document-control";
 
     docVideo.pause();
+
     docVideo.src = desiredSource;
+
     docVideo.load();
 
-    if (shouldResume) {
+
+    if (
+      activeMediaId ===
+      "media-document-control"
+    ) {
+
       docVideo.play().catch(() => {
-        // Muted inline playback should normally be allowed.
+        // Muted autoplay should normally work.
       });
+
     }
+
   }
 
 
+
   /* =========================================================
-     MOBILE ONLY — FREEZE DOC CONTROL ZOOM WHEN
-     THE TEXT CARD REACHES THE SCREEN MIDDLE
+     RESET / START MOBILE DOCUMENT CONTROL ANIMATION
   ========================================================= */
 
-  function updateDocMobileFreeze() {
-    if (!docStep || !docCard) {
-      document.body.classList.remove("doc-mobile-freeze");
+  function startDocumentControlAnimation() {
+
+    if (!docVideo) {
       return;
     }
 
-    if (!mobileQuery.matches) {
-      document.body.classList.remove("doc-mobile-freeze");
-      return;
-    }
-
-    if (activeMediaId !== "media-document-control") {
-      document.body.classList.remove("doc-mobile-freeze");
-      return;
-    }
-
-    const stepRect = docStep.getBoundingClientRect();
-
-    const stepVisible =
-      stepRect.bottom > 0 &&
-      stepRect.top < window.innerHeight;
-
-    if (!stepVisible) {
-      document.body.classList.remove("doc-mobile-freeze");
-      return;
-    }
-
-    const cardRect = docCard.getBoundingClientRect();
-    const viewportMiddle = window.innerHeight * 0.5;
-    const cardCenter = cardRect.top + (cardRect.height / 2);
 
     /*
-      Freeze once the card's center reaches the middle
-      of the screen, so the user can read without the
-      background zoom continuing.
+      Absolutely no zoom animation on desktop.
     */
-    const shouldFreeze = cardCenter <= (viewportMiddle + 20);
 
-    document.body.classList.toggle(
-      "doc-mobile-freeze",
-      shouldFreeze
-    );
-  }
+    if (!mobileQuery.matches) {
 
-  function requestDocMobileFreezeUpdate() {
-    if (scrollTicking) {
+      docVideo.classList.remove(
+        "doc-mobile-zoom"
+      );
+
+      document.body.classList.remove(
+        "doc-mobile-freeze"
+      );
+
+      docAnimationFrozen = false;
+
       return;
     }
 
-    scrollTicking = true;
 
-    window.requestAnimationFrame(() => {
-      updateDocMobileFreeze();
-      scrollTicking = false;
-    });
+    /*
+      Clear the previous frozen state.
+    */
+
+    document.body.classList.remove(
+      "doc-mobile-freeze"
+    );
+
+    docAnimationFrozen = false;
+
+
+    /*
+      Restart animation from the beginning.
+    */
+
+    docVideo.classList.remove(
+      "doc-mobile-zoom"
+    );
+
+
+    void docVideo.offsetWidth;
+
+
+    docVideo.classList.add(
+      "doc-mobile-zoom"
+    );
+
   }
 
 
+
   /* =========================================================
-     ACTIVATE STORY MEDIA
+     FREEZE DOCUMENT CONTROL ANIMATION
+     WHEN CARD REACHES SCREEN MIDDLE
   ========================================================= */
 
-  function activateMedia(mediaId) {
+  function updateDocumentControlFreeze() {
+
+    if (
+      !mobileQuery.matches ||
+      !docCard ||
+      activeMediaId !==
+        "media-document-control"
+    ) {
+
+      return;
+
+    }
+
+
+    /*
+      Once frozen, leave it frozen.
+
+      This prevents the background from starting
+      to move again while the user is reading.
+    */
+
+    if (docAnimationFrozen) {
+      return;
+    }
+
+
+    const cardRect =
+      docCard.getBoundingClientRect();
+
+
+    const cardCenter =
+      cardRect.top +
+      cardRect.height / 2;
+
+
+    const screenMiddle =
+      window.innerHeight / 2;
+
+
+    /*
+      As soon as the centre of the card reaches
+      the centre of the mobile screen:
+      STOP the zoom animation.
+    */
+
+    if (
+      cardCenter <= screenMiddle
+    ) {
+
+      document.body.classList.add(
+        "doc-mobile-freeze"
+      );
+
+      docAnimationFrozen = true;
+
+    }
+
+  }
+
+
+
+  /* =========================================================
+     ACTIVATE MEDIA
+  ========================================================= */
+
+  function activateMedia(
+    mediaId,
+    force = false
+  ) {
+
+    const mediaChanged =
+      activeMediaId !== mediaId;
+
+
+    if (
+      !force &&
+      !mediaChanged
+    ) {
+      return;
+    }
+
+
     activeMediaId = mediaId;
 
-    mediaLayers.forEach((layer) => {
-      const videos = layer.querySelectorAll("video");
 
-      if (layer.id === mediaId) {
-        layer.classList.add("active");
+    mediaLayers.forEach((layer) => {
+
+      const videos =
+        layer.querySelectorAll("video");
+
+
+      if (
+        layer.id === mediaId
+      ) {
+
+        layer.classList.add(
+          "active"
+        );
+
 
         videos.forEach((video) => {
+
           video.play().catch(() => {
-            // Ignore temporary autoplay restrictions.
+            // Ignore temporary autoplay restriction.
           });
+
         });
+
 
       } else {
-        layer.classList.remove("active");
+
+        layer.classList.remove(
+          "active"
+        );
+
 
         videos.forEach((video) => {
+
           video.pause();
 
+
           try {
+
             video.currentTime = 0;
+
           } catch (error) {
-            // Ignore if metadata is not ready.
+
+            // Metadata may not yet be loaded.
+
           }
+
         });
+
       }
+
     });
 
-    requestDocMobileFreezeUpdate();
+
+    /*
+      Entering Document Control on mobile:
+      start its zoom animation.
+    */
+
+    if (
+      mediaId ===
+        "media-document-control" &&
+      mediaChanged
+    ) {
+
+      startDocumentControlAnimation();
+
+    }
+
+
+    /*
+      Leaving Document Control:
+      clean up its mobile animation state.
+    */
+
+    if (
+      mediaId !==
+      "media-document-control"
+    ) {
+
+      document.body.classList.remove(
+        "doc-mobile-freeze"
+      );
+
+      docAnimationFrozen = false;
+
+
+      if (docVideo) {
+
+        docVideo.classList.remove(
+          "doc-mobile-zoom"
+        );
+
+      }
+
+    }
+
   }
 
 
+
   /* =========================================================
-     STORY STEP OBSERVER
+     DESKTOP STORY OBSERVER
+
+     DESKTOP BEHAVIOUR REMAINS AS BEFORE.
   ========================================================= */
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) {
+  const desktopObserver =
+    new IntersectionObserver(
+
+      (entries) => {
+
+        if (mobileQuery.matches) {
           return;
         }
 
-        const mediaId = entry.target.dataset.media;
 
-        if (mediaId) {
-          activateMedia(mediaId);
-        }
-      });
-    },
-    {
-      root: null,
-      rootMargin: "-35% 0px -35% 0px",
-      threshold: 0
-    }
-  );
+        entries.forEach((entry) => {
+
+          if (
+            !entry.isIntersecting
+          ) {
+            return;
+          }
+
+
+          const mediaId =
+            entry.target.dataset.media;
+
+
+          if (mediaId) {
+
+            activateMedia(mediaId);
+
+          }
+
+        });
+
+      },
+
+      {
+        root: null,
+
+        rootMargin:
+          "-35% 0px -35% 0px",
+
+        threshold: 0
+      }
+
+    );
+
 
   storySteps.forEach((step) => {
-    observer.observe(step);
+
+    desktopObserver.observe(step);
+
   });
 
 
+
   /* =========================================================
-     DESKTOP / MOBILE SWITCH
+     MOBILE MEDIA SWITCHING
+
+     CONNECTED PLATFORM APPEARS ONLY AFTER
+     DOCUMENT CONTROL CARD HAS COMPLETELY
+     PASSED THE TOP OF THE SCREEN.
+  ========================================================= */
+
+  function updateMobileMedia() {
+
+    if (!mobileQuery.matches) {
+      return;
+    }
+
+
+    if (
+      storySteps.length === 0
+    ) {
+      return;
+    }
+
+
+    let activeIndex = 0;
+
+
+    for (
+      let i = 1;
+      i < storySteps.length;
+      i++
+    ) {
+
+      const previousStep =
+        storySteps[i - 1];
+
+
+      const previousCard =
+        previousStep.querySelector(
+          ".story-card"
+        );
+
+
+      if (!previousCard) {
+        break;
+      }
+
+
+      const previousCardRect =
+        previousCard.getBoundingClientRect();
+
+
+      /*
+        FINISH LINE:
+
+        The next media does not appear until
+        the previous card's BOTTOM has passed
+        the TOP of the viewport.
+      */
+
+      if (
+        previousCardRect.bottom <= 0
+      ) {
+
+        activeIndex = i;
+
+      } else {
+
+        break;
+
+      }
+
+    }
+
+
+    const activeStep =
+      storySteps[activeIndex];
+
+
+    const mediaId =
+      activeStep.dataset.media;
+
+
+    if (mediaId) {
+
+      activateMedia(mediaId);
+
+    }
+
+
+    /*
+      Independently check whether the
+      Document Control animation should freeze.
+    */
+
+    updateDocumentControlFreeze();
+
+  }
+
+
+
+  /* =========================================================
+     MOBILE SCROLL HANDLER
+  ========================================================= */
+
+  function handleMobileScroll() {
+
+    if (!mobileQuery.matches) {
+      return;
+    }
+
+
+    if (mobileScrollTicking) {
+      return;
+    }
+
+
+    mobileScrollTicking = true;
+
+
+    window.requestAnimationFrame(
+      () => {
+
+        updateMobileMedia();
+
+        mobileScrollTicking = false;
+
+      }
+    );
+
+  }
+
+
+  window.addEventListener(
+    "scroll",
+    handleMobileScroll,
+    {
+      passive: true
+    }
+  );
+
+
+
+  /* =========================================================
+     DESKTOP / MOBILE CHANGE
   ========================================================= */
 
   function handleViewportChange() {
+
     setDocumentControlSource();
-    requestDocMobileFreezeUpdate();
+
+
+    if (mobileQuery.matches) {
+
+      activeMediaId = null;
+
+      updateMobileMedia();
+
+
+    } else {
+
+
+      /*
+        Remove every mobile-only animation state.
+      */
+
+      document.body.classList.remove(
+        "doc-mobile-freeze"
+      );
+
+      docAnimationFrozen = false;
+
+
+      if (docVideo) {
+
+        docVideo.classList.remove(
+          "doc-mobile-zoom"
+        );
+
+      }
+
+
+      /*
+        Determine which desktop step currently
+        occupies the centre of the viewport.
+      */
+
+      let closestStep = null;
+
+      let closestDistance =
+        Infinity;
+
+
+      const viewportCenter =
+        window.innerHeight / 2;
+
+
+      storySteps.forEach((step) => {
+
+        const rect =
+          step.getBoundingClientRect();
+
+
+        if (
+          rect.bottom <= 0 ||
+          rect.top >=
+            window.innerHeight
+        ) {
+          return;
+        }
+
+
+        const stepCenter =
+          rect.top +
+          rect.height / 2;
+
+
+        const distance =
+          Math.abs(
+            stepCenter -
+            viewportCenter
+          );
+
+
+        if (
+          distance <
+          closestDistance
+        ) {
+
+          closestDistance =
+            distance;
+
+          closestStep =
+            step;
+
+        }
+
+      });
+
+
+      if (closestStep) {
+
+        const mediaId =
+          closestStep.dataset.media;
+
+
+        if (mediaId) {
+
+          activeMediaId = null;
+
+          activateMedia(mediaId);
+
+        }
+
+      }
+
+    }
+
   }
 
-  if (mobileQuery.addEventListener) {
+
+
+  if (
+    mobileQuery.addEventListener
+  ) {
+
     mobileQuery.addEventListener(
       "change",
       handleViewportChange
     );
+
+
   } else {
-    mobileQuery.addListener(handleViewportChange);
+
+    mobileQuery.addListener(
+      handleViewportChange
+    );
+
   }
 
-
-  /* =========================================================
-     SCROLL / RESIZE
-  ========================================================= */
-
-  window.addEventListener(
-    "scroll",
-    requestDocMobileFreezeUpdate,
-    { passive: true }
-  );
-
-  window.addEventListener(
-    "resize",
-    requestDocMobileFreezeUpdate
-  );
 
 
   /* =========================================================
@@ -225,22 +681,55 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener(
     "visibilitychange",
     () => {
+
       if (document.hidden) {
-        mediaLayers.forEach((layer) => {
-          layer
-            .querySelectorAll("video")
-            .forEach((video) => {
-              video.pause();
-            });
-        });
+
+        mediaLayers.forEach(
+          (layer) => {
+
+            layer
+              .querySelectorAll("video")
+              .forEach((video) => {
+
+                video.pause();
+
+              });
+
+          }
+        );
+
 
       } else {
-        activateMedia(activeMediaId);
+
+
+        mediaLayers.forEach(
+          (layer) => {
+
+            if (
+              layer.id ===
+              activeMediaId
+            ) {
+
+              layer
+                .querySelectorAll("video")
+                .forEach((video) => {
+
+                  video
+                    .play()
+                    .catch(() => {});
+
+                });
+
+            }
+
+          }
+        );
+
       }
 
-      requestDocMobileFreezeUpdate();
     }
   );
+
 
 
   /* =========================================================
@@ -248,7 +737,18 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================================= */
 
   setDocumentControlSource();
-  activateMedia("media-document-control");
-  requestDocMobileFreezeUpdate();
+
+
+  if (mobileQuery.matches) {
+
+    updateMobileMedia();
+
+  } else {
+
+    activateMedia(
+      "media-document-control"
+    );
+
+  }
 
 });
