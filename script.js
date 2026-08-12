@@ -410,6 +410,45 @@ document.addEventListener("DOMContentLoaded", () => {
       mediaId;
 
 
+    /*
+      MOBILE COPY VISIBILITY
+
+      Connected Platform card must stay hidden until
+      Connected Platform is the active mobile media.
+
+      Desktop / laptop is intentionally untouched.
+    */
+
+    const connectedPlatformStep =
+      document.querySelector(
+        '.story-step[data-media="media-connected-platform"]'
+      );
+
+
+    if (connectedPlatformStep) {
+
+      if (
+        mobileQuery.matches &&
+        mediaId ===
+          "media-connected-platform"
+      ) {
+
+        connectedPlatformStep.classList.add(
+          "copy-media-active"
+        );
+
+
+      } else {
+
+        connectedPlatformStep.classList.remove(
+          "copy-media-active"
+        );
+
+      }
+
+    }
+
+
     mediaLayers.forEach(
       (layer) => {
 
