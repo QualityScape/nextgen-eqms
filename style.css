@@ -406,21 +406,20 @@ body {
     30px
     29px;
 
-  border-radius: 4px;
+  border-radius: 10px;
 
-  /* BRIGHTER CARD */
-  background: rgba(255, 255, 255, 0.93);
+  background: rgba(220, 228, 235, 0.90);
 
   color: #111820;
 
   border:
-    1px solid rgba(255, 255, 255, 0.48);
+    1px solid rgba(255, 255, 255, 0.24);
 
   box-shadow:
-    0 8px 28px rgba(0, 0, 0, 0.18);
+    0 8px 28px rgba(0, 0, 0, 0.16);
 
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
 }
 
 
@@ -600,7 +599,7 @@ body {
       27px
       30px;
 
-    border-radius: 5px;
+    border-radius: 10px;
   }
 
 
