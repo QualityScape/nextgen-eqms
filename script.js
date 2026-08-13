@@ -75,6 +75,26 @@ document.addEventListener("DOMContentLoaded", () => {
       : null;
 
 
+  const freeTrialLayer =
+    document.getElementById(
+      "media-free-trial"
+    );
+
+
+  const freeTrialStep =
+    document.querySelector(
+      '.story-step[data-media="media-free-trial"]'
+    );
+
+
+  const freeTrialCard =
+    freeTrialStep
+      ? freeTrialStep.querySelector(
+          ".story-card"
+        )
+      : null;
+
+
   const mobileQuery =
     window.matchMedia(
       "(max-width: 768px)"
@@ -1166,6 +1186,13 @@ document.addEventListener("DOMContentLoaded", () => {
      SUPPLIER MANAGEMENT
      →
      SUPPLIER MANAGEMENT CARD
+
+     STAGE 3:
+     SUPPLIER MANAGEMENT CARD
+     →
+     FREE TRIAL
+     →
+     FREE TRIAL CARD
   ========================================================= */
 
   function getMobileViewportHeight() {
@@ -1281,6 +1308,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
+     RESET FREE TRIAL MOBILE STATE
+  ========================================================= */
+
+  function resetFreeTrialMobileState() {
+
+    if (
+      freeTrialLayer
+    ) {
+
+      freeTrialLayer
+        .style
+        .transform =
+          "";
+
+    }
+
+
+    if (
+      freeTrialStep
+    ) {
+
+      freeTrialStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+    }
+
+
+    if (
+      freeTrialCard
+    ) {
+
+      freeTrialCard
+        .style
+        .transform =
+          "";
+
+    }
+
+  }
+
+
+
+  /* =========================================================
      UPDATE MOBILE MEDIA
   ========================================================= */
 
@@ -1300,7 +1373,10 @@ document.addEventListener("DOMContentLoaded", () => {
       !connectedPlatformCard ||
       !supplierLayer ||
       !supplierStep ||
-      !supplierCard
+      !supplierCard ||
+      !freeTrialLayer ||
+      !freeTrialStep ||
+      !freeTrialCard
     ) {
 
       updateDocumentControlReadingState();
@@ -1396,6 +1472,29 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
+      freeTrialLayer
+        .style
+        .transform =
+          `translate3d(
+            0,
+            ${viewportHeight}px,
+            0
+          )`;
+
+
+      freeTrialStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      freeTrialCard
+        .style
+        .transform =
+          "";
+
+
       /*
         Supplier is not at its ceiling here.
         Cancel/reset any Supplier zoom state.
@@ -1442,7 +1541,9 @@ document.addEventListener("DOMContentLoaded", () => {
           activeMediaId ===
             "media-connected-platform" ||
           activeMediaId ===
-            "media-supplier-management";
+            "media-supplier-management" ||
+          activeMediaId ===
+            "media-free-trial";
 
 
         activateMedia(
@@ -1593,6 +1694,29 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
+      freeTrialLayer
+        .style
+        .transform =
+          `translate3d(
+            0,
+            ${viewportHeight}px,
+            0
+          )`;
+
+
+      freeTrialStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      freeTrialCard
+        .style
+        .transform =
+          "";
+
+
       /*
         The Supplier screen has left its ceiling position.
         Reset the zoom so reverse-scroll shows the original
@@ -1639,7 +1763,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         activeMediaId ===
-        "media-supplier-management"
+          "media-supplier-management" ||
+        activeMediaId ===
+          "media-free-trial"
       ) {
 
         activateMedia(
@@ -1810,6 +1936,173 @@ document.addEventListener("DOMContentLoaded", () => {
       viewportHeight
     );
 
+
+
+    /* =====================================================
+       STAGE 3 — FREE TRIAL SCREEN MOVEMENT
+
+       Free Trial remains one screen below until
+       the Supplier Management card has completely left the top.
+
+       Then the Free Trial still image rises 1:1 with scrolling
+       and stops when it reaches the ceiling.
+    ===================================================== */
+
+    const supplierCardRect =
+      supplierCard
+        .getBoundingClientRect();
+
+
+    const freeTrialOffset =
+      Math.max(
+        0,
+        Math.min(
+          viewportHeight,
+          viewportHeight +
+            supplierCardRect.bottom
+        )
+      );
+
+
+    freeTrialLayer
+      .style
+      .transform =
+        `translate3d(
+          0,
+          ${freeTrialOffset}px,
+          0
+        )`;
+
+
+
+    /* =====================================================
+       FREE TRIAL IS STILL BELOW / MOVING UP
+    ===================================================== */
+
+    if (
+      freeTrialOffset >
+      0
+    ) {
+
+      freeTrialStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      freeTrialCard
+        .style
+        .transform =
+          "";
+
+
+      /*
+        Reverse-scrolling from Free Trial restores
+        Supplier Management as the active section.
+      */
+
+      if (
+        activeMediaId ===
+        "media-free-trial"
+      ) {
+
+        activateMedia(
+          "media-supplier-management"
+        );
+
+      }
+
+
+      /*
+        Keep Supplier's existing bidirectional
+        card-middle zoom behaviour alive while
+        reverse-scrolling back into that section.
+      */
+
+      updateSupplierManagementReadingState(
+        viewportHeight
+      );
+
+
+      return;
+
+    }
+
+
+
+    /* =====================================================
+       FREE TRIAL HAS HIT THE CEILING
+
+       The still image now completely covers Supplier Management.
+    ===================================================== */
+
+    if (
+      activeMediaId !==
+      "media-free-trial"
+    ) {
+
+      activateMedia(
+        "media-free-trial"
+      );
+
+    }
+
+
+
+    /* =====================================================
+       FREE TRIAL CARD
+
+       Only after the Free Trial image reaches the ceiling
+       does its text card begin moving upward from below.
+    ===================================================== */
+
+    const freeTrialPostHandoffScroll =
+      Math.max(
+        0,
+        -supplierCardRect.bottom -
+          viewportHeight
+      );
+
+
+    freeTrialCard
+      .style
+      .transform =
+        "none";
+
+
+    const freeTrialNaturalCardRect =
+      freeTrialCard
+        .getBoundingClientRect();
+
+
+    const freeTrialDesiredCardTop =
+      viewportHeight +
+      24 -
+      freeTrialPostHandoffScroll;
+
+
+    const freeTrialCardOffset =
+      freeTrialDesiredCardTop -
+      freeTrialNaturalCardRect.top;
+
+
+    freeTrialCard
+      .style
+      .transform =
+        `translate3d(
+          0,
+          ${freeTrialCardOffset}px,
+          0
+        )`;
+
+
+    freeTrialStep
+      .classList
+      .add(
+        "copy-scroll-active"
+      );
+
   }
 
 
@@ -1920,6 +2213,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       resetSupplierManagementMobileState();
 
+      resetFreeTrialMobileState();
+
 
       updateMobileMedia();
 
@@ -1937,6 +2232,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resetConnectedPlatformMobileState();
 
     resetSupplierManagementMobileState();
+
+    resetFreeTrialMobileState();
 
 
     clearDocumentControlVisualState();
