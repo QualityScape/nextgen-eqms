@@ -522,6 +522,19 @@ body {
     margin-left: 0;
   }
 
+
+  /* FREE TRIAL — MOVE CARD TO RIGHT */
+
+  .story-step[data-media="media-free-trial"] {
+    justify-content: flex-end;
+  }
+
+
+  .story-step[data-media="media-free-trial"] .story-card {
+    margin-left: 0;
+    margin-right: 6vw;
+  }
+
 }
 
 
