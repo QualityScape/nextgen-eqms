@@ -284,6 +284,25 @@ body {
 
 
 /* =========================================================
+   CUSTOMER COMPLAINTS VIDEO
+========================================================= */
+
+#customer-complaints-video {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+
+
+/* =========================================================
    DOCUMENT CONTROL / VIDEO TREATMENT
 ========================================================= */
 
@@ -1220,6 +1239,126 @@ body {
 
 
   .story-step[data-media="media-free-trial"] .story-body {
+    font-size: 23px;
+    line-height: 1.65;
+
+    color: #30373e;
+  }
+
+
+
+  /* =====================================================
+     CUSTOMER COMPLAINTS MOBILE VIDEO
+
+     The portrait video has already been prepared
+     with its meaningful visual content shifted upward.
+
+     Keep the browser framing anchored to the top so
+     the lower part of the screen remains available
+     for the reading card.
+  ===================================================== */
+
+  #customer-complaints-video {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center top;
+
+    transform: none;
+  }
+
+
+
+  /* =====================================================
+     CUSTOMER COMPLAINTS MOBILE HANDOFF
+
+     Customer Complaints sits above Free Trial.
+
+     It remains one full screen below until the
+     Free Trial card has completely left the top.
+
+     JavaScript then moves the Complaints video
+     upward 1:1 with scrolling until it reaches
+     the ceiling.
+  ===================================================== */
+
+  #media-customer-complaints {
+    opacity: 1;
+    visibility: visible;
+
+    z-index: 5;
+
+    transform:
+      translate3d(0, 100%, 0);
+
+    transition: none;
+
+    will-change: transform;
+
+    pointer-events: none;
+  }
+
+
+
+  /* =====================================================
+     CUSTOMER COMPLAINTS MOBILE CARD
+
+     Intended sequence:
+
+     FREE TRIAL CARD LEAVES THE TOP
+     →
+     COMPLAINTS VIDEO RISES FROM BELOW
+     →
+     VIDEO STOPS AT THE CEILING
+     →
+     COMPLAINTS CARD FOLLOWS UP FROM BELOW
+  ===================================================== */
+
+  .story-step[data-media="media-customer-complaints"] {
+    min-height: 360vh;
+    min-height: 360svh;
+
+    align-items: center;
+    justify-content: center;
+
+    padding:
+      8vh
+      20px;
+  }
+
+
+  .story-step[data-media="media-customer-complaints"] .story-card {
+    width: 80%;
+    max-width: 315px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding:
+      29px
+      27px
+      31px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: none;
+
+    transition: none;
+
+    will-change: transform;
+  }
+
+
+  .story-step[data-media="media-customer-complaints"].copy-scroll-active
+  .story-card {
+    opacity: 1;
+    visibility: visible;
+  }
+
+
+  .story-step[data-media="media-customer-complaints"] .story-body {
     font-size: 23px;
     line-height: 1.65;
 
