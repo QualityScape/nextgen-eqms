@@ -10,9 +10,11 @@ body {
   min-height: 100%;
 }
 
+
 html {
   scroll-behavior: smooth;
 }
+
 
 body {
   margin: 0;
@@ -29,6 +31,7 @@ body {
 
   overflow-x: hidden;
 }
+
 
 
 /* =========================================================
@@ -179,6 +182,7 @@ body {
 }
 
 
+
 /* =========================================================
    NDP-STYLE SCROLL STORY
 ========================================================= */
@@ -190,6 +194,7 @@ body {
 
   background: #070b0f;
 }
+
 
 
 /* =========================================================
@@ -239,6 +244,7 @@ body {
 }
 
 
+
 /* =========================================================
    DOCUMENT CONTROL VIDEO
 ========================================================= */
@@ -257,6 +263,7 @@ body {
 }
 
 
+
 /* =========================================================
    SUPPLIER MANAGEMENT VIDEO
 ========================================================= */
@@ -273,6 +280,7 @@ body {
   object-fit: cover;
   object-position: center;
 }
+
 
 
 /* =========================================================
@@ -295,6 +303,7 @@ body {
 
   pointer-events: none;
 }
+
 
 
 /* =========================================================
@@ -355,6 +364,41 @@ body {
 }
 
 
+
+/* =========================================================
+   FREE TRIAL IMAGE
+========================================================= */
+
+#media-free-trial {
+  background: #72a9dc;
+}
+
+
+/* PICTURE WRAPPER */
+
+.free-trial-picture {
+  position: absolute;
+  inset: 0;
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+}
+
+
+.free-trial-picture img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+
+
 /* =========================================================
    STORY TEXT TRACK
 ========================================================= */
@@ -369,6 +413,7 @@ body {
 
   pointer-events: none;
 }
+
 
 
 /* =========================================================
@@ -392,6 +437,7 @@ body {
 
   pointer-events: none;
 }
+
 
 
 /* =========================================================
@@ -423,6 +469,7 @@ body {
 }
 
 
+
 /* =========================================================
    STORY BODY TEXT
 ========================================================= */
@@ -446,6 +493,7 @@ body {
 
   color: #151a1f;
 }
+
 
 
 /* =========================================================
@@ -475,6 +523,7 @@ body {
   }
 
 }
+
 
 
 /* =========================================================
@@ -553,6 +602,7 @@ body {
   }
 
 
+
   /* -----------------------------------------------------
      STORY MEDIA
   ----------------------------------------------------- */
@@ -569,6 +619,7 @@ body {
   }
 
 
+
   /* -----------------------------------------------------
      GENERAL MOBILE STORY STEP
   ----------------------------------------------------- */
@@ -581,6 +632,7 @@ body {
       8vh
       20px;
   }
+
 
 
   /* -----------------------------------------------------
@@ -613,6 +665,7 @@ body {
   }
 
 
+
   /* =====================================================
      DOCUMENT CONTROL MOBILE VIDEO
   ===================================================== */
@@ -626,6 +679,7 @@ body {
 
     transform: none;
   }
+
 
 
   /* =====================================================
@@ -730,6 +784,7 @@ body {
   }
 
 
+
   /* -----------------------------------------------------
      DOCUMENT CONTROL MOBILE CARD
   ----------------------------------------------------- */
@@ -761,6 +816,7 @@ body {
 
     color: #30373e;
   }
+
 
 
   /* =====================================================
@@ -819,6 +875,7 @@ body {
   }
 
 
+
   /* =====================================================
      CONNECTED PLATFORM MOBILE CARD
   ===================================================== */
@@ -874,6 +931,7 @@ body {
   }
 
 
+
   /* =====================================================
      SUPPLIER MANAGEMENT MOBILE VIDEO
   ===================================================== */
@@ -898,23 +956,25 @@ body {
   }
 
 
+
   /* -----------------------------------------------------
      SUPPLIER MANAGEMENT — LAPTOP ZOOM
 
-     JavaScript activates this 2.5 seconds after
+     JavaScript activates this 1.5 seconds after
      Supplier Management reaches the ceiling.
 
      These two values are our tuning controls if the
      laptop screen needs slightly different framing.
   ----------------------------------------------------- */
 
-#supplier-management-video.supplier-mobile-zoom {
-  transform:
-    scale(1.85);
+  #supplier-management-video.supplier-mobile-zoom {
+    transform:
+      scale(1.85);
 
-  transform-origin:
-    0.5% 34%;
-}
+    transform-origin:
+      0.5% 34%;
+  }
+
 
 
   /* -----------------------------------------------------
@@ -928,6 +988,7 @@ body {
     transform-origin:
       center center;
   }
+
 
 
   /* -----------------------------------------------------
@@ -944,6 +1005,7 @@ body {
     transition:
       none !important;
   }
+
 
 
   /* =====================================================
@@ -970,6 +1032,7 @@ body {
 
     pointer-events: none;
   }
+
 
 
   /* =====================================================
@@ -1034,7 +1097,124 @@ body {
     color: #30373e;
   }
 
+
+
+  /* =====================================================
+     FREE TRIAL MOBILE IMAGE
+
+     Portrait artwork is intentionally kept clean:
+     no darkening filter and no zoom animation.
+
+     The image is anchored to the top so the
+     "Start your free trial today!" artwork remains
+     visible above the reading card.
+  ===================================================== */
+
+  #media-free-trial {
+    background: #72a9dc;
+
+    opacity: 1;
+    visibility: visible;
+
+    z-index: 4;
+
+    transform:
+      translate3d(0, 100%, 0);
+
+    transition: none;
+
+    will-change: transform;
+
+    pointer-events: none;
+  }
+
+
+  #media-free-trial .free-trial-picture {
+    width: 100%;
+    height: 100%;
+  }
+
+
+  #media-free-trial .free-trial-picture img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center top;
+
+    transform: none;
+
+    filter: none;
+  }
+
+
+
+  /* =====================================================
+     FREE TRIAL MOBILE CARD
+
+     Intended sequence:
+
+     SUPPLIER MANAGEMENT CARD LEAVES THE TOP
+     →
+     FREE TRIAL IMAGE RISES FROM BELOW
+     →
+     IMAGE STOPS AT THE CEILING
+     →
+     FREE TRIAL CARD FOLLOWS UP FROM BELOW
+  ===================================================== */
+
+  .story-step[data-media="media-free-trial"] {
+    min-height: 360vh;
+    min-height: 360svh;
+
+    align-items: center;
+    justify-content: center;
+
+    padding:
+      8vh
+      20px;
+  }
+
+
+  .story-step[data-media="media-free-trial"] .story-card {
+    width: 80%;
+    max-width: 315px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding:
+      29px
+      27px
+      31px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: none;
+
+    transition: none;
+
+    will-change: transform;
+  }
+
+
+  .story-step[data-media="media-free-trial"].copy-scroll-active
+  .story-card {
+    opacity: 1;
+    visibility: visible;
+  }
+
+
+  .story-step[data-media="media-free-trial"] .story-body {
+    font-size: 23px;
+    line-height: 1.65;
+
+    color: #30373e;
+  }
+
 }
+
 
 
 /* =========================================================
