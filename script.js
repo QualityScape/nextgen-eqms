@@ -95,6 +95,32 @@ document.addEventListener("DOMContentLoaded", () => {
       : null;
 
 
+  const complaintsVideo =
+    document.getElementById(
+      "customer-complaints-video"
+    );
+
+
+  const complaintsLayer =
+    document.getElementById(
+      "media-customer-complaints"
+    );
+
+
+  const complaintsStep =
+    document.querySelector(
+      '.story-step[data-media="media-customer-complaints"]'
+    );
+
+
+  const complaintsCard =
+    complaintsStep
+      ? complaintsStep.querySelector(
+          ".story-card"
+        )
+      : null;
+
+
   const mobileQuery =
     window.matchMedia(
       "(max-width: 768px)"
@@ -106,6 +132,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentDocSource = "";
 
   let currentSupplierSource = "";
+
+  let currentComplaintsSource = "";
 
   let mobileScrollTicking = false;
 
@@ -232,6 +260,58 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
 
       supplierVideo
+        .play()
+        .catch(() => {});
+
+    }
+
+  }
+
+
+
+  /* =========================================================
+     CUSTOMER COMPLAINTS VIDEO SOURCE
+  ========================================================= */
+
+  function setCustomerComplaintsSource() {
+
+    if (!complaintsVideo) {
+      return;
+    }
+
+
+    const desiredSource =
+      mobileQuery.matches
+        ? complaintsVideo.dataset.mobileSrc
+        : complaintsVideo.dataset.desktopSrc;
+
+
+    if (
+      currentComplaintsSource ===
+      desiredSource
+    ) {
+      return;
+    }
+
+
+    currentComplaintsSource =
+      desiredSource;
+
+
+    complaintsVideo.pause();
+
+    complaintsVideo.src =
+      desiredSource;
+
+    complaintsVideo.load();
+
+
+    if (
+      activeMediaId ===
+      "media-customer-complaints"
+    ) {
+
+      complaintsVideo
         .play()
         .catch(() => {});
 
@@ -1193,6 +1273,13 @@ document.addEventListener("DOMContentLoaded", () => {
      FREE TRIAL
      →
      FREE TRIAL CARD
+
+     STAGE 4:
+     FREE TRIAL CARD
+     →
+     CUSTOMER COMPLAINTS
+     →
+     CUSTOMER COMPLAINTS CARD
   ========================================================= */
 
   function getMobileViewportHeight() {
@@ -1354,6 +1441,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
+     RESET CUSTOMER COMPLAINTS MOBILE STATE
+  ========================================================= */
+
+  function resetCustomerComplaintsMobileState() {
+
+    if (
+      complaintsLayer
+    ) {
+
+      complaintsLayer
+        .style
+        .transform =
+          "";
+
+    }
+
+
+    if (
+      complaintsStep
+    ) {
+
+      complaintsStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+    }
+
+
+    if (
+      complaintsCard
+    ) {
+
+      complaintsCard
+        .style
+        .transform =
+          "";
+
+    }
+
+  }
+
+
+
+  /* =========================================================
      UPDATE MOBILE MEDIA
   ========================================================= */
 
@@ -1376,7 +1509,10 @@ document.addEventListener("DOMContentLoaded", () => {
       !supplierCard ||
       !freeTrialLayer ||
       !freeTrialStep ||
-      !freeTrialCard
+      !freeTrialCard ||
+      !complaintsLayer ||
+      !complaintsStep ||
+      !complaintsCard
     ) {
 
       updateDocumentControlReadingState();
@@ -1495,6 +1631,29 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
+      complaintsLayer
+        .style
+        .transform =
+          `translate3d(
+            0,
+            ${viewportHeight}px,
+            0
+          )`;
+
+
+      complaintsStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      complaintsCard
+        .style
+        .transform =
+          "";
+
+
       /*
         Supplier is not at its ceiling here.
         Cancel/reset any Supplier zoom state.
@@ -1543,7 +1702,9 @@ document.addEventListener("DOMContentLoaded", () => {
           activeMediaId ===
             "media-supplier-management" ||
           activeMediaId ===
-            "media-free-trial";
+            "media-free-trial" ||
+          activeMediaId ===
+            "media-customer-complaints";
 
 
         activateMedia(
@@ -1717,6 +1878,29 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
+      complaintsLayer
+        .style
+        .transform =
+          `translate3d(
+            0,
+            ${viewportHeight}px,
+            0
+          )`;
+
+
+      complaintsStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      complaintsCard
+        .style
+        .transform =
+          "";
+
+
       /*
         The Supplier screen has left its ceiling position.
         Reset the zoom so reverse-scroll shows the original
@@ -1765,7 +1949,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMediaId ===
           "media-supplier-management" ||
         activeMediaId ===
-          "media-free-trial"
+          "media-free-trial" ||
+        activeMediaId ===
+          "media-customer-complaints"
       ) {
 
         activateMedia(
@@ -1997,6 +2183,29 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
+      complaintsLayer
+        .style
+        .transform =
+          `translate3d(
+            0,
+            ${viewportHeight}px,
+            0
+          )`;
+
+
+      complaintsStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      complaintsCard
+        .style
+        .transform =
+          "";
+
+
       /*
         Reverse-scrolling from Free Trial restores
         Supplier Management as the active section.
@@ -2004,7 +2213,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         activeMediaId ===
-        "media-free-trial"
+          "media-free-trial" ||
+        activeMediaId ===
+          "media-customer-complaints"
       ) {
 
         activateMedia(
@@ -2103,6 +2314,215 @@ document.addEventListener("DOMContentLoaded", () => {
         "copy-scroll-active"
       );
 
+
+
+    /* =====================================================
+       STAGE 4 — CUSTOMER COMPLAINTS SCREEN MOVEMENT
+
+       Customer Complaints remains one screen below until
+       the Free Trial card has completely left the top.
+
+       Then the Complaints video rises 1:1 with scrolling
+       and stops when it reaches the ceiling.
+    ===================================================== */
+
+    const freeTrialCardRect =
+      freeTrialCard
+        .getBoundingClientRect();
+
+
+    const complaintsOffset =
+      Math.max(
+        0,
+        Math.min(
+          viewportHeight,
+          viewportHeight +
+            freeTrialCardRect.bottom
+        )
+      );
+
+
+    complaintsLayer
+      .style
+      .transform =
+        `translate3d(
+          0,
+          ${complaintsOffset}px,
+          0
+        )`;
+
+
+
+    /* =====================================================
+       CUSTOMER COMPLAINTS IS STILL BELOW / MOVING UP
+    ===================================================== */
+
+    if (
+      complaintsOffset >
+      0
+    ) {
+
+      complaintsStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      complaintsCard
+        .style
+        .transform =
+          "";
+
+
+      /*
+        Reverse-scrolling from Customer Complaints restores
+        Free Trial as the active section.
+      */
+
+      if (
+        activeMediaId ===
+        "media-customer-complaints"
+      ) {
+
+        activateMedia(
+          "media-free-trial"
+        );
+
+      }
+
+
+      /*
+        Start the Complaints video while it is physically
+        rising into view, rather than waiting until
+        it has already reached the ceiling.
+      */
+
+      if (
+        complaintsOffset <
+        viewportHeight &&
+        complaintsVideo
+      ) {
+
+        complaintsVideo
+          .play()
+          .catch(() => {});
+
+      }
+
+
+      /*
+        When Customer Complaints is completely below
+        the viewport, return its video to the beginning.
+      */
+
+      if (
+        complaintsOffset >=
+        viewportHeight &&
+        complaintsVideo &&
+        activeMediaId !==
+          "media-customer-complaints"
+      ) {
+
+        complaintsVideo.pause();
+
+
+        try {
+
+          complaintsVideo.currentTime =
+            0;
+
+        } catch (error) {
+
+          /*
+            Video metadata may not
+            have loaded yet.
+          */
+
+        }
+
+      }
+
+
+      return;
+
+    }
+
+
+
+    /* =====================================================
+       CUSTOMER COMPLAINTS HAS HIT THE CEILING
+
+       At this point it completely covers Free Trial,
+       so changing the active media creates no visual jump.
+    ===================================================== */
+
+    if (
+      activeMediaId !==
+      "media-customer-complaints"
+    ) {
+
+      activateMedia(
+        "media-customer-complaints"
+      );
+
+    }
+
+
+
+    /* =====================================================
+       CUSTOMER COMPLAINTS CARD
+
+       Only after the Complaints video reaches the ceiling
+       does its card begin moving upward from below.
+    ===================================================== */
+
+    const complaintsPostHandoffScroll =
+      Math.max(
+        0,
+        -freeTrialCardRect.bottom -
+          viewportHeight
+      );
+
+
+    complaintsCard
+      .style
+      .transform =
+        "none";
+
+
+    const complaintsNaturalCardRect =
+      complaintsCard
+        .getBoundingClientRect();
+
+
+    const complaintsDesiredCardTop =
+      viewportHeight +
+      24 -
+      complaintsPostHandoffScroll;
+
+
+    const complaintsCardOffset =
+      complaintsDesiredCardTop -
+      complaintsNaturalCardRect.top;
+
+
+    complaintsCard
+      .style
+      .transform =
+        `translate3d(
+          0,
+          ${complaintsCardOffset}px,
+          0
+        )`;
+
+
+    complaintsStep
+      .classList
+      .add(
+        "copy-scroll-active"
+      );
+
   }
 
 
@@ -2187,6 +2607,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setSupplierManagementSource();
 
+    setCustomerComplaintsSource();
+
 
     /*
       Re-establish card-crossing state for the
@@ -2215,6 +2637,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       resetFreeTrialMobileState();
 
+      resetCustomerComplaintsMobileState();
+
 
       updateMobileMedia();
 
@@ -2234,6 +2658,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resetSupplierManagementMobileState();
 
     resetFreeTrialMobileState();
+
+    resetCustomerComplaintsMobileState();
 
 
     clearDocumentControlVisualState();
@@ -2423,6 +2849,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setDocumentControlSource();
 
   setSupplierManagementSource();
+
+  setCustomerComplaintsSource();
 
 
   if (
