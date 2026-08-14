@@ -165,16 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     CUSTOMER COMPLAINTS MOBILE PLAYBACK STATE
-  ========================================================= */
-
-  let complaintsAtCeiling = false;
-
-  let complaintsHasStarted = false;
-
-
-
-  /* =========================================================
      DOCUMENT CONTROL VIDEO SOURCE
   ========================================================= */
 
@@ -307,13 +297,6 @@ document.addEventListener("DOMContentLoaded", () => {
       desiredSource;
 
 
-    complaintsAtCeiling =
-      false;
-
-    complaintsHasStarted =
-      false;
-
-
     complaintsVideo.pause();
 
     complaintsVideo.src =
@@ -322,16 +305,9 @@ document.addEventListener("DOMContentLoaded", () => {
     complaintsVideo.load();
 
 
-    /*
-      Desktop / laptop keeps the normal media activation
-      behaviour. Mobile Complaints playback is controlled
-      explicitly when the screen reaches the ceiling.
-    */
-
     if (
       activeMediaId ===
-        "media-customer-complaints" &&
-      !mobileQuery.matches
+      "media-customer-complaints"
     ) {
 
       complaintsVideo
@@ -339,235 +315,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(() => {});
 
     }
-
-  }
-
-
-
-  /* =========================================================
-     CUSTOMER COMPLAINTS MOBILE PLAYBACK HELPERS
-  ========================================================= */
-
-  function resetCustomerComplaintsPlayback() {
-
-    complaintsAtCeiling =
-      false;
-
-    complaintsHasStarted =
-      false;
-
-
-    if (!complaintsVideo) {
-      return;
-    }
-
-
-    complaintsVideo.pause();
-
-
-    try {
-
-      complaintsVideo.currentTime =
-        0;
-
-    } catch (error) {
-
-      /*
-        Video metadata may not
-        have loaded yet.
-      */
-
-    }
-
-  }
-
-
-  function prepareCustomerComplaintsOpeningFrame() {
-
-    if (
-      !complaintsVideo ||
-      !mobileQuery.matches
-    ) {
-      return;
-    }
-
-
-    if (
-      complaintsHasStarted
-    ) {
-      return;
-    }
-
-
-    complaintsVideo.pause();
-
-
-    try {
-
-      if (
-        complaintsVideo.currentTime !==
-        0
-      ) {
-
-        complaintsVideo.currentTime =
-          0;
-
-      }
-
-    } catch (error) {
-
-      /*
-        Video metadata may not
-        have loaded yet.
-      */
-
-    }
-
-  }
-
-
-  function startCustomerComplaintsPlayback() {
-
-    if (
-      !complaintsVideo ||
-      !mobileQuery.matches ||
-      !complaintsAtCeiling ||
-      complaintsHasStarted ||
-      activeMediaId !==
-        "media-customer-complaints"
-    ) {
-      return;
-    }
-
-
-    complaintsHasStarted =
-      true;
-
-
-    const playFromBeginning =
-      () => {
-
-        if (
-          !mobileQuery.matches ||
-          !complaintsAtCeiling ||
-          activeMediaId !==
-            "media-customer-complaints"
-        ) {
-
-          complaintsHasStarted =
-            false;
-
-          return;
-
-        }
-
-
-        try {
-
-          complaintsVideo.currentTime =
-            0;
-
-        } catch (error) {
-
-          /*
-            Metadata may still be settling.
-            play() below will use the current position.
-          */
-
-        }
-
-
-        complaintsVideo
-          .play()
-          .catch(
-            () => {
-
-              complaintsHasStarted =
-                false;
-
-            }
-          );
-
-      };
-
-
-    if (
-      complaintsVideo.readyState >=
-      1
-    ) {
-
-      playFromBeginning();
-
-    } else {
-
-      complaintsVideo.addEventListener(
-        "loadedmetadata",
-        playFromBeginning,
-        {
-          once: true
-        }
-      );
-
-    }
-
-  }
-
-
-  function replayCustomerComplaintsPlayback() {
-
-    if (
-      !complaintsVideo ||
-      !mobileQuery.matches ||
-      activeMediaId !==
-        "media-customer-complaints"
-    ) {
-      return;
-    }
-
-
-    complaintsHasStarted =
-      true;
-
-
-    try {
-
-      complaintsVideo.currentTime =
-        0;
-
-    } catch (error) {
-
-      /*
-        Video metadata may not
-        have loaded yet.
-      */
-
-    }
-
-
-    complaintsVideo
-      .play()
-      .catch(() => {});
-
-  }
-
-
-  if (
-    complaintsVideo
-  ) {
-
-    complaintsVideo.addEventListener(
-      "ended",
-      () => {
-
-        /*
-          Complaints deliberately does not loop.
-          Keep the final frame on screen.
-        */
-
-        complaintsVideo.pause();
-
-      }
-    );
 
   }
 
@@ -1328,24 +1075,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /*
-      Any genuine mobile exit from Customer Complaints
-      resets its one-shot playback state.
-    */
-
-    if (
-      mobileQuery.matches &&
-      activeMediaId ===
-        "media-customer-complaints" &&
-      mediaId !==
-        "media-customer-complaints"
-    ) {
-
-      resetCustomerComplaintsPlayback();
-
-    }
-
-
     activeMediaId =
       mediaId;
 
@@ -1371,20 +1100,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
           videos.forEach(
             (video) => {
-
-              /*
-                Mobile Customer Complaints is intentionally
-                started only after its screen reaches the ceiling.
-              */
-
-              if (
-                mobileQuery.matches &&
-                layer.id ===
-                  "media-customer-complaints"
-              ) {
-                return;
-              }
-
 
               video
                 .play()
@@ -1729,9 +1444,6 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================================= */
 
   function resetCustomerComplaintsMobileState() {
-
-    resetCustomerComplaintsPlayback();
-
 
     if (
       complaintsLayer
@@ -2617,6 +2329,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
        Then the Complaints video rises 1:1 with scrolling
        and stops when it reaches the ceiling.
+
+       Once Customer Complaints reaches the ceiling,
+       its video becomes active and loops continuously.
     ===================================================== */
 
     const freeTrialCardRect =
@@ -2648,14 +2363,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        CUSTOMER COMPLAINTS IS STILL BELOW / MOVING UP
-
-       FORWARD ENTRY:
-       Keep Complaints paused on its opening frame while it rises.
-
-       REVERSE EXIT:
-       As soon as Complaints starts sliding down from the ceiling,
-       replay the video from the beginning while the screen moves
-       downward. Only reset it after it is fully below the viewport.
     ===================================================== */
 
     if (
@@ -2676,58 +2383,19 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
-      const complaintsLeavingCeiling =
-        complaintsAtCeiling;
-
-
-      complaintsAtCeiling =
-        false;
-
+      /*
+        If the user scrolls back out of Customer Complaints,
+        restore Free Trial as the active section.
+      */
 
       if (
         activeMediaId ===
         "media-customer-complaints"
       ) {
 
-        /*
-          First reverse movement away from the ceiling:
-          start the Complaints video again from 0.
-        */
-
-        if (
-          complaintsLeavingCeiling
-        ) {
-
-          replayCustomerComplaintsPlayback();
-
-        }
-
-
-        /*
-          Keep Complaints active and playing while it is
-          still partially visible. Switch back to Free Trial
-          only after Complaints is completely below the screen.
-        */
-
-        if (
-          complaintsOffset >=
-          viewportHeight - 1
-        ) {
-
-          activateMedia(
-            "media-free-trial"
-          );
-
-        }
-
-      } else {
-
-        /*
-          Normal forward entry: hold the opening frame
-          until Complaints reaches the ceiling.
-        */
-
-        prepareCustomerComplaintsOpeningFrame();
+        activateMedia(
+          "media-free-trial"
+        );
 
       }
 
@@ -2741,21 +2409,11 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =====================================================
        CUSTOMER COMPLAINTS HAS HIT THE CEILING
 
-       Mobile playback rule:
-       - hold the opening frame while rising
-       - start once from 0 at the ceiling
-       - play through once
-       - hold the final frame
-       - on reverse exit, replay from 0 while sliding down
+       Customer Complaints is now the active media.
+       Because the video element has the loop attribute,
+       it continues playing repeatedly on both mobile
+       and laptop / desktop until another media layer activates.
     ===================================================== */
-
-    const complaintsJustReachedCeiling =
-      !complaintsAtCeiling;
-
-
-    complaintsAtCeiling =
-      true;
-
 
     if (
       activeMediaId !==
@@ -2765,16 +2423,6 @@ document.addEventListener("DOMContentLoaded", () => {
       activateMedia(
         "media-customer-complaints"
       );
-
-    }
-
-
-    if (
-      complaintsJustReachedCeiling ||
-      !complaintsHasStarted
-    ) {
-
-      startCustomerComplaintsPlayback();
 
     }
 
@@ -3134,33 +2782,6 @@ document.addEventListener("DOMContentLoaded", () => {
             )
             .forEach(
               (video) => {
-
-                /*
-                  Do not restart Complaints after it has ended.
-                  If the tab was hidden mid-play, resume it.
-                */
-
-                if (
-                  video ===
-                    complaintsVideo
-                ) {
-
-                  if (
-                    video.ended
-                  ) {
-                    return;
-                  }
-
-
-                  if (
-                    mobileQuery.matches &&
-                    !complaintsHasStarted
-                  ) {
-                    return;
-                  }
-
-                }
-
 
                 video
                   .play()
