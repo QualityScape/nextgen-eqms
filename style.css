@@ -554,6 +554,19 @@ body {
     margin-right: 6vw;
   }
 
+
+  /* CUSTOMER COMPLAINTS — MOVE CARD TO RIGHT */
+
+  .story-step[data-media="media-customer-complaints"] {
+    justify-content: flex-end;
+  }
+
+
+  .story-step[data-media="media-customer-complaints"] .story-card {
+    margin-left: 0;
+    margin-right: 6vw;
+  }
+
 }
 
 
