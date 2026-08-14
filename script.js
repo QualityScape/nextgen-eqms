@@ -164,6 +164,15 @@ document.addEventListener("DOMContentLoaded", () => {
   let supplierCardWasAtOrAboveMiddle = null;
 
 
+  /* =========================================================
+     CUSTOMER COMPLAINTS MOBILE PLAYBACK STATE
+  ========================================================= */
+
+  let complaintsAtCeiling = false;
+
+  let complaintsHasStarted = false;
+
+
 
   /* =========================================================
      DOCUMENT CONTROL VIDEO SOURCE
@@ -298,6 +307,13 @@ document.addEventListener("DOMContentLoaded", () => {
       desiredSource;
 
 
+    complaintsAtCeiling =
+      false;
+
+    complaintsHasStarted =
+      false;
+
+
     complaintsVideo.pause();
 
     complaintsVideo.src =
@@ -306,9 +322,16 @@ document.addEventListener("DOMContentLoaded", () => {
     complaintsVideo.load();
 
 
+    /*
+      Desktop / laptop keeps the normal media activation
+      behaviour. Mobile Complaints playback is controlled
+      explicitly when the screen reaches the ceiling.
+    */
+
     if (
       activeMediaId ===
-      "media-customer-complaints"
+        "media-customer-complaints" &&
+      !mobileQuery.matches
     ) {
 
       complaintsVideo
@@ -316,6 +339,197 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(() => {});
 
     }
+
+  }
+
+
+
+  /* =========================================================
+     CUSTOMER COMPLAINTS MOBILE PLAYBACK HELPERS
+  ========================================================= */
+
+  function resetCustomerComplaintsPlayback() {
+
+    complaintsAtCeiling =
+      false;
+
+    complaintsHasStarted =
+      false;
+
+
+    if (!complaintsVideo) {
+      return;
+    }
+
+
+    complaintsVideo.pause();
+
+
+    try {
+
+      complaintsVideo.currentTime =
+        0;
+
+    } catch (error) {
+
+      /*
+        Video metadata may not
+        have loaded yet.
+      */
+
+    }
+
+  }
+
+
+  function prepareCustomerComplaintsOpeningFrame() {
+
+    if (
+      !complaintsVideo ||
+      !mobileQuery.matches
+    ) {
+      return;
+    }
+
+
+    if (
+      complaintsHasStarted
+    ) {
+      return;
+    }
+
+
+    complaintsVideo.pause();
+
+
+    try {
+
+      if (
+        complaintsVideo.currentTime !==
+        0
+      ) {
+
+        complaintsVideo.currentTime =
+          0;
+
+      }
+
+    } catch (error) {
+
+      /*
+        Video metadata may not
+        have loaded yet.
+      */
+
+    }
+
+  }
+
+
+  function startCustomerComplaintsPlayback() {
+
+    if (
+      !complaintsVideo ||
+      !mobileQuery.matches ||
+      !complaintsAtCeiling ||
+      complaintsHasStarted ||
+      activeMediaId !==
+        "media-customer-complaints"
+    ) {
+      return;
+    }
+
+
+    complaintsHasStarted =
+      true;
+
+
+    const playFromBeginning =
+      () => {
+
+        if (
+          !mobileQuery.matches ||
+          !complaintsAtCeiling ||
+          activeMediaId !==
+            "media-customer-complaints"
+        ) {
+
+          complaintsHasStarted =
+            false;
+
+          return;
+
+        }
+
+
+        try {
+
+          complaintsVideo.currentTime =
+            0;
+
+        } catch (error) {
+
+          /*
+            Metadata may still be settling.
+            play() below will use the current position.
+          */
+
+        }
+
+
+        complaintsVideo
+          .play()
+          .catch(
+            () => {
+
+              complaintsHasStarted =
+                false;
+
+            }
+          );
+
+      };
+
+
+    if (
+      complaintsVideo.readyState >=
+      1
+    ) {
+
+      playFromBeginning();
+
+    } else {
+
+      complaintsVideo.addEventListener(
+        "loadedmetadata",
+        playFromBeginning,
+        {
+          once: true
+        }
+      );
+
+    }
+
+  }
+
+
+  if (
+    complaintsVideo
+  ) {
+
+    complaintsVideo.addEventListener(
+      "ended",
+      () => {
+
+        /*
+          Complaints deliberately does not loop.
+          Keep the final frame on screen.
+        */
+
+        complaintsVideo.pause();
+
+      }
+    );
 
   }
 
@@ -1076,6 +1290,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    /*
+      Any genuine mobile exit from Customer Complaints
+      resets its one-shot playback state. This also covers
+      fast reverse scrolling that skips across handoff stages.
+    */
+
+    if (
+      mobileQuery.matches &&
+      activeMediaId ===
+        "media-customer-complaints" &&
+      mediaId !==
+        "media-customer-complaints"
+    ) {
+
+      resetCustomerComplaintsPlayback();
+
+    }
+
+
     activeMediaId =
       mediaId;
 
@@ -1101,6 +1334,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
           videos.forEach(
             (video) => {
+
+              /*
+                Mobile Customer Complaints is intentionally
+                started only after its screen reaches the ceiling.
+              */
+
+              if (
+                mobileQuery.matches &&
+                layer.id ===
+                  "media-customer-complaints"
+              ) {
+                return;
+              }
+
 
               video
                 .play()
@@ -1445,6 +1692,9 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================================= */
 
   function resetCustomerComplaintsMobileState() {
+
+    resetCustomerComplaintsPlayback();
+
 
     if (
       complaintsLayer
@@ -2036,7 +2286,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       activeMediaId !==
-      "media-supplier-management"
+        "media-supplier-management" &&
+      activeMediaId !==
+        "media-free-trial" &&
+      activeMediaId !==
+        "media-customer-complaints"
     ) {
 
       activateMedia(
@@ -2324,8 +2578,8 @@ document.addEventListener("DOMContentLoaded", () => {
        Customer Complaints remains one screen below until
        the Free Trial card has completely left the top.
 
-       Then the Complaints video rises 1:1 with scrolling
-       and stops when it reaches the ceiling.
+       Then the Complaints screen rises 1:1 with scrolling,
+       holding its opening frame until it reaches the ceiling.
     ===================================================== */
 
     const freeTrialCardRect =
@@ -2378,70 +2632,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       /*
-        Reverse-scrolling from Customer Complaints restores
-        Free Trial as the active section.
+        While Complaints is below / rising into view,
+        keep it paused on its opening frame.
       */
+
+      complaintsAtCeiling =
+        false;
+
 
       if (
         activeMediaId ===
         "media-customer-complaints"
       ) {
 
+        /*
+          Reverse-scrolling out of Complaints:
+          restore Free Trial and reset Complaints so
+          the next forward entry starts cleanly.
+        */
+
         activateMedia(
           "media-free-trial"
         );
 
-      }
+        resetCustomerComplaintsPlayback();
 
+      } else {
 
-      /*
-        Start the Complaints video while it is physically
-        rising into view, rather than waiting until
-        it has already reached the ceiling.
-      */
-
-      if (
-        complaintsOffset <
-        viewportHeight &&
-        complaintsVideo
-      ) {
-
-        complaintsVideo
-          .play()
-          .catch(() => {});
-
-      }
-
-
-      /*
-        When Customer Complaints is completely below
-        the viewport, return its video to the beginning.
-      */
-
-      if (
-        complaintsOffset >=
-        viewportHeight &&
-        complaintsVideo &&
-        activeMediaId !==
-          "media-customer-complaints"
-      ) {
-
-        complaintsVideo.pause();
-
-
-        try {
-
-          complaintsVideo.currentTime =
-            0;
-
-        } catch (error) {
-
-          /*
-            Video metadata may not
-            have loaded yet.
-          */
-
-        }
+        prepareCustomerComplaintsOpeningFrame();
 
       }
 
@@ -2455,9 +2673,22 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =====================================================
        CUSTOMER COMPLAINTS HAS HIT THE CEILING
 
-       At this point it completely covers Free Trial,
-       so changing the active media creates no visual jump.
+       At this point it completely covers Free Trial.
+
+       Mobile playback rule:
+       - hold the opening frame while rising
+       - start once from 0 at the ceiling
+       - play through once
+       - hold the final frame
     ===================================================== */
+
+    const complaintsJustReachedCeiling =
+      !complaintsAtCeiling;
+
+
+    complaintsAtCeiling =
+      true;
+
 
     if (
       activeMediaId !==
@@ -2467,6 +2698,16 @@ document.addEventListener("DOMContentLoaded", () => {
       activateMedia(
         "media-customer-complaints"
       );
+
+    }
+
+
+    if (
+      complaintsJustReachedCeiling ||
+      !complaintsHasStarted
+    ) {
+
+      startCustomerComplaintsPlayback();
 
     }
 
@@ -2826,6 +3067,36 @@ document.addEventListener("DOMContentLoaded", () => {
             )
             .forEach(
               (video) => {
+
+                /*
+                  Do not restart Complaints after it has ended.
+                  If the tab was hidden mid-play, resume it.
+                */
+
+                if (
+                  video ===
+                    complaintsVideo
+                ) {
+
+                  if (
+                    video.ended
+                  ) {
+                    return;
+                  }
+
+
+                  if (
+                    mobileQuery.matches &&
+                    (
+                      !complaintsAtCeiling ||
+                      !complaintsHasStarted
+                    )
+                  ) {
+                    return;
+                  }
+
+                }
+
 
                 video
                   .play()
