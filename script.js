@@ -121,6 +121,26 @@ document.addEventListener("DOMContentLoaded", () => {
       : null;
 
 
+  const customersLayer =
+    document.getElementById(
+      "media-customers"
+    );
+
+
+  const customersStep =
+    document.querySelector(
+      '.story-step[data-media="media-customers"]'
+    );
+
+
+  const customersCard =
+    customersStep
+      ? customersStep.querySelector(
+          ".story-card"
+        )
+      : null;
+
+
   const mobileQuery =
     window.matchMedia(
       "(max-width: 768px)"
@@ -1279,6 +1299,13 @@ document.addEventListener("DOMContentLoaded", () => {
      CUSTOMER COMPLAINTS
      →
      CUSTOMER COMPLAINTS CARD
+
+     STAGE 5:
+     CUSTOMER COMPLAINTS CARD
+     →
+     CUSTOMERS
+     →
+     CUSTOMERS CARD
   ========================================================= */
 
   function getMobileViewportHeight() {
@@ -1486,6 +1513,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
+     RESET CUSTOMERS MOBILE STATE
+  ========================================================= */
+
+  function resetCustomersMobileState() {
+
+    if (
+      customersLayer
+    ) {
+
+      customersLayer
+        .style
+        .transform =
+          "";
+
+    }
+
+
+    if (
+      customersStep
+    ) {
+
+      customersStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+    }
+
+
+    if (
+      customersCard
+    ) {
+
+      customersCard
+        .style
+        .transform =
+          "";
+
+    }
+
+  }
+
+
+
+  /* =========================================================
      UPDATE MOBILE MEDIA
   ========================================================= */
 
@@ -1511,7 +1584,10 @@ document.addEventListener("DOMContentLoaded", () => {
       !freeTrialCard ||
       !complaintsLayer ||
       !complaintsStep ||
-      !complaintsCard
+      !complaintsCard ||
+      !customersLayer ||
+      !customersStep ||
+      !customersCard
     ) {
 
       updateDocumentControlReadingState();
@@ -1653,6 +1729,29 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
+      customersLayer
+        .style
+        .transform =
+          `translate3d(
+            0,
+            ${viewportHeight}px,
+            0
+          )`;
+
+
+      customersStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      customersCard
+        .style
+        .transform =
+          "";
+
+
       /*
         Supplier is not at its ceiling here.
         Cancel/reset any Supplier zoom state.
@@ -1703,7 +1802,9 @@ document.addEventListener("DOMContentLoaded", () => {
           activeMediaId ===
             "media-free-trial" ||
           activeMediaId ===
-            "media-customer-complaints";
+            "media-customer-complaints" ||
+          activeMediaId ===
+            "media-customers";
 
 
         activateMedia(
@@ -1900,6 +2001,29 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
+      customersLayer
+        .style
+        .transform =
+          `translate3d(
+            0,
+            ${viewportHeight}px,
+            0
+          )`;
+
+
+      customersStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      customersCard
+        .style
+        .transform =
+          "";
+
+
       /*
         The Supplier screen has left its ceiling position.
         Reset the zoom so reverse-scroll shows the original
@@ -1950,7 +2074,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMediaId ===
           "media-free-trial" ||
         activeMediaId ===
-          "media-customer-complaints"
+          "media-customer-complaints" ||
+        activeMediaId ===
+          "media-customers"
       ) {
 
         activateMedia(
@@ -2039,7 +2165,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-free-trial" &&
       activeMediaId !==
-        "media-customer-complaints"
+        "media-customer-complaints" &&
+      activeMediaId !==
+        "media-customers"
     ) {
 
       activateMedia(
@@ -2209,6 +2337,29 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
+      customersLayer
+        .style
+        .transform =
+          `translate3d(
+            0,
+            ${viewportHeight}px,
+            0
+          )`;
+
+
+      customersStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      customersCard
+        .style
+        .transform =
+          "";
+
+
       /*
         Reverse-scrolling from Free Trial restores
         Supplier Management as the active section.
@@ -2218,7 +2369,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMediaId ===
           "media-free-trial" ||
         activeMediaId ===
-          "media-customer-complaints"
+          "media-customer-complaints" ||
+        activeMediaId ===
+          "media-customers"
       ) {
 
         activateMedia(
@@ -2255,7 +2408,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-free-trial" &&
       activeMediaId !==
-        "media-customer-complaints"
+        "media-customer-complaints" &&
+      activeMediaId !==
+        "media-customers"
     ) {
 
       activateMedia(
@@ -2383,6 +2538,29 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
+      customersLayer
+        .style
+        .transform =
+          `translate3d(
+            0,
+            ${viewportHeight}px,
+            0
+          )`;
+
+
+      customersStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      customersCard
+        .style
+        .transform =
+          "";
+
+
       /*
         If the user scrolls back out of Customer Complaints,
         restore Free Trial as the active section.
@@ -2390,7 +2568,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         activeMediaId ===
-        "media-customer-complaints"
+          "media-customer-complaints" ||
+        activeMediaId ===
+          "media-customers"
       ) {
 
         activateMedia(
@@ -2417,7 +2597,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       activeMediaId !==
-      "media-customer-complaints"
+        "media-customer-complaints" &&
+      activeMediaId !==
+        "media-customers"
     ) {
 
       activateMedia(
@@ -2476,6 +2658,163 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     complaintsStep
+      .classList
+      .add(
+        "copy-scroll-active"
+      );
+
+
+
+    /* =====================================================
+       STAGE 5 — CUSTOMERS SCREEN MOVEMENT
+
+       Customers remains one screen below until the
+       Customer Complaints card has completely left the top.
+
+       Then the Customers logo screen rises 1:1 with scrolling
+       and stops when it reaches the ceiling.
+    ===================================================== */
+
+    const complaintsCardRect =
+      complaintsCard
+        .getBoundingClientRect();
+
+
+    const customersOffset =
+      Math.max(
+        0,
+        Math.min(
+          viewportHeight,
+          viewportHeight +
+            complaintsCardRect.bottom
+        )
+      );
+
+
+    customersLayer
+      .style
+      .transform =
+        `translate3d(
+          0,
+          ${customersOffset}px,
+          0
+        )`;
+
+
+
+    /* =====================================================
+       CUSTOMERS IS STILL BELOW / MOVING UP
+    ===================================================== */
+
+    if (
+      customersOffset >
+      0
+    ) {
+
+      customersStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+
+      customersCard
+        .style
+        .transform =
+          "";
+
+
+      /*
+        Reverse-scrolling from Customers restores
+        Customer Complaints as the active section.
+      */
+
+      if (
+        activeMediaId ===
+          "media-customers"
+      ) {
+
+        activateMedia(
+          "media-customer-complaints"
+        );
+
+      }
+
+
+      return;
+
+    }
+
+
+
+    /* =====================================================
+       CUSTOMERS HAS HIT THE CEILING
+
+       The moving-logo screen now completely covers
+       Customer Complaints.
+    ===================================================== */
+
+    if (
+      activeMediaId !==
+      "media-customers"
+    ) {
+
+      activateMedia(
+        "media-customers"
+      );
+
+    }
+
+
+
+    /* =====================================================
+       CUSTOMERS CARD
+
+       Only after the logo screen reaches the ceiling
+       does its card begin moving upward from below.
+    ===================================================== */
+
+    const customersPostHandoffScroll =
+      Math.max(
+        0,
+        -complaintsCardRect.bottom -
+          viewportHeight
+      );
+
+
+    customersCard
+      .style
+      .transform =
+        "none";
+
+
+    const customersNaturalCardRect =
+      customersCard
+        .getBoundingClientRect();
+
+
+    const customersDesiredCardTop =
+      viewportHeight +
+      24 -
+      customersPostHandoffScroll;
+
+
+    const customersCardOffset =
+      customersDesiredCardTop -
+      customersNaturalCardRect.top;
+
+
+    customersCard
+      .style
+      .transform =
+        `translate3d(
+          0,
+          ${customersCardOffset}px,
+          0
+        )`;
+
+
+    customersStep
       .classList
       .add(
         "copy-scroll-active"
@@ -2597,6 +2936,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       resetCustomerComplaintsMobileState();
 
+      resetCustomersMobileState();
+
 
       updateMobileMedia();
 
@@ -2618,6 +2959,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resetFreeTrialMobileState();
 
     resetCustomerComplaintsMobileState();
+
+    resetCustomersMobileState();
 
 
     clearDocumentControlVisualState();
