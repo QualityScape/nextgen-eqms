@@ -513,6 +513,44 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
+  function replayCustomerComplaintsPlayback() {
+
+    if (
+      !complaintsVideo ||
+      !mobileQuery.matches ||
+      activeMediaId !==
+        "media-customer-complaints"
+    ) {
+      return;
+    }
+
+
+    complaintsHasStarted =
+      true;
+
+
+    try {
+
+      complaintsVideo.currentTime =
+        0;
+
+    } catch (error) {
+
+      /*
+        Video metadata may not
+        have loaded yet.
+      */
+
+    }
+
+
+    complaintsVideo
+      .play()
+      .catch(() => {});
+
+  }
+
+
   if (
     complaintsVideo
   ) {
@@ -1292,8 +1330,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*
       Any genuine mobile exit from Customer Complaints
-      resets its one-shot playback state. This also covers
-      fast reverse scrolling that skips across handoff stages.
+      resets its one-shot playback state.
     */
 
     if (
@@ -2578,8 +2615,8 @@ document.addEventListener("DOMContentLoaded", () => {
        Customer Complaints remains one screen below until
        the Free Trial card has completely left the top.
 
-       Then the Complaints screen rises 1:1 with scrolling,
-       holding its opening frame until it reaches the ceiling.
+       Then the Complaints video rises 1:1 with scrolling
+       and stops when it reaches the ceiling.
     ===================================================== */
 
     const freeTrialCardRect =
@@ -2611,6 +2648,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        CUSTOMER COMPLAINTS IS STILL BELOW / MOVING UP
+
+       FORWARD ENTRY:
+       Keep Complaints paused on its opening frame while it rises.
+
+       REVERSE EXIT:
+       As soon as Complaints starts sliding down from the ceiling,
+       replay the video from the beginning while the screen moves
+       downward. Only reset it after it is fully below the viewport.
     ===================================================== */
 
     if (
@@ -2631,10 +2676,9 @@ document.addEventListener("DOMContentLoaded", () => {
           "";
 
 
-      /*
-        While Complaints is below / rising into view,
-        keep it paused on its opening frame.
-      */
+      const complaintsLeavingCeiling =
+        complaintsAtCeiling;
+
 
       complaintsAtCeiling =
         false;
@@ -2646,18 +2690,42 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
 
         /*
-          Reverse-scrolling out of Complaints:
-          restore Free Trial and reset Complaints so
-          the next forward entry starts cleanly.
+          First reverse movement away from the ceiling:
+          start the Complaints video again from 0.
         */
 
-        activateMedia(
-          "media-free-trial"
-        );
+        if (
+          complaintsLeavingCeiling
+        ) {
 
-        resetCustomerComplaintsPlayback();
+          replayCustomerComplaintsPlayback();
+
+        }
+
+
+        /*
+          Keep Complaints active and playing while it is
+          still partially visible. Switch back to Free Trial
+          only after Complaints is completely below the screen.
+        */
+
+        if (
+          complaintsOffset >=
+          viewportHeight - 1
+        ) {
+
+          activateMedia(
+            "media-free-trial"
+          );
+
+        }
 
       } else {
+
+        /*
+          Normal forward entry: hold the opening frame
+          until Complaints reaches the ceiling.
+        */
 
         prepareCustomerComplaintsOpeningFrame();
 
@@ -2673,13 +2741,12 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =====================================================
        CUSTOMER COMPLAINTS HAS HIT THE CEILING
 
-       At this point it completely covers Free Trial.
-
        Mobile playback rule:
        - hold the opening frame while rising
        - start once from 0 at the ceiling
        - play through once
        - hold the final frame
+       - on reverse exit, replay from 0 while sliding down
     ===================================================== */
 
     const complaintsJustReachedCeiling =
@@ -3087,10 +3154,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                   if (
                     mobileQuery.matches &&
-                    (
-                      !complaintsAtCeiling ||
-                      !complaintsHasStarted
-                    )
+                    !complaintsHasStarted
                   ) {
                     return;
                   }
