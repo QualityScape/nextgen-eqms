@@ -419,6 +419,200 @@ body {
 
 
 /* =========================================================
+   CUSTOMER LOGOS
+========================================================= */
+
+#media-customers {
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      rgba(36, 55, 74, 0.50) 0%,
+      rgba(15, 24, 34, 0.36) 34%,
+      rgba(7, 11, 15, 0.96) 78%
+    ),
+    #070b0f;
+}
+
+
+.customers-stage {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  z-index: 0;
+}
+
+
+.customer-logo-row {
+  position: absolute;
+
+  left: 0;
+
+  width: 100%;
+
+  overflow: hidden;
+
+  pointer-events: none;
+}
+
+
+.customer-logo-row-left {
+  top: 22%;
+
+  transform:
+    translateY(-50%);
+}
+
+
+.customer-logo-row-right {
+  top: 72%;
+
+  transform:
+    translateY(-50%);
+}
+
+
+.customer-logo-track {
+  display: flex;
+  align-items: center;
+
+  width: max-content;
+
+  will-change: transform;
+}
+
+
+.customer-logo-row-left
+.customer-logo-track {
+  animation:
+    customerLogosLeft
+    34s
+    linear
+    infinite;
+}
+
+
+.customer-logo-row-right
+.customer-logo-track {
+  animation:
+    customerLogosRight
+    36s
+    linear
+    infinite;
+}
+
+
+.customer-logo-set {
+  display: flex;
+  align-items: center;
+
+  flex: 0 0 auto;
+
+  gap: 38px;
+
+  padding-right: 38px;
+}
+
+
+.customer-logo-item {
+  flex:
+    0
+    0
+    210px;
+
+  height: 118px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    18px
+    22px;
+
+  border-radius: 14px;
+
+  background:
+    rgba(255, 255, 255, 0.96);
+
+  border:
+    1px solid rgba(255, 255, 255, 0.38);
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.24);
+}
+
+
+.customer-logo-item img {
+  display: block;
+
+  max-width: 82%;
+  max-height: 68%;
+
+  width: auto;
+  height: auto;
+
+  object-fit: contain;
+}
+
+
+.customers-treatment {
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(7, 11, 15, 0.98) 0%,
+      rgba(7, 11, 15, 0.48) 7%,
+      rgba(7, 11, 15, 0) 15%,
+      rgba(7, 11, 15, 0) 85%,
+      rgba(7, 11, 15, 0.48) 93%,
+      rgba(7, 11, 15, 0.98) 100%
+    );
+}
+
+
+@keyframes customerLogosLeft {
+
+  from {
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+  to {
+    transform:
+      translate3d(-50%, 0, 0);
+  }
+
+}
+
+
+@keyframes customerLogosRight {
+
+  from {
+    transform:
+      translate3d(-50%, 0, 0);
+  }
+
+  to {
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+}
+
+
+
+/* =========================================================
    STORY TEXT TRACK
 ========================================================= */
 
@@ -566,6 +760,20 @@ body {
     margin-left: 0;
     margin-right: 6vw;
   }
+
+
+  /* CUSTOMERS — CENTRED BETWEEN LOGO ROWS */
+
+  .story-step[data-media="media-customers"] {
+    justify-content: center;
+  }
+
+
+  .story-step[data-media="media-customers"] .story-card {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
 
 }
 
@@ -1378,6 +1586,155 @@ body {
     color: #30373e;
   }
 
+
+
+  /* =====================================================
+     CUSTOMERS MOBILE HANDOFF
+
+     Customers sits above Customer Complaints.
+
+     JavaScript moves this layer upward from one full
+     screen below after the Complaints card leaves the top.
+  ===================================================== */
+
+  #media-customers {
+    opacity: 1;
+    visibility: visible;
+
+    z-index: 6;
+
+    transform:
+      translate3d(0, 100%, 0);
+
+    transition: none;
+
+    will-change: transform;
+
+    pointer-events: none;
+  }
+
+
+  /* KEEP THE TWO LOGO ROWS CLEAR OF THE READING CARD */
+
+  #media-customers .customer-logo-row-left {
+    top: 18%;
+  }
+
+
+  #media-customers .customer-logo-row-right {
+    top: 76%;
+  }
+
+
+  #media-customers .customer-logo-set {
+    gap: 22px;
+
+    padding-right: 22px;
+  }
+
+
+  #media-customers .customer-logo-item {
+    flex:
+      0
+      0
+      150px;
+
+    height: 88px;
+
+    padding:
+      13px
+      16px;
+
+    border-radius: 12px;
+  }
+
+
+  #media-customers .customer-logo-item img {
+    max-width: 84%;
+    max-height: 70%;
+  }
+
+
+  #media-customers
+  .customer-logo-row-left
+  .customer-logo-track {
+    animation-duration: 24s;
+  }
+
+
+  #media-customers
+  .customer-logo-row-right
+  .customer-logo-track {
+    animation-duration: 26s;
+  }
+
+
+
+  /* =====================================================
+     CUSTOMERS MOBILE CARD
+
+     Intended sequence:
+
+     COMPLAINTS CARD LEAVES THE TOP
+     →
+     CUSTOMER LOGOS SCREEN RISES FROM BELOW
+     →
+     LOGOS SCREEN STOPS AT THE CEILING
+     →
+     CUSTOMERS CARD FOLLOWS UP FROM BELOW
+  ===================================================== */
+
+  .story-step[data-media="media-customers"] {
+    min-height: 360vh;
+    min-height: 360svh;
+
+    align-items: center;
+    justify-content: center;
+
+    padding:
+      8vh
+      20px;
+  }
+
+
+  .story-step[data-media="media-customers"] .story-card {
+    width: 80%;
+    max-width: 315px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding:
+      29px
+      27px
+      31px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: none;
+
+    transition: none;
+
+    will-change: transform;
+  }
+
+
+  .story-step[data-media="media-customers"].copy-scroll-active
+  .story-card {
+    opacity: 1;
+    visibility: visible;
+  }
+
+
+  .story-step[data-media="media-customers"] .story-body {
+    font-size: 23px;
+    line-height: 1.65;
+
+    color: #30373e;
+  }
+
+
 }
 
 
@@ -1400,6 +1757,11 @@ body {
 
   .media-layer {
     transition: none;
+  }
+
+
+  .customer-logo-track {
+    animation: none;
   }
 
 }
