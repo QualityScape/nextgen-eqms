@@ -2250,7 +2250,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       activeMediaId !==
-      "media-free-trial"
+        "media-free-trial" &&
+      activeMediaId !==
+        "media-customer-complaints"
     ) {
 
       activateMedia(
