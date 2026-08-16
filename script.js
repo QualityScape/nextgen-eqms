@@ -141,6 +141,26 @@ document.addEventListener("DOMContentLoaded", () => {
       : null;
 
 
+  const matrixAcquisitionLayer =
+    document.getElementById(
+      "media-matrix-acquisition"
+    );
+
+
+  const matrixAcquisitionStep =
+    document.querySelector(
+      '.story-step[data-media="media-matrix-acquisition"]'
+    );
+
+
+  const matrixAcquisitionCard =
+    matrixAcquisitionStep
+      ? matrixAcquisitionStep.querySelector(
+          ".story-card"
+        )
+      : null;
+
+
   const mobileQuery =
     window.matchMedia(
       "(max-width: 768px)"
@@ -1306,6 +1326,13 @@ document.addEventListener("DOMContentLoaded", () => {
      CUSTOMERS
      →
      CUSTOMERS CARD
+
+     STAGE 6:
+     CUSTOMERS CARD
+     →
+     MATRIX ACQUISITION
+     →
+     MATRIX ACQUISITION CARD
   ========================================================= */
 
   function getMobileViewportHeight() {
@@ -1559,6 +1586,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
+     RESET MATRIX ACQUISITION MOBILE STATE
+  ========================================================= */
+
+  function resetMatrixAcquisitionMobileState() {
+
+    if (
+      matrixAcquisitionLayer
+    ) {
+
+      matrixAcquisitionLayer
+        .style
+        .transform =
+          "";
+
+    }
+
+
+    if (
+      matrixAcquisitionStep
+    ) {
+
+      matrixAcquisitionStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+    }
+
+
+    if (
+      matrixAcquisitionCard
+    ) {
+
+      matrixAcquisitionCard
+        .style
+        .transform =
+          "";
+
+    }
+
+  }
+
+
+
+  /* =========================================================
      UPDATE MOBILE MEDIA
   ========================================================= */
 
@@ -1587,7 +1660,10 @@ document.addEventListener("DOMContentLoaded", () => {
       !complaintsCard ||
       !customersLayer ||
       !customersStep ||
-      !customersCard
+      !customersCard ||
+      !matrixAcquisitionLayer ||
+      !matrixAcquisitionStep ||
+      !matrixAcquisitionCard
     ) {
 
       updateDocumentControlReadingState();
@@ -1608,12 +1684,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        STAGE 1 — CONNECTED PLATFORM SCREEN MOVEMENT
-
-       Before the Document Control card leaves the top,
-       Connected Platform remains exactly one screen below.
-
-       When the Document Control card has fully left:
-       Connected Platform rises 1:1 with scrolling.
     ===================================================== */
 
     const connectedPlatformOffset =
@@ -1630,17 +1700,8 @@ document.addEventListener("DOMContentLoaded", () => {
     connectedPlatformLayer
       .style
       .transform =
-        `translate3d(
-          0,
-          ${connectedPlatformOffset}px,
-          0
-        )`;
+        `translate3d(0, ${connectedPlatformOffset}px, 0)`;
 
-
-
-    /* =====================================================
-       CONNECTED PLATFORM IS STILL MOVING UP
-    ===================================================== */
 
     if (
       connectedPlatformOffset >
@@ -1654,108 +1715,64 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-      connectedPlatformCard
-        .style
-        .transform =
-          "";
+      connectedPlatformCard.style.transform =
+        "";
 
 
-      supplierLayer
-        .style
-        .transform =
-          `translate3d(
-            0,
-            ${viewportHeight}px,
-            0
-          )`;
+      supplierLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      supplierStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      supplierCard.style.transform =
+        "";
 
 
-      supplierStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
+      freeTrialLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      freeTrialStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      freeTrialCard.style.transform =
+        "";
 
 
-      supplierCard
-        .style
-        .transform =
-          "";
+      complaintsLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      complaintsStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      complaintsCard.style.transform =
+        "";
 
 
-      freeTrialLayer
-        .style
-        .transform =
-          `translate3d(
-            0,
-            ${viewportHeight}px,
-            0
-          )`;
+      customersLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      customersStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      customersCard.style.transform =
+        "";
 
 
-      freeTrialStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
+      matrixAcquisitionLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
 
+      matrixAcquisitionStep.classList.remove(
+        "copy-scroll-active"
+      );
 
-      freeTrialCard
-        .style
-        .transform =
-          "";
+      matrixAcquisitionCard.style.transform =
+        "";
 
-
-      complaintsLayer
-        .style
-        .transform =
-          `translate3d(
-            0,
-            ${viewportHeight}px,
-            0
-          )`;
-
-
-      complaintsStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
-
-
-      complaintsCard
-        .style
-        .transform =
-          "";
-
-
-      customersLayer
-        .style
-        .transform =
-          `translate3d(
-            0,
-            ${viewportHeight}px,
-            0
-          )`;
-
-
-      customersStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
-
-
-      customersCard
-        .style
-        .transform =
-          "";
-
-
-      /*
-        Supplier is not at its ceiling here.
-        Cancel/reset any Supplier zoom state.
-      */
 
       if (
         supplierAtCeiling ||
@@ -1782,8 +1799,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      supplierAtCeiling =
-        false;
+      supplierAtCeiling = false;
 
       supplierCardWasAtOrAboveMiddle =
         null;
@@ -1791,7 +1807,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         activeMediaId !==
-        "media-document-control"
+          "media-document-control"
       ) {
 
         const reversingFromLaterSection =
@@ -1804,7 +1820,9 @@ document.addEventListener("DOMContentLoaded", () => {
           activeMediaId ===
             "media-customer-complaints" ||
           activeMediaId ===
-            "media-customers";
+            "media-customers" ||
+          activeMediaId ===
+            "media-matrix-acquisition";
 
 
         activateMedia(
@@ -1823,14 +1841,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    /* =====================================================
-       CONNECTED PLATFORM HAS HIT THE CEILING
-    ===================================================== */
-
     if (
       activeMediaId ===
-      "media-document-control"
+        "media-document-control"
     ) {
 
       activateMedia(
@@ -1840,14 +1853,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    /* =====================================================
-       QUALITY MANAGEMENT CARD
-
-       Once Connected Platform is fixed at the ceiling,
-       continued scrolling brings the card up from below.
-    ===================================================== */
-
     const connectedPostHandoffScroll =
       Math.max(
         0,
@@ -1856,10 +1861,8 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    connectedPlatformCard
-      .style
-      .transform =
-        "none";
+    connectedPlatformCard.style.transform =
+      "none";
 
 
     const connectedNaturalCardRect =
@@ -1878,32 +1881,18 @@ document.addEventListener("DOMContentLoaded", () => {
       connectedNaturalCardRect.top;
 
 
-    connectedPlatformCard
-      .style
-      .transform =
-        `translate3d(
-          0,
-          ${connectedCardOffset}px,
-          0
-        )`;
+    connectedPlatformCard.style.transform =
+      `translate3d(0, ${connectedCardOffset}px, 0)`;
 
 
-    connectedPlatformStep
-      .classList
-      .add(
-        "copy-scroll-active"
-      );
+    connectedPlatformStep.classList.add(
+      "copy-scroll-active"
+    );
 
 
 
     /* =====================================================
-       STAGE 2 — SUPPLIER MANAGEMENT SCREEN MOVEMENT
-
-       Supplier Management remains one screen below until
-       the Quality Management card has completely left the top.
-
-       Then the Supplier Management video rises 1:1 with
-       scrolling and stops when it reaches the ceiling.
+       STAGE 2 — SUPPLIER MANAGEMENT
     ===================================================== */
 
     const connectedCardRect =
@@ -1922,113 +1911,66 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    supplierLayer
-      .style
-      .transform =
-        `translate3d(
-          0,
-          ${supplierOffset}px,
-          0
-        )`;
+    supplierLayer.style.transform =
+      `translate3d(0, ${supplierOffset}px, 0)`;
 
-
-
-    /* =====================================================
-       SUPPLIER MANAGEMENT IS STILL BELOW / MOVING UP
-    ===================================================== */
 
     if (
       supplierOffset >
       0
     ) {
 
-      supplierStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
+      supplierStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      supplierCard.style.transform =
+        "";
 
 
-      supplierCard
-        .style
-        .transform =
-          "";
+      freeTrialLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      freeTrialStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      freeTrialCard.style.transform =
+        "";
 
 
-      freeTrialLayer
-        .style
-        .transform =
-          `translate3d(
-            0,
-            ${viewportHeight}px,
-            0
-          )`;
+      complaintsLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      complaintsStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      complaintsCard.style.transform =
+        "";
 
 
-      freeTrialStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
+      customersLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      customersStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      customersCard.style.transform =
+        "";
 
 
-      freeTrialCard
-        .style
-        .transform =
-          "";
+      matrixAcquisitionLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
 
+      matrixAcquisitionStep.classList.remove(
+        "copy-scroll-active"
+      );
 
-      complaintsLayer
-        .style
-        .transform =
-          `translate3d(
-            0,
-            ${viewportHeight}px,
-            0
-          )`;
+      matrixAcquisitionCard.style.transform =
+        "";
 
-
-      complaintsStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
-
-
-      complaintsCard
-        .style
-        .transform =
-          "";
-
-
-      customersLayer
-        .style
-        .transform =
-          `translate3d(
-            0,
-            ${viewportHeight}px,
-            0
-          )`;
-
-
-      customersStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
-
-
-      customersCard
-        .style
-        .transform =
-          "";
-
-
-      /*
-        The Supplier screen has left its ceiling position.
-        Reset the zoom so reverse-scroll shows the original
-        full-page Supplier composition while it slides down.
-      */
 
       if (
         supplierAtCeiling ||
@@ -2055,18 +1997,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      supplierAtCeiling =
-        false;
+      supplierAtCeiling = false;
 
       supplierCardWasAtOrAboveMiddle =
         null;
 
-
-      /*
-        If the user scrolls backwards from Supplier
-        Management, restore Connected Platform as
-        the active section.
-      */
 
       if (
         activeMediaId ===
@@ -2076,7 +2011,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMediaId ===
           "media-customer-complaints" ||
         activeMediaId ===
-          "media-customers"
+          "media-customers" ||
+        activeMediaId ===
+          "media-matrix-acquisition"
       ) {
 
         activateMedia(
@@ -2086,15 +2023,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /*
-        Start the Supplier video while it is physically
-        rising into view, rather than waiting until
-        it has already reached the ceiling.
-      */
-
       if (
         supplierOffset <
-        viewportHeight &&
+          viewportHeight &&
         supplierVideo
       ) {
 
@@ -2105,14 +2036,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /*
-        When Supplier Management is completely below
-        the viewport, return its video to the beginning.
-      */
-
       if (
         supplierOffset >=
-        viewportHeight &&
+          viewportHeight &&
         supplierVideo &&
         activeMediaId !==
           "media-supplier-management"
@@ -2128,10 +2054,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
 
-          /*
-            Video metadata may not
-            have loaded yet.
-          */
+          /* metadata not ready */
 
         }
 
@@ -2142,14 +2065,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-
-    /* =====================================================
-       SUPPLIER MANAGEMENT HAS HIT THE CEILING
-
-       At this point it completely covers Connected Platform,
-       so changing the active media creates no visual jump.
-    ===================================================== */
 
     const supplierJustReachedCeiling =
       !supplierAtCeiling;
@@ -2167,7 +2082,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-customer-complaints" &&
       activeMediaId !==
-        "media-customers"
+        "media-customers" &&
+      activeMediaId !==
+        "media-matrix-acquisition"
     ) {
 
       activateMedia(
@@ -2176,11 +2093,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-    /*
-      The first arrival at the ceiling starts
-      the 1.5-second zoom delay.
-    */
 
     if (
       supplierJustReachedCeiling
@@ -2194,14 +2106,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    /* =====================================================
-       SUPPLIER MANAGEMENT CARD
-
-       Only after the Supplier video has reached the ceiling
-       does its card begin moving upward from below.
-    ===================================================== */
-
     const supplierPostHandoffScroll =
       Math.max(
         0,
@@ -2210,15 +2114,12 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    supplierCard
-      .style
-      .transform =
-        "none";
+    supplierCard.style.transform =
+      "none";
 
 
     const supplierNaturalCardRect =
-      supplierCard
-        .getBoundingClientRect();
+      supplierCard.getBoundingClientRect();
 
 
     const supplierDesiredCardTop =
@@ -2232,21 +2133,13 @@ document.addEventListener("DOMContentLoaded", () => {
       supplierNaturalCardRect.top;
 
 
-    supplierCard
-      .style
-      .transform =
-        `translate3d(
-          0,
-          ${supplierCardOffset}px,
-          0
-        )`;
+    supplierCard.style.transform =
+      `translate3d(0, ${supplierCardOffset}px, 0)`;
 
 
-    supplierStep
-      .classList
-      .add(
-        "copy-scroll-active"
-      );
+    supplierStep.classList.add(
+      "copy-scroll-active"
+    );
 
 
     updateSupplierManagementReadingState(
@@ -2256,18 +2149,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       STAGE 3 — FREE TRIAL SCREEN MOVEMENT
-
-       Free Trial remains one screen below until
-       the Supplier Management card has completely left the top.
-
-       Then the Free Trial still image rises 1:1 with scrolling
-       and stops when it reaches the ceiling.
+       STAGE 3 — FREE TRIAL
     ===================================================== */
 
     const supplierCardRect =
-      supplierCard
-        .getBoundingClientRect();
+      supplierCard.getBoundingClientRect();
 
 
     const freeTrialOffset =
@@ -2281,89 +2167,55 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    freeTrialLayer
-      .style
-      .transform =
-        `translate3d(
-          0,
-          ${freeTrialOffset}px,
-          0
-        )`;
+    freeTrialLayer.style.transform =
+      `translate3d(0, ${freeTrialOffset}px, 0)`;
 
-
-
-    /* =====================================================
-       FREE TRIAL IS STILL BELOW / MOVING UP
-    ===================================================== */
 
     if (
       freeTrialOffset >
       0
     ) {
 
-      freeTrialStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
+      freeTrialStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      freeTrialCard.style.transform =
+        "";
 
 
-      freeTrialCard
-        .style
-        .transform =
-          "";
+      complaintsLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      complaintsStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      complaintsCard.style.transform =
+        "";
 
 
-      complaintsLayer
-        .style
-        .transform =
-          `translate3d(
-            0,
-            ${viewportHeight}px,
-            0
-          )`;
+      customersLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      customersStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      customersCard.style.transform =
+        "";
 
 
-      complaintsStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
+      matrixAcquisitionLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
 
+      matrixAcquisitionStep.classList.remove(
+        "copy-scroll-active"
+      );
 
-      complaintsCard
-        .style
-        .transform =
-          "";
+      matrixAcquisitionCard.style.transform =
+        "";
 
-
-      customersLayer
-        .style
-        .transform =
-          `translate3d(
-            0,
-            ${viewportHeight}px,
-            0
-          )`;
-
-
-      customersStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
-
-
-      customersCard
-        .style
-        .transform =
-          "";
-
-
-      /*
-        Reverse-scrolling from Free Trial restores
-        Supplier Management as the active section.
-      */
 
       if (
         activeMediaId ===
@@ -2371,7 +2223,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMediaId ===
           "media-customer-complaints" ||
         activeMediaId ===
-          "media-customers"
+          "media-customers" ||
+        activeMediaId ===
+          "media-matrix-acquisition"
       ) {
 
         activateMedia(
@@ -2380,12 +2234,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
 
-
-      /*
-        Keep Supplier's existing bidirectional
-        card-middle zoom behaviour alive while
-        reverse-scrolling back into that section.
-      */
 
       updateSupplierManagementReadingState(
         viewportHeight
@@ -2397,20 +2245,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    /* =====================================================
-       FREE TRIAL HAS HIT THE CEILING
-
-       The still image now completely covers Supplier Management.
-    ===================================================== */
-
     if (
       activeMediaId !==
         "media-free-trial" &&
       activeMediaId !==
         "media-customer-complaints" &&
       activeMediaId !==
-        "media-customers"
+        "media-customers" &&
+      activeMediaId !==
+        "media-matrix-acquisition"
     ) {
 
       activateMedia(
@@ -2420,14 +2263,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    /* =====================================================
-       FREE TRIAL CARD
-
-       Only after the Free Trial image reaches the ceiling
-       does its text card begin moving upward from below.
-    ===================================================== */
-
     const freeTrialPostHandoffScroll =
       Math.max(
         0,
@@ -2436,15 +2271,12 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    freeTrialCard
-      .style
-      .transform =
-        "none";
+    freeTrialCard.style.transform =
+      "none";
 
 
     const freeTrialNaturalCardRect =
-      freeTrialCard
-        .getBoundingClientRect();
+      freeTrialCard.getBoundingClientRect();
 
 
     const freeTrialDesiredCardTop =
@@ -2458,40 +2290,22 @@ document.addEventListener("DOMContentLoaded", () => {
       freeTrialNaturalCardRect.top;
 
 
-    freeTrialCard
-      .style
-      .transform =
-        `translate3d(
-          0,
-          ${freeTrialCardOffset}px,
-          0
-        )`;
+    freeTrialCard.style.transform =
+      `translate3d(0, ${freeTrialCardOffset}px, 0)`;
 
 
-    freeTrialStep
-      .classList
-      .add(
-        "copy-scroll-active"
-      );
+    freeTrialStep.classList.add(
+      "copy-scroll-active"
+    );
 
 
 
     /* =====================================================
-       STAGE 4 — CUSTOMER COMPLAINTS SCREEN MOVEMENT
-
-       Customer Complaints remains one screen below until
-       the Free Trial card has completely left the top.
-
-       Then the Complaints video rises 1:1 with scrolling
-       and stops when it reaches the ceiling.
-
-       Once Customer Complaints reaches the ceiling,
-       its video becomes active and loops continuously.
+       STAGE 4 — CUSTOMER COMPLAINTS
     ===================================================== */
 
     const freeTrialCardRect =
-      freeTrialCard
-        .getBoundingClientRect();
+      freeTrialCard.getBoundingClientRect();
 
 
     const complaintsOffset =
@@ -2505,72 +2319,52 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    complaintsLayer
-      .style
-      .transform =
-        `translate3d(
-          0,
-          ${complaintsOffset}px,
-          0
-        )`;
+    complaintsLayer.style.transform =
+      `translate3d(0, ${complaintsOffset}px, 0)`;
 
-
-
-    /* =====================================================
-       CUSTOMER COMPLAINTS IS STILL BELOW / MOVING UP
-    ===================================================== */
 
     if (
       complaintsOffset >
       0
     ) {
 
-      complaintsStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
+      complaintsStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      complaintsCard.style.transform =
+        "";
 
 
-      complaintsCard
-        .style
-        .transform =
-          "";
+      customersLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      customersStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      customersCard.style.transform =
+        "";
 
 
-      customersLayer
-        .style
-        .transform =
-          `translate3d(
-            0,
-            ${viewportHeight}px,
-            0
-          )`;
+      matrixAcquisitionLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
 
+      matrixAcquisitionStep.classList.remove(
+        "copy-scroll-active"
+      );
 
-      customersStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
+      matrixAcquisitionCard.style.transform =
+        "";
 
-
-      customersCard
-        .style
-        .transform =
-          "";
-
-
-      /*
-        If the user scrolls back out of Customer Complaints,
-        restore Free Trial as the active section.
-      */
 
       if (
         activeMediaId ===
           "media-customer-complaints" ||
         activeMediaId ===
-          "media-customers"
+          "media-customers" ||
+        activeMediaId ===
+          "media-matrix-acquisition"
       ) {
 
         activateMedia(
@@ -2585,21 +2379,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    /* =====================================================
-       CUSTOMER COMPLAINTS HAS HIT THE CEILING
-
-       Customer Complaints is now the active media.
-       Because the video element has the loop attribute,
-       it continues playing repeatedly on both mobile
-       and laptop / desktop until another media layer activates.
-    ===================================================== */
-
     if (
       activeMediaId !==
         "media-customer-complaints" &&
       activeMediaId !==
-        "media-customers"
+        "media-customers" &&
+      activeMediaId !==
+        "media-matrix-acquisition"
     ) {
 
       activateMedia(
@@ -2609,14 +2395,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    /* =====================================================
-       CUSTOMER COMPLAINTS CARD
-
-       Only after the Complaints video reaches the ceiling
-       does its card begin moving upward from below.
-    ===================================================== */
-
     const complaintsPostHandoffScroll =
       Math.max(
         0,
@@ -2625,15 +2403,12 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    complaintsCard
-      .style
-      .transform =
-        "none";
+    complaintsCard.style.transform =
+      "none";
 
 
     const complaintsNaturalCardRect =
-      complaintsCard
-        .getBoundingClientRect();
+      complaintsCard.getBoundingClientRect();
 
 
     const complaintsDesiredCardTop =
@@ -2647,37 +2422,22 @@ document.addEventListener("DOMContentLoaded", () => {
       complaintsNaturalCardRect.top;
 
 
-    complaintsCard
-      .style
-      .transform =
-        `translate3d(
-          0,
-          ${complaintsCardOffset}px,
-          0
-        )`;
+    complaintsCard.style.transform =
+      `translate3d(0, ${complaintsCardOffset}px, 0)`;
 
 
-    complaintsStep
-      .classList
-      .add(
-        "copy-scroll-active"
-      );
+    complaintsStep.classList.add(
+      "copy-scroll-active"
+    );
 
 
 
     /* =====================================================
-       STAGE 5 — CUSTOMERS SCREEN MOVEMENT
-
-       Customers remains one screen below until the
-       Customer Complaints card has completely left the top.
-
-       Then the Customers logo screen rises 1:1 with scrolling
-       and stops when it reaches the ceiling.
+       STAGE 5 — CUSTOMERS
     ===================================================== */
 
     const complaintsCardRect =
-      complaintsCard
-        .getBoundingClientRect();
+      complaintsCard.getBoundingClientRect();
 
 
     const customersOffset =
@@ -2691,47 +2451,39 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    customersLayer
-      .style
-      .transform =
-        `translate3d(
-          0,
-          ${customersOffset}px,
-          0
-        )`;
+    customersLayer.style.transform =
+      `translate3d(0, ${customersOffset}px, 0)`;
 
-
-
-    /* =====================================================
-       CUSTOMERS IS STILL BELOW / MOVING UP
-    ===================================================== */
 
     if (
       customersOffset >
       0
     ) {
 
-      customersStep
-        .classList
-        .remove(
-          "copy-scroll-active"
-        );
+      customersStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      customersCard.style.transform =
+        "";
 
 
-      customersCard
-        .style
-        .transform =
-          "";
+      matrixAcquisitionLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
 
+      matrixAcquisitionStep.classList.remove(
+        "copy-scroll-active"
+      );
 
-      /*
-        Reverse-scrolling from Customers restores
-        Customer Complaints as the active section.
-      */
+      matrixAcquisitionCard.style.transform =
+        "";
+
 
       if (
         activeMediaId ===
-          "media-customers"
+          "media-customers" ||
+        activeMediaId ===
+          "media-matrix-acquisition"
       ) {
 
         activateMedia(
@@ -2746,17 +2498,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    /* =====================================================
-       CUSTOMERS HAS HIT THE CEILING
-
-       The moving-logo screen now completely covers
-       Customer Complaints.
-    ===================================================== */
-
     if (
       activeMediaId !==
-      "media-customers"
+        "media-customers" &&
+      activeMediaId !==
+        "media-matrix-acquisition"
     ) {
 
       activateMedia(
@@ -2766,14 +2512,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-
-    /* =====================================================
-       CUSTOMERS CARD
-
-       Only after the logo screen reaches the ceiling
-       does its card begin moving upward from below.
-    ===================================================== */
-
     const customersPostHandoffScroll =
       Math.max(
         0,
@@ -2782,15 +2520,12 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    customersCard
-      .style
-      .transform =
-        "none";
+    customersCard.style.transform =
+      "none";
 
 
     const customersNaturalCardRect =
-      customersCard
-        .getBoundingClientRect();
+      customersCard.getBoundingClientRect();
 
 
     const customersDesiredCardTop =
@@ -2804,21 +2539,116 @@ document.addEventListener("DOMContentLoaded", () => {
       customersNaturalCardRect.top;
 
 
-    customersCard
-      .style
-      .transform =
-        `translate3d(
-          0,
-          ${customersCardOffset}px,
-          0
-        )`;
+    customersCard.style.transform =
+      `translate3d(0, ${customersCardOffset}px, 0)`;
 
 
-    customersStep
-      .classList
-      .add(
+    customersStep.classList.add(
+      "copy-scroll-active"
+    );
+
+
+
+    /* =====================================================
+       STAGE 6 — MATRIX ACQUISITION
+    ===================================================== */
+
+    const customersCardRect =
+      customersCard.getBoundingClientRect();
+
+
+    const matrixAcquisitionOffset =
+      Math.max(
+        0,
+        Math.min(
+          viewportHeight,
+          viewportHeight +
+            customersCardRect.bottom
+        )
+      );
+
+
+    matrixAcquisitionLayer.style.transform =
+      `translate3d(0, ${matrixAcquisitionOffset}px, 0)`;
+
+
+    if (
+      matrixAcquisitionOffset >
+      0
+    ) {
+
+      matrixAcquisitionStep.classList.remove(
         "copy-scroll-active"
       );
+
+      matrixAcquisitionCard.style.transform =
+        "";
+
+
+      if (
+        activeMediaId ===
+          "media-matrix-acquisition"
+      ) {
+
+        activateMedia(
+          "media-customers"
+        );
+
+      }
+
+
+      return;
+
+    }
+
+
+    if (
+      activeMediaId !==
+        "media-matrix-acquisition"
+    ) {
+
+      activateMedia(
+        "media-matrix-acquisition"
+      );
+
+    }
+
+
+    const matrixAcquisitionPostHandoffScroll =
+      Math.max(
+        0,
+        -customersCardRect.bottom -
+          viewportHeight
+      );
+
+
+    matrixAcquisitionCard.style.transform =
+      "none";
+
+
+    const matrixAcquisitionNaturalCardRect =
+      matrixAcquisitionCard
+        .getBoundingClientRect();
+
+
+    const matrixAcquisitionDesiredCardTop =
+      viewportHeight +
+      24 -
+      matrixAcquisitionPostHandoffScroll;
+
+
+    const matrixAcquisitionCardOffset =
+      matrixAcquisitionDesiredCardTop -
+      matrixAcquisitionNaturalCardRect.top;
+
+
+    matrixAcquisitionCard.style.transform =
+      `translate3d(0, ${matrixAcquisitionCardOffset}px, 0)`;
+
+
+    matrixAcquisitionStep.classList.add(
+      "copy-scroll-active"
+    );
 
   }
 
@@ -2938,6 +2768,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       resetCustomersMobileState();
 
+      resetMatrixAcquisitionMobileState();
+
 
       updateMobileMedia();
 
@@ -2961,6 +2793,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resetCustomerComplaintsMobileState();
 
     resetCustomersMobileState();
+
+    resetMatrixAcquisitionMobileState();
 
 
     clearDocumentControlVisualState();
@@ -3113,7 +2947,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (
             layer.id !==
-            activeMediaId
+              activeMediaId
           ) {
             return;
           }
