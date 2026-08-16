@@ -1822,6 +1822,56 @@ body {
 
 
 /* =========================================================
+   INDIVIDUAL CUSTOMER LOGO SIZE NORMALISATION
+========================================================= */
+
+/*
+  NATi and Arovella fill more of their source image canvas
+  than the other customer logos.
+
+  Reduce only these two images.
+  The logo cards themselves remain exactly the same size.
+*/
+
+
+/* LAPTOP / DESKTOP */
+
+@media (min-width: 769px) {
+
+  #media-customers img[src$="nati.png"] {
+    transform:
+      scale(0.84);
+  }
+
+
+  #media-customers img[src$="arovella.png"] {
+    transform:
+      scale(0.82);
+  }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+  #media-customers img[src$="nati.png"] {
+    transform:
+      scale(0.82);
+  }
+
+
+  #media-customers img[src$="arovella.png"] {
+    transform:
+      scale(0.80);
+  }
+
+}
+
+
+
+/* =========================================================
    REDUCED MOTION
 ========================================================= */
 
