@@ -540,11 +540,10 @@ body {
 
   border-radius: 14px;
 
-  background:
-    rgba(255, 255, 255, 0.96);
+  background: #ffffff;
 
   border:
-    1px solid rgba(255, 255, 255, 0.38);
+    1px solid #ffffff;
 
   box-shadow:
     0 12px 30px rgba(0, 0, 0, 0.24);
@@ -1654,7 +1653,6 @@ body {
 
      Keep both scrolling rows together near the top so the
      section feels denser and shows more customer activity.
-     Larger cards / logos improve mobile readability.
   ----------------------------------------------------- */
 
   #media-customers .customer-logo-row-left {
@@ -1678,19 +1676,24 @@ body {
     flex:
       0
       0
-      184px;
+      168px;
 
-    width: 184px;
-    min-width: 184px;
-    max-width: 184px;
+    width: 168px;
+    min-width: 168px;
+    max-width: 168px;
 
-    height: 104px;
+    height: 96px;
 
     padding:
       10px
       12px;
 
     border-radius: 12px;
+
+    background: #ffffff;
+
+    border:
+      1px solid #ffffff;
 
     overflow: hidden;
   }
@@ -1706,9 +1709,10 @@ body {
     max-height: 100%;
 
     object-fit: contain;
+    object-position: center;
 
     transform:
-      scale(1.18);
+      scale(1.08);
 
     transform-origin:
       center center;
