@@ -321,7 +321,7 @@ body {
   display: block;
 
   object-fit: contain;
-  object-position: center;
+  object-position: 25% center;
 
   background: #070b0f;
 }
