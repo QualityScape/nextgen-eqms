@@ -307,7 +307,18 @@ body {
 ========================================================= */
 
 #media-ai {
-  background: #070b0f;
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      rgba(114, 169, 220, 0.42) 0%,
+      rgba(64, 111, 172, 0.36) 38%,
+      rgba(30, 70, 120, 0.28) 68%
+    ),
+    linear-gradient(
+      180deg,
+      #386fa9 0%,
+      #285a91 100%
+    );
 }
 
 
@@ -323,7 +334,7 @@ body {
   object-fit: contain;
   object-position: 25% center;
 
-  background: #070b0f;
+  background: transparent;
 }
 
 
@@ -1371,11 +1382,6 @@ body {
 
   /* =====================================================
      SUPPLIER MANAGEMENT MOBILE HANDOFF
-
-     Supplier Management sits above Connected Platform.
-
-     JavaScript will move this layer from below the viewport
-     to the ceiling as the user continues scrolling.
   ===================================================== */
 
   #media-supplier-management {
@@ -1398,14 +1404,6 @@ body {
 
   /* =====================================================
      SUPPLIER MANAGEMENT MOBILE CARD
-
-     Same sequence as Connected Platform:
-
-     VIDEO RISES
-     →
-     VIDEO STOPS AT TOP
-     →
-     SUPPLIER MANAGEMENT CARD FOLLOWS
   ===================================================== */
 
   .story-step[data-media="media-supplier-management"] {
@@ -1462,13 +1460,6 @@ body {
 
   /* =====================================================
      FREE TRIAL MOBILE IMAGE
-
-     Portrait artwork is intentionally kept clean:
-     no darkening filter and no zoom animation.
-
-     The image is anchored to the top so the
-     "Start your free trial today!" artwork remains
-     visible above the reading card.
   ===================================================== */
 
   #media-free-trial {
@@ -1512,16 +1503,6 @@ body {
 
   /* =====================================================
      FREE TRIAL MOBILE CARD
-
-     Intended sequence:
-
-     SUPPLIER MANAGEMENT CARD LEAVES THE TOP
-     →
-     FREE TRIAL IMAGE RISES FROM BELOW
-     →
-     IMAGE STOPS AT THE CEILING
-     →
-     FREE TRIAL CARD FOLLOWS UP FROM BELOW
   ===================================================== */
 
   .story-step[data-media="media-free-trial"] {
@@ -1578,13 +1559,6 @@ body {
 
   /* =====================================================
      CUSTOMER COMPLAINTS MOBILE VIDEO
-
-     The portrait video has already been prepared
-     with its meaningful visual content shifted upward.
-
-     Keep the browser framing anchored to the top so
-     the lower part of the screen remains available
-     for the reading card.
   ===================================================== */
 
   #customer-complaints-video {
@@ -1601,15 +1575,6 @@ body {
 
   /* =====================================================
      CUSTOMER COMPLAINTS MOBILE HANDOFF
-
-     Customer Complaints sits above Free Trial.
-
-     It remains one full screen below until the
-     Free Trial card has completely left the top.
-
-     JavaScript then moves the Complaints video
-     upward 1:1 with scrolling until it reaches
-     the ceiling.
   ===================================================== */
 
   #media-customer-complaints {
@@ -1632,16 +1597,6 @@ body {
 
   /* =====================================================
      CUSTOMER COMPLAINTS MOBILE CARD
-
-     Intended sequence:
-
-     FREE TRIAL CARD LEAVES THE TOP
-     →
-     COMPLAINTS VIDEO RISES FROM BELOW
-     →
-     VIDEO STOPS AT THE CEILING
-     →
-     COMPLAINTS CARD FOLLOWS UP FROM BELOW
   ===================================================== */
 
   .story-step[data-media="media-customer-complaints"] {
@@ -1698,11 +1653,6 @@ body {
 
   /* =====================================================
      CUSTOMERS MOBILE HANDOFF
-
-     Customers sits above Customer Complaints.
-
-     JavaScript moves this layer upward from one full
-     screen below after the Complaints card leaves the top.
   ===================================================== */
 
   #media-customers {
@@ -1724,9 +1674,6 @@ body {
 
   /* -----------------------------------------------------
      CUSTOMERS MOBILE LOGO CLUSTER
-
-     Keep both scrolling rows together near the top so the
-     section feels denser and shows more customer activity.
   ----------------------------------------------------- */
 
   #media-customers .customer-logo-row-left {
@@ -1795,8 +1742,6 @@ body {
   }
 
 
-  /* Softer mobile edge treatment so logos stay clear. */
-
   #media-customers .customers-treatment {
     background:
       linear-gradient(
@@ -1828,16 +1773,6 @@ body {
 
   /* =====================================================
      CUSTOMERS MOBILE CARD
-
-     Intended sequence:
-
-     COMPLAINTS CARD LEAVES THE TOP
-     →
-     CUSTOMER LOGOS SCREEN RISES FROM BELOW
-     →
-     LOGOS SCREEN STOPS AT THE CEILING
-     →
-     CUSTOMERS CARD FOLLOWS UP FROM BELOW
   ===================================================== */
 
   .story-step[data-media="media-customers"] {
@@ -1894,11 +1829,6 @@ body {
 
   /* =====================================================
      MATRIX ACQUISITION MOBILE HANDOFF
-
-     Matrix Acquisition sits above Customers.
-
-     JavaScript moves this layer upward from one full
-     screen below after the Customers card leaves the top.
   ===================================================== */
 
   #media-matrix-acquisition {
@@ -1942,16 +1872,6 @@ body {
 
   /* =====================================================
      MATRIX ACQUISITION MOBILE CARD
-
-     Intended sequence:
-
-     CUSTOMERS CARD LEAVES THE TOP
-     →
-     MATRIX ACQUISITION IMAGE RISES FROM BELOW
-     →
-     IMAGE STOPS AT THE CEILING
-     →
-     MATRIX ACQUISITION CARD FOLLOWS UP FROM BELOW
   ===================================================== */
 
   .story-step[data-media="media-matrix-acquisition"] {
@@ -2008,10 +1928,6 @@ body {
 
   /* =====================================================
      CONVERSATIONAL AI MOBILE VIDEO
-
-     The dedicated portrait video is already prepared for
-     a mobile 9:16 frame. Keep it clean and full-screen.
-     No additional zoom or darkening is applied.
   ===================================================== */
 
   #ai-video {
@@ -2032,11 +1948,6 @@ body {
 
   /* =====================================================
      CONVERSATIONAL AI MOBILE HANDOFF
-
-     Conversational AI sits above Matrix Acquisition.
-
-     JavaScript moves this layer upward from one full
-     screen below after the Matrix card leaves the top.
   ===================================================== */
 
   #media-ai {
@@ -2061,16 +1972,6 @@ body {
 
   /* =====================================================
      CONVERSATIONAL AI MOBILE CARD
-
-     Intended sequence:
-
-     MATRIX ACQUISITION CARD LEAVES THE TOP
-     →
-     AI VIDEO RISES FROM BELOW
-     →
-     VIDEO STOPS AT THE CEILING
-     →
-     CONVERSATIONAL AI CARD FOLLOWS UP FROM BELOW
   ===================================================== */
 
   .story-step[data-media="media-ai"] {
