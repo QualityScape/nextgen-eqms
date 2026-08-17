@@ -303,6 +303,32 @@ body {
 
 
 /* =========================================================
+   CONVERSATIONAL AI VIDEO
+========================================================= */
+
+#media-ai {
+  background: #070b0f;
+}
+
+
+#ai-video {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: contain;
+  object-position: center;
+
+  background: #070b0f;
+}
+
+
+
+/* =========================================================
    DOCUMENT CONTROL / VIDEO TREATMENT
 ========================================================= */
 
@@ -810,6 +836,20 @@ body {
     margin-left: 0;
     margin-right: 0;
   }
+
+
+  /* CONVERSATIONAL AI — MOVE CARD TO RIGHT */
+
+  .story-step[data-media="media-ai"] {
+    justify-content: flex-end;
+  }
+
+
+  .story-step[data-media="media-ai"] .story-card {
+    margin-left: 0;
+    margin-right: 6vw;
+  }
+
 
 
   /* CUSTOMERS — ENLARGE LOGOS ON LAPTOP / DESKTOP ONLY */
@@ -1963,6 +2003,126 @@ body {
 
     color: #30373e;
   }
+
+
+
+  /* =====================================================
+     CONVERSATIONAL AI MOBILE VIDEO
+
+     The dedicated portrait video is already prepared for
+     a mobile 9:16 frame. Keep it clean and full-screen.
+     No additional zoom or darkening is applied.
+  ===================================================== */
+
+  #ai-video {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center top;
+
+    transform: none;
+
+    filter: none;
+
+    background: #070b0f;
+  }
+
+
+
+  /* =====================================================
+     CONVERSATIONAL AI MOBILE HANDOFF
+
+     Conversational AI sits above Matrix Acquisition.
+
+     JavaScript moves this layer upward from one full
+     screen below after the Matrix card leaves the top.
+  ===================================================== */
+
+  #media-ai {
+    background: #070b0f;
+
+    opacity: 1;
+    visibility: visible;
+
+    z-index: 8;
+
+    transform:
+      translate3d(0, 100%, 0);
+
+    transition: none;
+
+    will-change: transform;
+
+    pointer-events: none;
+  }
+
+
+
+  /* =====================================================
+     CONVERSATIONAL AI MOBILE CARD
+
+     Intended sequence:
+
+     MATRIX ACQUISITION CARD LEAVES THE TOP
+     →
+     AI VIDEO RISES FROM BELOW
+     →
+     VIDEO STOPS AT THE CEILING
+     →
+     CONVERSATIONAL AI CARD FOLLOWS UP FROM BELOW
+  ===================================================== */
+
+  .story-step[data-media="media-ai"] {
+    min-height: 360vh;
+    min-height: 360svh;
+
+    align-items: center;
+    justify-content: center;
+
+    padding:
+      8vh
+      20px;
+  }
+
+
+  .story-step[data-media="media-ai"] .story-card {
+    width: 80%;
+    max-width: 315px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding:
+      29px
+      27px
+      31px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: none;
+
+    transition: none;
+
+    will-change: transform;
+  }
+
+
+  .story-step[data-media="media-ai"].copy-scroll-active
+  .story-card {
+    opacity: 1;
+    visibility: visible;
+  }
+
+
+  .story-step[data-media="media-ai"] .story-body {
+    font-size: 23px;
+    line-height: 1.65;
+
+    color: #30373e;
+  }
+
 
 
 }
