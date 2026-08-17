@@ -161,6 +161,32 @@ document.addEventListener("DOMContentLoaded", () => {
       : null;
 
 
+  const aiVideo =
+    document.getElementById(
+      "ai-video"
+    );
+
+
+  const aiLayer =
+    document.getElementById(
+      "media-ai"
+    );
+
+
+  const aiStep =
+    document.querySelector(
+      '.story-step[data-media="media-ai"]'
+    );
+
+
+  const aiCard =
+    aiStep
+      ? aiStep.querySelector(
+          ".story-card"
+        )
+      : null;
+
+
   const mobileQuery =
     window.matchMedia(
       "(max-width: 768px)"
@@ -174,6 +200,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentSupplierSource = "";
 
   let currentComplaintsSource = "";
+
+  let currentAISource = "";
 
   let mobileScrollTicking = false;
 
@@ -351,6 +379,58 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
 
       complaintsVideo
+        .play()
+        .catch(() => {});
+
+    }
+
+  }
+
+
+
+  /* =========================================================
+     CONVERSATIONAL AI VIDEO SOURCE
+  ========================================================= */
+
+  function setConversationalAISource() {
+
+    if (!aiVideo) {
+      return;
+    }
+
+
+    const desiredSource =
+      mobileQuery.matches
+        ? aiVideo.dataset.mobileSrc
+        : aiVideo.dataset.desktopSrc;
+
+
+    if (
+      currentAISource ===
+      desiredSource
+    ) {
+      return;
+    }
+
+
+    currentAISource =
+      desiredSource;
+
+
+    aiVideo.pause();
+
+    aiVideo.src =
+      desiredSource;
+
+    aiVideo.load();
+
+
+    if (
+      activeMediaId ===
+      "media-ai"
+    ) {
+
+      aiVideo
         .play()
         .catch(() => {});
 
@@ -1333,6 +1413,13 @@ document.addEventListener("DOMContentLoaded", () => {
      MATRIX ACQUISITION
      →
      MATRIX ACQUISITION CARD
+
+     STAGE 7:
+     MATRIX ACQUISITION CARD
+     →
+     CONVERSATIONAL AI
+     →
+     CONVERSATIONAL AI CARD
   ========================================================= */
 
   function getMobileViewportHeight() {
@@ -1632,6 +1719,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
+     RESET CONVERSATIONAL AI MOBILE STATE
+  ========================================================= */
+
+  function resetConversationalAIMobileState() {
+
+    if (
+      aiLayer
+    ) {
+
+      aiLayer
+        .style
+        .transform =
+          "";
+
+    }
+
+
+    if (
+      aiStep
+    ) {
+
+      aiStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+    }
+
+
+    if (
+      aiCard
+    ) {
+
+      aiCard
+        .style
+        .transform =
+          "";
+
+    }
+
+  }
+
+
+
+  /* =========================================================
      UPDATE MOBILE MEDIA
   ========================================================= */
 
@@ -1663,7 +1796,11 @@ document.addEventListener("DOMContentLoaded", () => {
       !customersCard ||
       !matrixAcquisitionLayer ||
       !matrixAcquisitionStep ||
-      !matrixAcquisitionCard
+      !matrixAcquisitionCard ||
+      !aiVideo ||
+      !aiLayer ||
+      !aiStep ||
+      !aiCard
     ) {
 
       updateDocumentControlReadingState();
@@ -1774,6 +1911,17 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      aiLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      aiStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      aiCard.style.transform =
+        "";
+
+
       if (
         supplierAtCeiling ||
         supplierZoomTimer ||
@@ -1822,7 +1970,9 @@ document.addEventListener("DOMContentLoaded", () => {
           activeMediaId ===
             "media-customers" ||
           activeMediaId ===
-            "media-matrix-acquisition";
+            "media-matrix-acquisition" ||
+          activeMediaId ===
+            "media-ai";
 
 
         activateMedia(
@@ -1972,6 +2122,17 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      aiLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      aiStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      aiCard.style.transform =
+        "";
+
+
       if (
         supplierAtCeiling ||
         supplierZoomTimer ||
@@ -2013,7 +2174,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMediaId ===
           "media-customers" ||
         activeMediaId ===
-          "media-matrix-acquisition"
+          "media-matrix-acquisition" ||
+        activeMediaId ===
+          "media-ai"
       ) {
 
         activateMedia(
@@ -2084,7 +2247,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-customers" &&
       activeMediaId !==
-        "media-matrix-acquisition"
+        "media-matrix-acquisition" &&
+      activeMediaId !==
+        "media-ai"
     ) {
 
       activateMedia(
@@ -2217,6 +2382,17 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      aiLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      aiStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      aiCard.style.transform =
+        "";
+
+
       if (
         activeMediaId ===
           "media-free-trial" ||
@@ -2225,7 +2401,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMediaId ===
           "media-customers" ||
         activeMediaId ===
-          "media-matrix-acquisition"
+          "media-matrix-acquisition" ||
+        activeMediaId ===
+          "media-ai"
       ) {
 
         activateMedia(
@@ -2253,7 +2431,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-customers" &&
       activeMediaId !==
-        "media-matrix-acquisition"
+        "media-matrix-acquisition" &&
+      activeMediaId !==
+        "media-ai"
     ) {
 
       activateMedia(
@@ -2358,13 +2538,26 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      aiLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      aiStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      aiCard.style.transform =
+        "";
+
+
       if (
         activeMediaId ===
           "media-customer-complaints" ||
         activeMediaId ===
           "media-customers" ||
         activeMediaId ===
-          "media-matrix-acquisition"
+          "media-matrix-acquisition" ||
+        activeMediaId ===
+          "media-ai"
       ) {
 
         activateMedia(
@@ -2385,7 +2578,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-customers" &&
       activeMediaId !==
-        "media-matrix-acquisition"
+        "media-matrix-acquisition" &&
+      activeMediaId !==
+        "media-ai"
     ) {
 
       activateMedia(
@@ -2479,11 +2674,24 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      aiLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      aiStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      aiCard.style.transform =
+        "";
+
+
       if (
         activeMediaId ===
           "media-customers" ||
         activeMediaId ===
-          "media-matrix-acquisition"
+          "media-matrix-acquisition" ||
+        activeMediaId ===
+          "media-ai"
       ) {
 
         activateMedia(
@@ -2502,7 +2710,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-customers" &&
       activeMediaId !==
-        "media-matrix-acquisition"
+        "media-matrix-acquisition" &&
+      activeMediaId !==
+        "media-ai"
     ) {
 
       activateMedia(
@@ -2585,9 +2795,22 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      aiLayer.style.transform =
+        `translate3d(0, ${viewportHeight}px, 0)`;
+
+      aiStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      aiCard.style.transform =
+        "";
+
+
       if (
         activeMediaId ===
-          "media-matrix-acquisition"
+          "media-matrix-acquisition" ||
+        activeMediaId ===
+          "media-ai"
       ) {
 
         activateMedia(
@@ -2604,7 +2827,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       activeMediaId !==
-        "media-matrix-acquisition"
+        "media-matrix-acquisition" &&
+      activeMediaId !==
+        "media-ai"
     ) {
 
       activateMedia(
@@ -2647,6 +2872,157 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     matrixAcquisitionStep.classList.add(
+      "copy-scroll-active"
+    );
+
+
+
+    /* =====================================================
+       STAGE 7 — CONVERSATIONAL AI
+    ===================================================== */
+
+    const matrixAcquisitionCardRect =
+      matrixAcquisitionCard
+        .getBoundingClientRect();
+
+
+    const aiOffset =
+      Math.max(
+        0,
+        Math.min(
+          viewportHeight,
+          viewportHeight +
+            matrixAcquisitionCardRect.bottom
+        )
+      );
+
+
+    aiLayer.style.transform =
+      `translate3d(0, ${aiOffset}px, 0)`;
+
+
+    if (
+      aiOffset >
+      0
+    ) {
+
+      aiStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      aiCard.style.transform =
+        "";
+
+
+      if (
+        activeMediaId ===
+          "media-ai"
+      ) {
+
+        activateMedia(
+          "media-matrix-acquisition"
+        );
+
+      }
+
+
+      /*
+        Start the AI video while the screen is physically
+        rising into view so the interaction already feels alive.
+      */
+
+      if (
+        aiOffset <
+          viewportHeight &&
+        aiVideo
+      ) {
+
+        aiVideo
+          .play()
+          .catch(() => {});
+
+      }
+
+
+      /*
+        When AI is completely below the viewport,
+        keep it reset at the beginning.
+      */
+
+      if (
+        aiOffset >=
+          viewportHeight &&
+        aiVideo &&
+        activeMediaId !==
+          "media-ai"
+      ) {
+
+        aiVideo.pause();
+
+
+        try {
+
+          aiVideo.currentTime =
+            0;
+
+        } catch (error) {
+
+          /* metadata not ready */
+
+        }
+
+      }
+
+
+      return;
+
+    }
+
+
+    if (
+      activeMediaId !==
+        "media-ai"
+    ) {
+
+      activateMedia(
+        "media-ai"
+      );
+
+    }
+
+
+    const aiPostHandoffScroll =
+      Math.max(
+        0,
+        -matrixAcquisitionCardRect.bottom -
+          viewportHeight
+      );
+
+
+    aiCard.style.transform =
+      "none";
+
+
+    const aiNaturalCardRect =
+      aiCard.getBoundingClientRect();
+
+
+    const aiDesiredCardTop =
+      viewportHeight +
+      24 -
+      aiPostHandoffScroll;
+
+
+    const aiCardOffset =
+      aiDesiredCardTop -
+      aiNaturalCardRect.top;
+
+
+    aiCard.style.transform =
+      `translate3d(0, ${aiCardOffset}px, 0)`;
+
+
+    aiStep.classList.add(
       "copy-scroll-active"
     );
 
@@ -2736,6 +3112,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setCustomerComplaintsSource();
 
+    setConversationalAISource();
+
 
     /*
       Re-establish card-crossing state for the
@@ -2770,6 +3148,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       resetMatrixAcquisitionMobileState();
 
+      resetConversationalAIMobileState();
+
 
       updateMobileMedia();
 
@@ -2795,6 +3175,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resetCustomersMobileState();
 
     resetMatrixAcquisitionMobileState();
+
+    resetConversationalAIMobileState();
 
 
     clearDocumentControlVisualState();
@@ -2986,6 +3368,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setSupplierManagementSource();
 
   setCustomerComplaintsSource();
+
+  setConversationalAISource();
 
 
   if (
