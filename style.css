@@ -1931,18 +1931,21 @@ body {
   ===================================================== */
 
   #ai-video {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 106svh;
 
-    object-fit: cover;
-    object-position: center top;
+  top: -6svh;
+  bottom: auto;
 
-    transform: none;
+  object-fit: cover;
+  object-position: center top;
 
-    filter: none;
+  transform: none;
 
-    background: #070b0f;
-  }
+  filter: none;
+
+  background: #070b0f;
+}
 
 
 
