@@ -187,6 +187,32 @@ document.addEventListener("DOMContentLoaded", () => {
       : null;
 
 
+  const endingVideo =
+    document.getElementById(
+      "ending-video"
+    );
+
+
+  const endingLayer =
+    document.getElementById(
+      "media-ending"
+    );
+
+
+  const endingStep =
+    document.querySelector(
+      '.story-step[data-media="media-ending"]'
+    );
+
+
+  const endingCard =
+    endingStep
+      ? endingStep.querySelector(
+          ".story-card"
+        )
+      : null;
+
+
   const mobileQuery =
     window.matchMedia(
       "(max-width: 768px)"
@@ -247,6 +273,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentComplaintsSource = "";
 
   let currentAISource = "";
+
+  let currentEndingSource = "";
 
   let mobileScrollTicking = false;
 
@@ -476,6 +504,70 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
 
       aiVideo
+        .play()
+        .catch(() => {});
+
+    }
+
+  }
+
+
+
+  /* =========================================================
+     ENDING VIDEO SOURCE
+  ========================================================= */
+
+  function setEndingSource() {
+
+    if (!endingVideo) {
+      return;
+    }
+
+
+    const desiredSource =
+      mobileQuery.matches
+        ? endingVideo.dataset.mobileSrc
+        : endingVideo.dataset.desktopSrc;
+
+
+    if (
+      currentEndingSource ===
+      desiredSource
+    ) {
+      return;
+    }
+
+
+    currentEndingSource =
+      desiredSource;
+
+
+    endingVideo.pause();
+
+    endingVideo.src =
+      desiredSource;
+
+    endingVideo.load();
+
+
+    try {
+
+      endingVideo.currentTime =
+        0;
+
+    } catch (error) {
+
+      /* metadata not ready */
+
+    }
+
+
+    if (
+      activeMediaId ===
+      "media-ending"
+    ) {
+
+      endingVideo
         .play()
         .catch(() => {});
 
@@ -1224,7 +1316,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function activateMedia(
     mediaId,
     force = false,
-    restartDocumentAnimation = true
+    restartDocumentAnimation = true,
+    preserveEndingFrame = false
   ) {
 
     const mediaChanged =
@@ -1285,6 +1378,14 @@ document.addEventListener("DOMContentLoaded", () => {
             (video) => {
 
               video.pause();
+
+
+              if (
+                preserveEndingFrame &&
+                video === endingVideo
+              ) {
+                return;
+              }
 
 
               try {
@@ -1465,6 +1566,13 @@ document.addEventListener("DOMContentLoaded", () => {
      CONVERSATIONAL AI
      →
      CONVERSATIONAL AI CARD
+
+     STAGE 8:
+     CONVERSATIONAL AI CARD
+     →
+     ENDING
+     →
+     ENDING CARD
   ========================================================= */
 
   function getMobileViewportHeight() {
@@ -1934,6 +2042,81 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
+     RESET ENDING MOBILE STATE
+  ========================================================= */
+
+  function resetEndingMobileState() {
+
+    if (
+      endingLayer
+    ) {
+
+      endingLayer
+        .style
+        .transform =
+          "";
+
+
+      endingLayer
+        .style
+        .visibility =
+          "";
+
+    }
+
+
+    if (
+      endingStep
+    ) {
+
+      endingStep
+        .classList
+        .remove(
+          "copy-scroll-active"
+        );
+
+    }
+
+
+    if (
+      endingCard
+    ) {
+
+      endingCard
+        .style
+        .transform =
+          "";
+
+    }
+
+
+    if (
+      endingVideo &&
+      activeMediaId !==
+        "media-ending"
+    ) {
+
+      endingVideo.pause();
+
+
+      try {
+
+        endingVideo.currentTime =
+          0;
+
+      } catch (error) {
+
+        /* metadata not ready */
+
+      }
+
+    }
+
+  }
+
+
+
+  /* =========================================================
      UPDATE MOBILE MEDIA
   ========================================================= */
 
@@ -1969,7 +2152,11 @@ document.addEventListener("DOMContentLoaded", () => {
       !aiVideo ||
       !aiLayer ||
       !aiStep ||
-      !aiCard
+      !aiCard ||
+      !endingVideo ||
+      !endingLayer ||
+      !endingStep ||
+      !endingCard
     ) {
 
       updateDocumentControlReadingState();
@@ -2104,6 +2291,19 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      parkMobileLayer(
+        endingLayer,
+        viewportHeight
+      );
+
+      endingStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      endingCard.style.transform =
+        "";
+
+
       if (
         supplierAtCeiling ||
         supplierZoomTimer ||
@@ -2154,7 +2354,9 @@ document.addEventListener("DOMContentLoaded", () => {
           activeMediaId ===
             "media-matrix-acquisition" ||
           activeMediaId ===
-            "media-ai";
+            "media-ai" ||
+          activeMediaId ===
+            "media-ending";
 
 
         activateMedia(
@@ -2328,6 +2530,19 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      parkMobileLayer(
+        endingLayer,
+        viewportHeight
+      );
+
+      endingStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      endingCard.style.transform =
+        "";
+
+
       if (
         supplierAtCeiling ||
         supplierZoomTimer ||
@@ -2371,7 +2586,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMediaId ===
           "media-matrix-acquisition" ||
         activeMediaId ===
-          "media-ai"
+          "media-ai" ||
+        activeMediaId ===
+          "media-ending"
       ) {
 
         activateMedia(
@@ -2444,7 +2661,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-matrix-acquisition" &&
       activeMediaId !==
-        "media-ai"
+        "media-ai" &&
+      activeMediaId !==
+        "media-ending"
     ) {
 
       activateMedia(
@@ -2599,6 +2818,19 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      parkMobileLayer(
+        endingLayer,
+        viewportHeight
+      );
+
+      endingStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      endingCard.style.transform =
+        "";
+
+
       if (
         activeMediaId ===
           "media-free-trial" ||
@@ -2609,7 +2841,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMediaId ===
           "media-matrix-acquisition" ||
         activeMediaId ===
-          "media-ai"
+          "media-ai" ||
+        activeMediaId ===
+          "media-ending"
       ) {
 
         activateMedia(
@@ -2639,7 +2873,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-matrix-acquisition" &&
       activeMediaId !==
-        "media-ai"
+        "media-ai" &&
+      activeMediaId !==
+        "media-ending"
     ) {
 
       activateMedia(
@@ -2764,6 +3000,19 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      parkMobileLayer(
+        endingLayer,
+        viewportHeight
+      );
+
+      endingStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      endingCard.style.transform =
+        "";
+
+
       if (
         activeMediaId ===
           "media-customer-complaints" ||
@@ -2772,7 +3021,9 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMediaId ===
           "media-matrix-acquisition" ||
         activeMediaId ===
-          "media-ai"
+          "media-ai" ||
+        activeMediaId ===
+          "media-ending"
       ) {
 
         activateMedia(
@@ -2795,7 +3046,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-matrix-acquisition" &&
       activeMediaId !==
-        "media-ai"
+        "media-ai" &&
+      activeMediaId !==
+        "media-ending"
     ) {
 
       activateMedia(
@@ -2907,13 +3160,28 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      parkMobileLayer(
+        endingLayer,
+        viewportHeight
+      );
+
+      endingStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      endingCard.style.transform =
+        "";
+
+
       if (
         activeMediaId ===
           "media-customers" ||
         activeMediaId ===
           "media-matrix-acquisition" ||
         activeMediaId ===
-          "media-ai"
+          "media-ai" ||
+        activeMediaId ===
+          "media-ending"
       ) {
 
         activateMedia(
@@ -2934,7 +3202,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-matrix-acquisition" &&
       activeMediaId !==
-        "media-ai"
+        "media-ai" &&
+      activeMediaId !==
+        "media-ending"
     ) {
 
       activateMedia(
@@ -3033,11 +3303,26 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      parkMobileLayer(
+        endingLayer,
+        viewportHeight
+      );
+
+      endingStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      endingCard.style.transform =
+        "";
+
+
       if (
         activeMediaId ===
           "media-matrix-acquisition" ||
         activeMediaId ===
-          "media-ai"
+          "media-ai" ||
+        activeMediaId ===
+          "media-ending"
       ) {
 
         activateMedia(
@@ -3056,7 +3341,9 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-matrix-acquisition" &&
       activeMediaId !==
-        "media-ai"
+        "media-ai" &&
+      activeMediaId !==
+        "media-ending"
     ) {
 
       activateMedia(
@@ -3144,9 +3431,24 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
+      parkMobileLayer(
+        endingLayer,
+        viewportHeight
+      );
+
+      endingStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      endingCard.style.transform =
+        "";
+
+
       if (
         activeMediaId ===
-          "media-ai"
+          "media-ai" ||
+        activeMediaId ===
+          "media-ending"
       ) {
 
         activateMedia(
@@ -3211,7 +3513,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       activeMediaId !==
-        "media-ai"
+        "media-ai" &&
+      activeMediaId !==
+        "media-ending"
     ) {
 
       activateMedia(
@@ -3253,6 +3557,152 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     aiStep.classList.add(
+      "copy-scroll-active"
+    );
+
+
+
+    /* =====================================================
+       STAGE 8 — ENDING
+    ===================================================== */
+
+    const aiCardRect =
+      aiCard.getBoundingClientRect();
+
+
+    const endingOffset =
+      Math.max(
+        0,
+        Math.min(
+          viewportHeight,
+          viewportHeight +
+            aiCardRect.bottom
+        )
+      );
+
+
+    setMobileLayerOffset(
+      endingLayer,
+      endingOffset,
+      viewportHeight
+    );
+
+
+    if (
+      endingOffset >
+      0
+    ) {
+
+      endingStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      endingCard.style.transform =
+        "";
+
+
+      /*
+        REVERSE-SCROLL:
+        As the Ending screen moves back down, restore AI
+        without resetting the visible Ending frame.
+      */
+
+      if (
+        activeMediaId ===
+          "media-ending"
+      ) {
+
+        activateMedia(
+          "media-ai",
+          false,
+          true,
+          true
+        );
+
+      }
+
+
+      /*
+        When the Ending screen is completely below the
+        viewport, reset it to frame 0 for the next entry.
+        It does not play during the handoff; playback begins
+        only after the screen reaches the ceiling.
+      */
+
+      if (
+        endingOffset >=
+          viewportHeight &&
+        endingVideo &&
+        activeMediaId !==
+          "media-ending"
+      ) {
+
+        endingVideo.pause();
+
+
+        try {
+
+          endingVideo.currentTime =
+            0;
+
+        } catch (error) {
+
+          /* metadata not ready */
+
+        }
+
+      }
+
+
+      return;
+
+    }
+
+
+    if (
+      activeMediaId !==
+        "media-ending"
+    ) {
+
+      activateMedia(
+        "media-ending"
+      );
+
+    }
+
+
+    const endingPostHandoffScroll =
+      Math.max(
+        0,
+        -aiCardRect.bottom -
+          viewportHeight
+      );
+
+
+    endingCard.style.transform =
+      "none";
+
+
+    const endingNaturalCardRect =
+      endingCard.getBoundingClientRect();
+
+
+    const endingDesiredCardTop =
+      viewportHeight +
+      24 -
+      endingPostHandoffScroll;
+
+
+    const endingCardOffset =
+      endingDesiredCardTop -
+      endingNaturalCardRect.top;
+
+
+    endingCard.style.transform =
+      `translate3d(0, ${endingCardOffset}px, 0)`;
+
+
+    endingStep.classList.add(
       "copy-scroll-active"
     );
 
@@ -3344,6 +3794,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setConversationalAISource();
 
+    setEndingSource();
+
 
     /*
       Re-establish card-crossing state for the
@@ -3380,6 +3832,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       resetConversationalAIMobileState();
 
+      resetEndingMobileState();
+
 
       updateMobileMedia();
 
@@ -3407,6 +3861,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resetMatrixAcquisitionMobileState();
 
     resetConversationalAIMobileState();
+
+    resetEndingMobileState();
 
 
     clearDocumentControlVisualState();
@@ -3572,6 +4028,14 @@ document.addEventListener("DOMContentLoaded", () => {
             .forEach(
               (video) => {
 
+                if (
+                  video === endingVideo &&
+                  video.ended
+                ) {
+                  return;
+                }
+
+
                 video
                   .play()
                   .catch(
@@ -3600,6 +4064,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setCustomerComplaintsSource();
 
   setConversationalAISource();
+
+  setEndingSource();
 
 
   if (
