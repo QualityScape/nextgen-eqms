@@ -2,32 +2,6 @@
   box-sizing: border-box;
 }
 
-
-/* =========================================================
-   MOBILE VIEWPORT VARIABLES
-
-   JavaScript will update --mobile-viewport-height with the
-   live VisualViewport height on mobile browsers.
-
-   100dvh is the CSS fallback for browsers where JavaScript
-   has not yet written the live value.
-========================================================= */
-
-:root {
-  --mobile-viewport-height: 100vh;
-  --mobile-layer-park-buffer: 96px;
-}
-
-
-@supports (height: 100dvh) {
-
-  :root {
-    --mobile-viewport-height: 100dvh;
-  }
-
-}
-
-
 html,
 body {
   margin: 0;
@@ -314,13 +288,16 @@ body {
 ========================================================= */
 
 #customer-complaints-video {
+  position: absolute;
+  inset: 0;
+
   width: 100%;
   height: 100%;
 
-  object-fit: cover;
-  object-position: 12% top;
+  display: block;
 
-  transform: none;
+  object-fit: cover;
+  object-position: center;
 }
 
 
@@ -1003,63 +980,37 @@ body {
   ----------------------------------------------------- */
 
   .story-media {
-    /*
-      IMPORTANT FOR MOBILE SAFARI:
-
-      Use the live visible viewport height supplied by
-      JavaScript rather than locking this container to 100svh.
-      This keeps the sticky media exactly flush with the
-      visible screen as Safari's toolbar expands / collapses.
-    */
-
-    height: var(--mobile-viewport-height, 100dvh);
-    min-height: var(--mobile-viewport-height, 100dvh);
-    max-height: var(--mobile-viewport-height, 100dvh);
-
-    overflow: hidden;
-
-    /*
-      Create a clean paint / stacking boundary so later
-      high-z-index story layers cannot visually bleed outside
-      the sticky media viewport during reverse scrolling.
-    */
-
-    isolation: isolate;
-    contain: paint;
-
-    /*
-      Extra clipping guard for iOS Safari's composited video
-      layers during fast reverse scrolling.
-    */
-
-    clip-path: inset(0);
-    -webkit-clip-path: inset(0);
+    height: 100vh;
+    height: 100svh;
   }
 
 
   .story-copy-track {
-    /*
-      Keep the copy track aligned with the same live viewport
-      height used by .story-media.
-    */
-
-    margin-top:
-      calc(0px - var(--mobile-viewport-height, 100dvh));
+    margin-top: -100vh;
+    margin-top: -100svh;
   }
 
 
-  /*
-    Every mobile media layer is clipped to the same live
-    viewport. The JavaScript handoff logic will still move
-    the current / next layer exactly as before.
-  */
+  /* -----------------------------------------------------
+     IOS SAFARI — COMPOSITOR CLIPPING ONLY
 
-  .media-layer {
-    height: 100%;
-    min-height: 100%;
-    max-height: 100%;
+     IMPORTANT:
+     Do not change the mobile story height or card geometry.
+     Safari receives only a stricter paint boundary so a
+     parked video layer cannot bleed through the sticky frame.
+  ----------------------------------------------------- */
 
-    overflow: hidden;
+  html.ios-safari .story-media {
+    isolation: isolate;
+    contain: paint;
+  }
+
+
+  html.ios-safari .media-layer,
+  html.ios-safari .media-layer video,
+  html.ios-safari .media-layer img {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
 
@@ -1281,11 +1232,7 @@ body {
     z-index: 2;
 
     transform:
-      translate3d(
-        0,
-        calc(100% + var(--mobile-layer-park-buffer, 96px)),
-        0
-      );
+      translate3d(0, 100%, 0);
 
     transition: none;
 
@@ -1467,11 +1414,7 @@ body {
     z-index: 3;
 
     transform:
-      translate3d(
-        0,
-        calc(100% + var(--mobile-layer-park-buffer, 96px)),
-        0
-      );
+      translate3d(0, 100%, 0);
 
     transition: none;
 
@@ -1551,11 +1494,7 @@ body {
     z-index: 4;
 
     transform:
-      translate3d(
-        0,
-        calc(100% + var(--mobile-layer-park-buffer, 96px)),
-        0
-      );
+      translate3d(0, 100%, 0);
 
     transition: none;
 
@@ -1668,11 +1607,7 @@ body {
     z-index: 5;
 
     transform:
-      translate3d(
-        0,
-        calc(100% + var(--mobile-layer-park-buffer, 96px)),
-        0
-      );
+      translate3d(0, 100%, 0);
 
     transition: none;
 
@@ -1750,11 +1685,7 @@ body {
     z-index: 6;
 
     transform:
-      translate3d(
-        0,
-        calc(100% + var(--mobile-layer-park-buffer, 96px)),
-        0
-      );
+      translate3d(0, 100%, 0);
 
     transition: none;
 
@@ -1932,11 +1863,7 @@ body {
     z-index: 7;
 
     transform:
-      translate3d(
-        0,
-        calc(100% + var(--mobile-layer-park-buffer, 96px)),
-        0
-      );
+      translate3d(0, 100%, 0);
 
     transition: none;
 
@@ -2027,13 +1954,6 @@ body {
   ===================================================== */
 
   #ai-video {
-    /*
-      Keep the entire portrait AI video visible.
-
-      Remove the previous 106svh / -6svh enlargement, which
-      was cropping the left and right edges on narrow iPhones.
-    */
-
     width: 100%;
     height: 100%;
 
@@ -2059,12 +1979,6 @@ body {
   ===================================================== */
 
   #media-ai {
-    /*
-      Use the same blue family as the wider AI / Customers
-      screens so any unavoidable aspect-ratio breathing room
-      blends into the design rather than appearing grey/black.
-    */
-
     background:
       radial-gradient(
         circle at 50% 48%,
@@ -2084,11 +1998,7 @@ body {
     z-index: 8;
 
     transform:
-      translate3d(
-        0,
-        calc(100% + var(--mobile-layer-park-buffer, 96px)),
-        0
-      );
+      translate3d(0, 100%, 0);
 
     transition: none;
 
