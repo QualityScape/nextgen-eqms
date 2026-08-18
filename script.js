@@ -193,6 +193,51 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+  /* =========================================================
+     IOS SAFARI DETECTION
+
+     Chrome on iPhone and Android keep the original mobile
+     geometry exactly as before. Safari receives only the
+     extra parked-layer protection further below.
+  ========================================================= */
+
+  const userAgent =
+    navigator.userAgent ||
+    "";
+
+
+  const isIOSDevice =
+    /iPad|iPhone|iPod/.test(
+      userAgent
+    ) ||
+    (
+      navigator.platform ===
+        "MacIntel" &&
+      navigator.maxTouchPoints > 1
+    );
+
+
+  const isIOSSafari =
+    isIOSDevice &&
+    /WebKit/i.test(
+      userAgent
+    ) &&
+    !/CriOS|FxiOS|EdgiOS|OPiOS/i.test(
+      userAgent
+    );
+
+
+  if (isIOSSafari) {
+
+    document.documentElement
+      .classList
+      .add(
+        "ios-safari"
+      );
+
+  }
+
+
   let activeMediaId = null;
 
   let currentDocSource = "";
@@ -204,8 +249,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentAISource = "";
 
   let mobileScrollTicking = false;
-
-  let lastMobileViewportCssValue = "";
 
 
   /* =========================================================
@@ -522,7 +565,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-      Force browser reflow so the animation
+      Force the browser reflow so the animation
       genuinely starts again from 0%.
 
       This is also what lets the animation
@@ -1424,125 +1467,28 @@ document.addEventListener("DOMContentLoaded", () => {
      CONVERSATIONAL AI CARD
   ========================================================= */
 
-  const MOBILE_LAYER_PARK_BUFFER = 96;
-
-
   function getMobileViewportHeight() {
 
-    const visualViewportHeight =
-      window.visualViewport
-        ? window.visualViewport.height
-        : 0;
-
-
-    const fallbackHeight =
-      window.innerHeight ||
-      document.documentElement.clientHeight ||
-      0;
-
-
-    const viewportHeight =
-      visualViewportHeight > 0
-        ? visualViewportHeight
-        : fallbackHeight;
-
-
-    return Math.max(
-      1,
-      viewportHeight
-    );
+    return window.visualViewport
+      ? window.visualViewport.height
+      : window.innerHeight;
 
   }
 
 
 
   /* =========================================================
-     SYNC LIVE MOBILE VIEWPORT HEIGHT TO CSS
+     IOS SAFARI PARKED-LAYER PROTECTION
 
-     Safari changes the visible viewport height while its
-     browser chrome expands / collapses. The sticky story
-     viewport and JavaScript handoff calculations must use
-     the exact same height so no strip can open at the top
-     or bottom of the screen.
+     The original Chrome / Android transforms are preserved.
+     On Safari only, a layer that is completely below the
+     viewport is moved an additional 96px down and hidden.
+     As soon as that layer genuinely begins its handoff, it is
+     made visible again at the original calculated offset.
   ========================================================= */
 
-  function syncMobileViewportHeight() {
-
-    const viewportHeight =
-      getMobileViewportHeight();
-
-
-    if (
-      !mobileQuery.matches
-    ) {
-
-      document.documentElement
-        .style
-        .removeProperty(
-          "--mobile-viewport-height"
-        );
-
-
-      lastMobileViewportCssValue = "";
-
-      return viewportHeight;
-
-    }
-
-
-    const roundedViewportHeight =
-      Math.ceil(
-        viewportHeight * 100
-      ) / 100;
-
-
-    const viewportCssValue =
-      `${roundedViewportHeight}px`;
-
-
-    if (
-      viewportCssValue !==
-        lastMobileViewportCssValue
-    ) {
-
-      document.documentElement
-        .style
-        .setProperty(
-          "--mobile-viewport-height",
-          viewportCssValue
-        );
-
-
-      lastMobileViewportCssValue =
-        viewportCssValue;
-
-    }
-
-
-    return viewportHeight;
-
-  }
-
-
-
-  /* =========================================================
-     MOBILE MEDIA LAYER PARKING
-
-     A future layer that is not currently entering the screen
-     is parked below the live viewport with an extra safety
-     buffer and is hidden. This prevents Safari's composited
-     video layers from peeking through during fast reverse
-     scrolling or browser-toolbar resizing.
-  ========================================================= */
-
-  function getMobileParkedOffset(
-    viewportHeight
-  ) {
-
-    return viewportHeight +
-      MOBILE_LAYER_PARK_BUFFER;
-
-  }
+  const SAFARI_LAYER_PARK_BUFFER =
+    96;
 
 
   function parkMobileLayer(
@@ -1555,23 +1501,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const parkedOffset =
-      getMobileParkedOffset(
-        viewportHeight
-      );
+    if (isIOSSafari) {
 
+      layer.style.transform =
+        `translate3d(0, ${viewportHeight + SAFARI_LAYER_PARK_BUFFER}px, 0)`;
 
-    layer.style.transform =
-      `translate3d(0, ${parkedOffset}px, 0)`;
+      layer.style.visibility =
+        "hidden";
+
+      return;
+
+    }
 
 
     layer.style.visibility =
-      "hidden";
+      "";
+
+    layer.style.transform =
+      `translate3d(0, ${viewportHeight}px, 0)`;
 
   }
 
 
-  function setMobileHandoffLayerOffset(
+  function setMobileLayerOffset(
     layer,
     offset,
     viewportHeight
@@ -1582,23 +1534,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const normalizedOffset =
-      Math.max(
-        0,
-        Math.min(
-          viewportHeight,
-          offset
-        )
-      );
-
-
-    const completelyBelowViewport =
-      normalizedOffset >=
-        viewportHeight - 0.5;
-
-
     if (
-      completelyBelowViewport
+      isIOSSafari &&
+      offset >= viewportHeight
     ) {
 
       parkMobileLayer(
@@ -1612,11 +1550,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     layer.style.visibility =
-      "visible";
-
+      "";
 
     layer.style.transform =
-      `translate3d(0, ${normalizedOffset}px, 0)`;
+      `translate3d(0, ${offset}px, 0)`;
 
   }
 
@@ -2009,10 +1946,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const viewportHeight =
-      syncMobileViewportHeight();
-
-
     if (
       !docCard ||
       !connectedPlatformLayer ||
@@ -2046,6 +1979,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    const viewportHeight =
+      getMobileViewportHeight();
+
+
     const docCardRect =
       docCard.getBoundingClientRect();
 
@@ -2066,7 +2003,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    setMobileHandoffLayerOffset(
+    setMobileLayerOffset(
       connectedPlatformLayer,
       connectedPlatformOffset,
       viewportHeight
@@ -2306,7 +2243,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    setMobileHandoffLayerOffset(
+    setMobileLayerOffset(
       supplierLayer,
       supplierOffset,
       viewportHeight
@@ -2590,7 +2527,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    setMobileHandoffLayerOffset(
+    setMobileLayerOffset(
       freeTrialLayer,
       freeTrialOffset,
       viewportHeight
@@ -2768,7 +2705,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    setMobileHandoffLayerOffset(
+    setMobileLayerOffset(
       complaintsLayer,
       complaintsOffset,
       viewportHeight
@@ -2924,7 +2861,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    setMobileHandoffLayerOffset(
+    setMobileLayerOffset(
       customersLayer,
       customersOffset,
       viewportHeight
@@ -3063,7 +3000,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    setMobileHandoffLayerOffset(
+    setMobileLayerOffset(
       matrixAcquisitionLayer,
       matrixAcquisitionOffset,
       viewportHeight
@@ -3187,7 +3124,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    setMobileHandoffLayerOffset(
+    setMobileLayerOffset(
       aiLayer,
       aiOffset,
       viewportHeight
@@ -3366,28 +3303,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     MOBILE VIEWPORT CHANGES
-
-     Safari, iPhone Chrome and Android browsers can change
-     the visible viewport while browser chrome expands or
-     collapses. Route those changes through the same
-     requestAnimationFrame update used by scrolling so the
-     CSS viewport height and all layer positions stay in sync.
+     MOBILE SAFARI VIEWPORT CHANGES
   ========================================================= */
-
-  function handleMobileViewportMutation() {
-
-    if (
-      !mobileQuery.matches
-    ) {
-      return;
-    }
-
-
-    handleMobileScroll();
-
-  }
-
 
   if (
     window.visualViewport
@@ -3396,64 +3313,20 @@ document.addEventListener("DOMContentLoaded", () => {
     window.visualViewport
       .addEventListener(
         "resize",
-        handleMobileViewportMutation,
-        {
-          passive: true
-        }
-      );
+        () => {
 
+          if (
+            mobileQuery.matches
+          ) {
 
-    window.visualViewport
-      .addEventListener(
-        "scroll",
-        handleMobileViewportMutation,
-        {
-          passive: true
+            updateMobileMedia();
+
+          }
+
         }
       );
 
   }
-
-
-  window.addEventListener(
-    "resize",
-    handleMobileViewportMutation,
-    {
-      passive: true
-    }
-  );
-
-
-  window.addEventListener(
-    "orientationchange",
-    () => {
-
-      if (
-        !mobileQuery.matches
-      ) {
-        return;
-      }
-
-
-      /*
-        Safari can report one intermediate viewport height
-        during rotation. Run once immediately and once again
-        shortly after the orientation settles.
-      */
-
-      handleMobileViewportMutation();
-
-
-      window.setTimeout(
-        handleMobileViewportMutation,
-        160
-      );
-
-    },
-    {
-      passive: true
-    }
-  );
 
 
 
@@ -3462,9 +3335,6 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================================= */
 
   function handleViewportChange() {
-
-    syncMobileViewportHeight();
-
 
     setDocumentControlSource();
 
@@ -3722,9 +3592,6 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =========================================================
      INITIAL STATE
   ========================================================= */
-
-  syncMobileViewportHeight();
-
 
   setDocumentControlSource();
 
