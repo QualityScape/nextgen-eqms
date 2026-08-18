@@ -205,6 +205,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let mobileScrollTicking = false;
 
+  let lastMobileViewportCssValue = "";
+
 
   /* =========================================================
      DOCUMENT CONTROL MOBILE ANIMATION STATE
@@ -1422,11 +1424,199 @@ document.addEventListener("DOMContentLoaded", () => {
      CONVERSATIONAL AI CARD
   ========================================================= */
 
+  const MOBILE_LAYER_PARK_BUFFER = 96;
+
+
   function getMobileViewportHeight() {
 
-    return window.visualViewport
-      ? window.visualViewport.height
-      : window.innerHeight;
+    const visualViewportHeight =
+      window.visualViewport
+        ? window.visualViewport.height
+        : 0;
+
+
+    const fallbackHeight =
+      window.innerHeight ||
+      document.documentElement.clientHeight ||
+      0;
+
+
+    const viewportHeight =
+      visualViewportHeight > 0
+        ? visualViewportHeight
+        : fallbackHeight;
+
+
+    return Math.max(
+      1,
+      viewportHeight
+    );
+
+  }
+
+
+
+  /* =========================================================
+     SYNC LIVE MOBILE VIEWPORT HEIGHT TO CSS
+
+     Safari changes the visible viewport height while its
+     browser chrome expands / collapses. The sticky story
+     viewport and JavaScript handoff calculations must use
+     the exact same height so no strip can open at the top
+     or bottom of the screen.
+  ========================================================= */
+
+  function syncMobileViewportHeight() {
+
+    const viewportHeight =
+      getMobileViewportHeight();
+
+
+    if (
+      !mobileQuery.matches
+    ) {
+
+      document.documentElement
+        .style
+        .removeProperty(
+          "--mobile-viewport-height"
+        );
+
+
+      lastMobileViewportCssValue = "";
+
+      return viewportHeight;
+
+    }
+
+
+    const roundedViewportHeight =
+      Math.ceil(
+        viewportHeight * 100
+      ) / 100;
+
+
+    const viewportCssValue =
+      `${roundedViewportHeight}px`;
+
+
+    if (
+      viewportCssValue !==
+        lastMobileViewportCssValue
+    ) {
+
+      document.documentElement
+        .style
+        .setProperty(
+          "--mobile-viewport-height",
+          viewportCssValue
+        );
+
+
+      lastMobileViewportCssValue =
+        viewportCssValue;
+
+    }
+
+
+    return viewportHeight;
+
+  }
+
+
+
+  /* =========================================================
+     MOBILE MEDIA LAYER PARKING
+
+     A future layer that is not currently entering the screen
+     is parked below the live viewport with an extra safety
+     buffer and is hidden. This prevents Safari's composited
+     video layers from peeking through during fast reverse
+     scrolling or browser-toolbar resizing.
+  ========================================================= */
+
+  function getMobileParkedOffset(
+    viewportHeight
+  ) {
+
+    return viewportHeight +
+      MOBILE_LAYER_PARK_BUFFER;
+
+  }
+
+
+  function parkMobileLayer(
+    layer,
+    viewportHeight
+  ) {
+
+    if (!layer) {
+      return;
+    }
+
+
+    const parkedOffset =
+      getMobileParkedOffset(
+        viewportHeight
+      );
+
+
+    layer.style.transform =
+      `translate3d(0, ${parkedOffset}px, 0)`;
+
+
+    layer.style.visibility =
+      "hidden";
+
+  }
+
+
+  function setMobileHandoffLayerOffset(
+    layer,
+    offset,
+    viewportHeight
+  ) {
+
+    if (!layer) {
+      return;
+    }
+
+
+    const normalizedOffset =
+      Math.max(
+        0,
+        Math.min(
+          viewportHeight,
+          offset
+        )
+      );
+
+
+    const completelyBelowViewport =
+      normalizedOffset >=
+        viewportHeight - 0.5;
+
+
+    if (
+      completelyBelowViewport
+    ) {
+
+      parkMobileLayer(
+        layer,
+        viewportHeight
+      );
+
+      return;
+
+    }
+
+
+    layer.style.visibility =
+      "visible";
+
+
+    layer.style.transform =
+      `translate3d(0, ${normalizedOffset}px, 0)`;
 
   }
 
@@ -1445,6 +1635,12 @@ document.addEventListener("DOMContentLoaded", () => {
       connectedPlatformLayer
         .style
         .transform =
+          "";
+
+
+      connectedPlatformLayer
+        .style
+        .visibility =
           "";
 
     }
@@ -1503,6 +1699,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .transform =
           "";
 
+
+      supplierLayer
+        .style
+        .visibility =
+          "";
+
     }
 
 
@@ -1547,6 +1749,12 @@ document.addEventListener("DOMContentLoaded", () => {
       freeTrialLayer
         .style
         .transform =
+          "";
+
+
+      freeTrialLayer
+        .style
+        .visibility =
           "";
 
     }
@@ -1595,6 +1803,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .transform =
           "";
 
+
+      complaintsLayer
+        .style
+        .visibility =
+          "";
+
     }
 
 
@@ -1639,6 +1853,12 @@ document.addEventListener("DOMContentLoaded", () => {
       customersLayer
         .style
         .transform =
+          "";
+
+
+      customersLayer
+        .style
+        .visibility =
           "";
 
     }
@@ -1687,6 +1907,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .transform =
           "";
 
+
+      matrixAcquisitionLayer
+        .style
+        .visibility =
+          "";
+
     }
 
 
@@ -1733,6 +1959,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .transform =
           "";
 
+
+      aiLayer
+        .style
+        .visibility =
+          "";
+
     }
 
 
@@ -1777,6 +2009,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    const viewportHeight =
+      syncMobileViewportHeight();
+
+
     if (
       !docCard ||
       !connectedPlatformLayer ||
@@ -1810,10 +2046,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const viewportHeight =
-      getMobileViewportHeight();
-
-
     const docCardRect =
       docCard.getBoundingClientRect();
 
@@ -1834,10 +2066,11 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    connectedPlatformLayer
-      .style
-      .transform =
-        `translate3d(0, ${connectedPlatformOffset}px, 0)`;
+    setMobileHandoffLayerOffset(
+      connectedPlatformLayer,
+      connectedPlatformOffset,
+      viewportHeight
+    );
 
 
     if (
@@ -1856,8 +2089,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      supplierLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        supplierLayer,
+        viewportHeight
+      );
 
       supplierStep.classList.remove(
         "copy-scroll-active"
@@ -1867,8 +2102,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      freeTrialLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        freeTrialLayer,
+        viewportHeight
+      );
 
       freeTrialStep.classList.remove(
         "copy-scroll-active"
@@ -1878,8 +2115,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      complaintsLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        complaintsLayer,
+        viewportHeight
+      );
 
       complaintsStep.classList.remove(
         "copy-scroll-active"
@@ -1889,8 +2128,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      customersLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        customersLayer,
+        viewportHeight
+      );
 
       customersStep.classList.remove(
         "copy-scroll-active"
@@ -1900,8 +2141,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      matrixAcquisitionLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        matrixAcquisitionLayer,
+        viewportHeight
+      );
 
       matrixAcquisitionStep.classList.remove(
         "copy-scroll-active"
@@ -1911,8 +2154,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      aiLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        aiLayer,
+        viewportHeight
+      );
 
       aiStep.classList.remove(
         "copy-scroll-active"
@@ -2061,8 +2306,11 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    supplierLayer.style.transform =
-      `translate3d(0, ${supplierOffset}px, 0)`;
+    setMobileHandoffLayerOffset(
+      supplierLayer,
+      supplierOffset,
+      viewportHeight
+    );
 
 
     if (
@@ -2078,8 +2326,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      freeTrialLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        freeTrialLayer,
+        viewportHeight
+      );
 
       freeTrialStep.classList.remove(
         "copy-scroll-active"
@@ -2089,8 +2339,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      complaintsLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        complaintsLayer,
+        viewportHeight
+      );
 
       complaintsStep.classList.remove(
         "copy-scroll-active"
@@ -2100,8 +2352,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      customersLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        customersLayer,
+        viewportHeight
+      );
 
       customersStep.classList.remove(
         "copy-scroll-active"
@@ -2111,8 +2365,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      matrixAcquisitionLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        matrixAcquisitionLayer,
+        viewportHeight
+      );
 
       matrixAcquisitionStep.classList.remove(
         "copy-scroll-active"
@@ -2122,8 +2378,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      aiLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        aiLayer,
+        viewportHeight
+      );
 
       aiStep.classList.remove(
         "copy-scroll-active"
@@ -2332,8 +2590,11 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    freeTrialLayer.style.transform =
-      `translate3d(0, ${freeTrialOffset}px, 0)`;
+    setMobileHandoffLayerOffset(
+      freeTrialLayer,
+      freeTrialOffset,
+      viewportHeight
+    );
 
 
     if (
@@ -2349,8 +2610,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      complaintsLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        complaintsLayer,
+        viewportHeight
+      );
 
       complaintsStep.classList.remove(
         "copy-scroll-active"
@@ -2360,8 +2623,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      customersLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        customersLayer,
+        viewportHeight
+      );
 
       customersStep.classList.remove(
         "copy-scroll-active"
@@ -2371,8 +2636,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      matrixAcquisitionLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        matrixAcquisitionLayer,
+        viewportHeight
+      );
 
       matrixAcquisitionStep.classList.remove(
         "copy-scroll-active"
@@ -2382,8 +2649,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      aiLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        aiLayer,
+        viewportHeight
+      );
 
       aiStep.classList.remove(
         "copy-scroll-active"
@@ -2499,8 +2768,11 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    complaintsLayer.style.transform =
-      `translate3d(0, ${complaintsOffset}px, 0)`;
+    setMobileHandoffLayerOffset(
+      complaintsLayer,
+      complaintsOffset,
+      viewportHeight
+    );
 
 
     if (
@@ -2516,8 +2788,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      customersLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        customersLayer,
+        viewportHeight
+      );
 
       customersStep.classList.remove(
         "copy-scroll-active"
@@ -2527,8 +2801,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      matrixAcquisitionLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        matrixAcquisitionLayer,
+        viewportHeight
+      );
 
       matrixAcquisitionStep.classList.remove(
         "copy-scroll-active"
@@ -2538,8 +2814,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      aiLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        aiLayer,
+        viewportHeight
+      );
 
       aiStep.classList.remove(
         "copy-scroll-active"
@@ -2646,8 +2924,11 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    customersLayer.style.transform =
-      `translate3d(0, ${customersOffset}px, 0)`;
+    setMobileHandoffLayerOffset(
+      customersLayer,
+      customersOffset,
+      viewportHeight
+    );
 
 
     if (
@@ -2663,8 +2944,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      matrixAcquisitionLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        matrixAcquisitionLayer,
+        viewportHeight
+      );
 
       matrixAcquisitionStep.classList.remove(
         "copy-scroll-active"
@@ -2674,8 +2957,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      aiLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        aiLayer,
+        viewportHeight
+      );
 
       aiStep.classList.remove(
         "copy-scroll-active"
@@ -2778,8 +3063,11 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    matrixAcquisitionLayer.style.transform =
-      `translate3d(0, ${matrixAcquisitionOffset}px, 0)`;
+    setMobileHandoffLayerOffset(
+      matrixAcquisitionLayer,
+      matrixAcquisitionOffset,
+      viewportHeight
+    );
 
 
     if (
@@ -2795,8 +3083,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "";
 
 
-      aiLayer.style.transform =
-        `translate3d(0, ${viewportHeight}px, 0)`;
+      parkMobileLayer(
+        aiLayer,
+        viewportHeight
+      );
 
       aiStep.classList.remove(
         "copy-scroll-active"
@@ -2897,8 +3187,11 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    aiLayer.style.transform =
-      `translate3d(0, ${aiOffset}px, 0)`;
+    setMobileHandoffLayerOffset(
+      aiLayer,
+      aiOffset,
+      viewportHeight
+    );
 
 
     if (
@@ -3073,8 +3366,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
-     MOBILE SAFARI VIEWPORT CHANGES
+     MOBILE VIEWPORT CHANGES
+
+     Safari, iPhone Chrome and Android browsers can change
+     the visible viewport while browser chrome expands or
+     collapses. Route those changes through the same
+     requestAnimationFrame update used by scrolling so the
+     CSS viewport height and all layer positions stay in sync.
   ========================================================= */
+
+  function handleMobileViewportMutation() {
+
+    if (
+      !mobileQuery.matches
+    ) {
+      return;
+    }
+
+
+    handleMobileScroll();
+
+  }
+
 
   if (
     window.visualViewport
@@ -3083,20 +3396,64 @@ document.addEventListener("DOMContentLoaded", () => {
     window.visualViewport
       .addEventListener(
         "resize",
-        () => {
+        handleMobileViewportMutation,
+        {
+          passive: true
+        }
+      );
 
-          if (
-            mobileQuery.matches
-          ) {
 
-            updateMobileMedia();
-
-          }
-
+    window.visualViewport
+      .addEventListener(
+        "scroll",
+        handleMobileViewportMutation,
+        {
+          passive: true
         }
       );
 
   }
+
+
+  window.addEventListener(
+    "resize",
+    handleMobileViewportMutation,
+    {
+      passive: true
+    }
+  );
+
+
+  window.addEventListener(
+    "orientationchange",
+    () => {
+
+      if (
+        !mobileQuery.matches
+      ) {
+        return;
+      }
+
+
+      /*
+        Safari can report one intermediate viewport height
+        during rotation. Run once immediately and once again
+        shortly after the orientation settles.
+      */
+
+      handleMobileViewportMutation();
+
+
+      window.setTimeout(
+        handleMobileViewportMutation,
+        160
+      );
+
+    },
+    {
+      passive: true
+    }
+  );
 
 
 
@@ -3105,6 +3462,9 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================================= */
 
   function handleViewportChange() {
+
+    syncMobileViewportHeight();
+
 
     setDocumentControlSource();
 
@@ -3362,6 +3722,9 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =========================================================
      INITIAL STATE
   ========================================================= */
+
+  syncMobileViewportHeight();
+
 
   setDocumentControlSource();
 
