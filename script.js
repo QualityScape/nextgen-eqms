@@ -3687,10 +3687,18 @@ document.addEventListener("DOMContentLoaded", () => {
       endingCard.getBoundingClientRect();
 
 
+    const endingMinimumCardTop =
+      viewportHeight *
+      0.12;
+
+
     const endingDesiredCardTop =
-      viewportHeight +
-      24 -
-      endingPostHandoffScroll;
+      Math.max(
+        endingMinimumCardTop,
+        viewportHeight +
+          24 -
+          endingPostHandoffScroll
+      );
 
 
     const endingCardOffset =
