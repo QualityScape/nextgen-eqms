@@ -220,6 +220,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
+     DESKTOP / LAPTOP RIGHT-CLICK PROTECTION
+
+     Desktop / laptop only. Mobile behaviour remains unchanged.
+  ========================================================= */
+
+  document.addEventListener(
+    "contextmenu",
+    (event) => {
+
+      if (
+        !mobileQuery.matches
+      ) {
+
+        event.preventDefault();
+
+      }
+
+    }
+  );
+
+
+  /* =========================================================
      IOS SAFARI DETECTION
 
      Chrome on iPhone and Android keep the original mobile
