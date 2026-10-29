@@ -2265,13 +2265,12 @@ body {
     pointer-events: none;
   }
 
-  /* On narrow portrait screens, show a readable portion
-     of the wide dashboard screenshot instead of shrinking
-     the entire dashboard to a narrow horizontal strip. */
+  /* Keep the dedicated portrait Salesforce dashboard image
+     full-screen on mobile; all card and transition styles remain unchanged. */
 
   #media-dashboards .dashboard-picture img {
     object-fit: cover;
-    object-position: center;
+    object-position: center top;
   }
 
 
