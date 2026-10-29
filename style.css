@@ -720,6 +720,27 @@ body {
   background: #edf1f5;
 }
 
+/* DASHBOARDS — BLUE BACKGROUND ON DESKTOP ONLY
+   Matches the Conversational AI section.
+   Mobile styles below remain unchanged. */
+
+@media (min-width: 769px) {
+  #media-dashboards {
+    background:
+      radial-gradient(
+        circle at 50% 48%,
+        rgba(114, 169, 220, 0.42) 0%,
+        rgba(64, 111, 172, 0.36) 38%,
+        rgba(30, 70, 120, 0.28) 68%
+      ),
+      linear-gradient(
+        180deg,
+        #386fa9 0%,
+        #285a91 100%
+      );
+  }
+}
+
 #media-dashboards .dashboard-picture {
   position: absolute;
   inset: 0;
