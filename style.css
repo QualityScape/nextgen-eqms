@@ -1004,15 +1004,15 @@ body {
   }
 
 
-  /* DASHBOARDS — SAME RIGHT-HAND CARD POSITION AS AI */
+  /* DASHBOARDS — POSITION CARD ON LEFT (DESKTOP ONLY) */
 
   .story-step[data-media="media-dashboards"] {
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 
   .story-step[data-media="media-dashboards"] .story-card {
-    margin-left: 0;
-    margin-right: 6vw;
+    margin-left: 6vw;
+    margin-right: auto;
   }
 
 
