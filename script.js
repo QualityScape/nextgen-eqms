@@ -187,6 +187,26 @@ document.addEventListener("DOMContentLoaded", () => {
       : null;
 
 
+  const dashboardLayer =
+    document.getElementById(
+      "media-dashboards"
+    );
+
+
+  const dashboardStep =
+    document.querySelector(
+      '.story-step[data-media="media-dashboards"]'
+    );
+
+
+  const dashboardCard =
+    dashboardStep
+      ? dashboardStep.querySelector(
+          ".story-card"
+        )
+      : null;
+
+
   const endingVideo =
     document.getElementById(
       "ending-video"
@@ -1592,6 +1612,13 @@ document.addEventListener("DOMContentLoaded", () => {
      STAGE 8:
      CONVERSATIONAL AI CARD
      →
+     DASHBOARDS
+     →
+     DASHBOARDS CARD
+
+     STAGE 9:
+     DASHBOARDS CARD
+     →
      ENDING
      →
      ENDING CARD
@@ -2064,6 +2091,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================================
+     RESET DASHBOARDS MOBILE STATE
+  ========================================================= */
+
+  function resetDashboardMobileState() {
+
+    if (
+      dashboardLayer
+    ) {
+
+      dashboardLayer.style.transform =
+        "";
+
+      dashboardLayer.style.visibility =
+        "";
+
+    }
+
+
+    if (
+      dashboardStep
+    ) {
+
+      dashboardStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+    }
+
+
+    if (
+      dashboardCard
+    ) {
+
+      dashboardCard.style.transform =
+        "";
+
+    }
+
+  }
+
+
+
+  /* =========================================================
      RESET ENDING MOBILE STATE
   ========================================================= */
 
@@ -2175,6 +2245,9 @@ document.addEventListener("DOMContentLoaded", () => {
       !aiLayer ||
       !aiStep ||
       !aiCard ||
+      !dashboardLayer ||
+      !dashboardStep ||
+      !dashboardCard ||
       !endingVideo ||
       !endingLayer ||
       !endingStep ||
@@ -2314,6 +2387,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       parkMobileLayer(
+        dashboardLayer,
+        viewportHeight
+      );
+
+      dashboardStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      dashboardCard.style.transform =
+        "";
+
+
+      parkMobileLayer(
         endingLayer,
         viewportHeight
       );
@@ -2377,6 +2463,8 @@ document.addEventListener("DOMContentLoaded", () => {
             "media-matrix-acquisition" ||
           activeMediaId ===
             "media-ai" ||
+          activeMediaId ===
+            "media-dashboards" ||
           activeMediaId ===
             "media-ending";
 
@@ -2553,6 +2641,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       parkMobileLayer(
+        dashboardLayer,
+        viewportHeight
+      );
+
+      dashboardStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      dashboardCard.style.transform =
+        "";
+
+
+      parkMobileLayer(
         endingLayer,
         viewportHeight
       );
@@ -2609,6 +2710,8 @@ document.addEventListener("DOMContentLoaded", () => {
           "media-matrix-acquisition" ||
         activeMediaId ===
           "media-ai" ||
+        activeMediaId ===
+          "media-dashboards" ||
         activeMediaId ===
           "media-ending"
       ) {
@@ -2684,6 +2787,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "media-matrix-acquisition" &&
       activeMediaId !==
         "media-ai" &&
+      activeMediaId !==
+        "media-dashboards" &&
       activeMediaId !==
         "media-ending"
     ) {
@@ -2841,6 +2946,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       parkMobileLayer(
+        dashboardLayer,
+        viewportHeight
+      );
+
+      dashboardStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      dashboardCard.style.transform =
+        "";
+
+
+      parkMobileLayer(
         endingLayer,
         viewportHeight
       );
@@ -2864,6 +2982,8 @@ document.addEventListener("DOMContentLoaded", () => {
           "media-matrix-acquisition" ||
         activeMediaId ===
           "media-ai" ||
+        activeMediaId ===
+          "media-dashboards" ||
         activeMediaId ===
           "media-ending"
       ) {
@@ -2896,6 +3016,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "media-matrix-acquisition" &&
       activeMediaId !==
         "media-ai" &&
+      activeMediaId !==
+        "media-dashboards" &&
       activeMediaId !==
         "media-ending"
     ) {
@@ -3023,6 +3145,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       parkMobileLayer(
+        dashboardLayer,
+        viewportHeight
+      );
+
+      dashboardStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      dashboardCard.style.transform =
+        "";
+
+
+      parkMobileLayer(
         endingLayer,
         viewportHeight
       );
@@ -3044,6 +3179,8 @@ document.addEventListener("DOMContentLoaded", () => {
           "media-matrix-acquisition" ||
         activeMediaId ===
           "media-ai" ||
+        activeMediaId ===
+          "media-dashboards" ||
         activeMediaId ===
           "media-ending"
       ) {
@@ -3069,6 +3206,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "media-matrix-acquisition" &&
       activeMediaId !==
         "media-ai" &&
+      activeMediaId !==
+        "media-dashboards" &&
       activeMediaId !==
         "media-ending"
     ) {
@@ -3183,6 +3322,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       parkMobileLayer(
+        dashboardLayer,
+        viewportHeight
+      );
+
+      dashboardStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      dashboardCard.style.transform =
+        "";
+
+
+      parkMobileLayer(
         endingLayer,
         viewportHeight
       );
@@ -3202,6 +3354,8 @@ document.addEventListener("DOMContentLoaded", () => {
           "media-matrix-acquisition" ||
         activeMediaId ===
           "media-ai" ||
+        activeMediaId ===
+          "media-dashboards" ||
         activeMediaId ===
           "media-ending"
       ) {
@@ -3225,6 +3379,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "media-matrix-acquisition" &&
       activeMediaId !==
         "media-ai" &&
+      activeMediaId !==
+        "media-dashboards" &&
       activeMediaId !==
         "media-ending"
     ) {
@@ -3326,6 +3482,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       parkMobileLayer(
+        dashboardLayer,
+        viewportHeight
+      );
+
+      dashboardStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      dashboardCard.style.transform =
+        "";
+
+
+      parkMobileLayer(
         endingLayer,
         viewportHeight
       );
@@ -3343,6 +3512,8 @@ document.addEventListener("DOMContentLoaded", () => {
           "media-matrix-acquisition" ||
         activeMediaId ===
           "media-ai" ||
+        activeMediaId ===
+          "media-dashboards" ||
         activeMediaId ===
           "media-ending"
       ) {
@@ -3364,6 +3535,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "media-matrix-acquisition" &&
       activeMediaId !==
         "media-ai" &&
+      activeMediaId !==
+        "media-dashboards" &&
       activeMediaId !==
         "media-ending"
     ) {
@@ -3454,6 +3627,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       parkMobileLayer(
+        dashboardLayer,
+        viewportHeight
+      );
+
+      dashboardStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      dashboardCard.style.transform =
+        "";
+
+
+      parkMobileLayer(
         endingLayer,
         viewportHeight
       );
@@ -3469,6 +3655,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (
         activeMediaId ===
           "media-ai" ||
+        activeMediaId ===
+          "media-dashboards" ||
         activeMediaId ===
           "media-ending"
       ) {
@@ -3537,6 +3725,8 @@ document.addEventListener("DOMContentLoaded", () => {
       activeMediaId !==
         "media-ai" &&
       activeMediaId !==
+        "media-dashboards" &&
+      activeMediaId !==
         "media-ending"
     ) {
 
@@ -3585,11 +3775,136 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       STAGE 8 — ENDING
+       STAGE 8 — DASHBOARDS
+
+       Scrolls up after the Conversational AI card.
+       Uses the same card positioning/handoff geometry.
     ===================================================== */
 
     const aiCardRect =
       aiCard.getBoundingClientRect();
+
+
+    const dashboardOffset =
+      Math.max(
+        0,
+        Math.min(
+          viewportHeight,
+          viewportHeight +
+            aiCardRect.bottom
+        )
+      );
+
+
+    setMobileLayerOffset(
+      dashboardLayer,
+      dashboardOffset,
+      viewportHeight
+    );
+
+
+    if (
+      dashboardOffset >
+      0
+    ) {
+
+      dashboardStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      dashboardCard.style.transform =
+        "";
+
+
+      parkMobileLayer(
+        endingLayer,
+        viewportHeight
+      );
+
+      endingStep.classList.remove(
+        "copy-scroll-active"
+      );
+
+      endingCard.style.transform =
+        "";
+
+
+      if (
+        activeMediaId ===
+          "media-dashboards" ||
+        activeMediaId ===
+          "media-ending"
+      ) {
+
+        activateMedia(
+          "media-ai"
+        );
+
+      }
+
+
+      return;
+
+    }
+
+
+    if (
+      activeMediaId !==
+        "media-dashboards" &&
+      activeMediaId !==
+        "media-ending"
+    ) {
+
+      activateMedia(
+        "media-dashboards"
+      );
+
+    }
+
+
+    const dashboardPostHandoffScroll =
+      Math.max(
+        0,
+        -aiCardRect.bottom -
+          viewportHeight
+      );
+
+
+    dashboardCard.style.transform =
+      "none";
+
+
+    const dashboardNaturalCardRect =
+      dashboardCard.getBoundingClientRect();
+
+
+    const dashboardDesiredCardTop =
+      viewportHeight +
+      24 -
+      dashboardPostHandoffScroll;
+
+
+    const dashboardCardOffset =
+      dashboardDesiredCardTop -
+      dashboardNaturalCardRect.top;
+
+
+    dashboardCard.style.transform =
+      `translate3d(0, ${dashboardCardOffset}px, 0)`;
+
+
+    dashboardStep.classList.add(
+      "copy-scroll-active"
+    );
+
+
+
+    /* =====================================================
+       STAGE 9 — ENDING
+    ===================================================== */
+
+    const dashboardCardRect =
+      dashboardCard.getBoundingClientRect();
 
 
     const endingOffset =
@@ -3598,7 +3913,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Math.min(
           viewportHeight,
           viewportHeight +
-            aiCardRect.bottom
+            dashboardCardRect.bottom
         )
       );
 
@@ -3625,7 +3940,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       /*
         REVERSE-SCROLL:
-        As the Ending screen moves back down, restore AI
+        As the Ending screen moves back down, restore Dashboards
         without resetting the visible Ending frame.
       */
 
@@ -3635,7 +3950,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
 
         activateMedia(
-          "media-ai",
+          "media-dashboards",
           false,
           true,
           true
@@ -3696,7 +4011,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const endingPostHandoffScroll =
       Math.max(
         0,
-        -aiCardRect.bottom -
+        -dashboardCardRect.bottom -
           viewportHeight
       );
 
@@ -3862,6 +4177,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       resetConversationalAIMobileState();
 
+      resetDashboardMobileState();
+
       resetEndingMobileState();
 
 
@@ -3891,6 +4208,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resetMatrixAcquisitionMobileState();
 
     resetConversationalAIMobileState();
+
+    resetDashboardMobileState();
 
     resetEndingMobileState();
 
