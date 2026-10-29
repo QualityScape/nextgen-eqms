@@ -713,6 +713,32 @@ body {
 
 
 /* =========================================================
+   DASHBOARDS IMAGE — NEW SECTION (DESKTOP + SHARED)
+========================================================= */
+
+#media-dashboards {
+  background: #edf1f5;
+}
+
+#media-dashboards .dashboard-picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#media-dashboards .dashboard-picture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+
+
+/* =========================================================
    STORY TEXT TRACK
 ========================================================= */
 
@@ -973,6 +999,18 @@ body {
 
 
   .story-step[data-media="media-ai"] .story-card {
+    margin-left: 0;
+    margin-right: 6vw;
+  }
+
+
+  /* DASHBOARDS — SAME RIGHT-HAND CARD POSITION AS AI */
+
+  .story-step[data-media="media-dashboards"] {
+    justify-content: flex-end;
+  }
+
+  .story-step[data-media="media-dashboards"] .story-card {
     margin-left: 0;
     margin-right: 6vw;
   }
@@ -2206,6 +2244,90 @@ body {
 
 
   /* =====================================================
+     DASHBOARDS MOBILE BACKGROUND + HANDOFF
+  ===================================================== */
+
+  #media-dashboards {
+    background: #edf1f5;
+
+    opacity: 1;
+    visibility: visible;
+
+    z-index: 9;
+
+    transform:
+      translate3d(0, 100%, 0);
+
+    transition: none;
+
+    will-change: transform;
+
+    pointer-events: none;
+  }
+
+  /* On narrow portrait screens, show a readable portion
+     of the wide dashboard screenshot instead of shrinking
+     the entire dashboard to a narrow horizontal strip. */
+
+  #media-dashboards .dashboard-picture img {
+    object-fit: cover;
+    object-position: center;
+  }
+
+
+  /* =====================================================
+     DASHBOARDS MOBILE CARD — EXISTING STANDARD SIZES
+  ===================================================== */
+
+  .story-step[data-media="media-dashboards"] {
+    min-height: 360vh;
+    min-height: 360svh;
+
+    align-items: center;
+    justify-content: center;
+
+    padding:
+      8vh
+      20px;
+  }
+
+  .story-step[data-media="media-dashboards"] .story-card {
+    width: 80%;
+    max-width: 315px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding:
+      29px
+      27px
+      31px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: none;
+
+    transition: none;
+
+    will-change: transform;
+  }
+
+  .story-step[data-media="media-dashboards"].copy-scroll-active
+  .story-card {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .story-step[data-media="media-dashboards"] .story-body {
+    font-size: 23px;
+    line-height: 1.65;
+    color: #30373e;
+  }
+
+
+
+  /* =====================================================
      ENDING MOBILE VIDEO
   ===================================================== */
 
@@ -2235,7 +2357,7 @@ body {
     opacity: 1;
     visibility: visible;
 
-    z-index: 9;
+    z-index: 10;
 
     transform:
       translate3d(0, 100%, 0);
