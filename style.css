@@ -2290,8 +2290,8 @@ body {
      full-screen on mobile; all card and transition styles remain unchanged. */
 
   #media-dashboards .dashboard-picture img {
-    object-fit: cover;
-    object-position: center top;
+    object-fit: contain;
+    object-position: center centre;
   }
 
 
